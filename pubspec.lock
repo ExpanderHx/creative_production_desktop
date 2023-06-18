@@ -25,6 +25,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.11.0"
+  auto_updater:
+    dependency: "direct main"
+    description:
+      name: auto_updater
+      sha256: "73a651d2318c29a1093d1eafd48b3552eef08ae2fefbd178ce952d5d3bcb942e"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.7"
   boolean_selector:
     dependency: transitive
     description:
@@ -49,6 +57,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.3.0"
+  clipboard_watcher:
+    dependency: "direct main"
+    description:
+      name: clipboard_watcher
+      sha256: "2fa9c728f46962668dbc1c07870695c9163524f8dbea25dc176277d1ef1cc2bd"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.0"
   clock:
     dependency: transitive
     description:

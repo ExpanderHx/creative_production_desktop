@@ -12,7 +12,14 @@ void main(List<String> args) async{
   // 必须加上这一行。 快捷键监听
   WidgetsFlutterBinding.ensureInitialized();
 
+  // 窗口管理初始化
   await windowManager.ensureInitialized();
+
+  // 国际化初始化
+  await EasyLocalization.ensureInitialized();
+
+  // 保存的主题类型初始化
+  final savedThemeMode = await AdaptiveTheme.getThemeMode();
 
   WindowOptions windowOptions = WindowOptions(
     size: Size(800, 600),
@@ -40,18 +47,18 @@ void main(List<String> args) async{
 
     // 对于热重载，`unregisterAll()` 需要被调用。
     await hotKeyManager.unregisterAll();
-    runApp(localization(const MyApp()));
+    runApp(localization(MyApp(savedThemeMode: savedThemeMode)));
   }
 }
 
 Widget localization(Widget widget){
-  return widget;
+  // return widget;
   return EasyLocalization(
     supportedLocales: const [
       Locale(kLanguageEN),
       Locale(kLanguageZH),
     ],
-    path: 'resources/langs',
+    path: 'assets/translations',
     // assetLoader: CodegenLoader(),
     fallbackLocale: const Locale(kLanguageEN),
     child: widget,
@@ -60,37 +67,36 @@ Widget localization(Widget widget){
 
 class MyApp extends StatelessWidget {
 
+  final AdaptiveThemeMode? savedThemeMode;
 
-  const MyApp({super.key});
+  const MyApp({super.key, this.savedThemeMode});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
 
+
     return AdaptiveTheme(
-      light: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white,brightness: Brightness.light),
-        useMaterial3: true,
-      ),
-      dark: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black, brightness: Brightness.dark,),
-        useMaterial3: true,
-      ),
-      initial: AdaptiveThemeMode.dark,
+      light: ThemeData.from(colorScheme: const ColorScheme.light(),useMaterial3:true),
+      dark: ThemeData.from(colorScheme: const ColorScheme.dark().copyWith(),useMaterial3:true),
+      initial: savedThemeMode ?? AdaptiveThemeMode.system,
       builder: (theme, darkTheme) => MaterialApp(
-        title: 'Flutter Demo',
-        theme: darkTheme,
+        theme: theme,
         darkTheme: darkTheme,
         builder: BotToastInit(), //1.调用BotToastInit
         navigatorObservers: [BotToastNavigatorObserver()], //2.注册路由观察者
-        home: const MyHomePage(title: 'Flutter Demo Home Page'),
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        home: MyHomePage(),
       ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key});
+  // const MyHomePage({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -101,7 +107,7 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
+  // final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -112,6 +118,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     setState(() {
+      AdaptiveTheme.of(context).setDark();
+      if(_counter % 2 ==0){
+        AdaptiveTheme.of(context).setLight();
+      }
+
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
       // so that the display can reflect the updated values. If we changed
@@ -123,6 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -130,14 +142,14 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kWindowCaptionHeight),
+        child: Center(
+          child: WindowCaption(
+            brightness: Theme.of(context).brightness,
+            title: Text('app_name'.tr()),
+          ),
+        ),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -203,3 +215,41 @@ class _MyHomePageState extends State<MyHomePage> {
 // ),
 // home: const MyHomePage(title: 'Flutter Demo Home Page'),
 // )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// return AdaptiveTheme(
+// light: ThemeData(
+// colorScheme: ColorScheme.fromSeed(seedColor: Colors.white,brightness: Brightness.light),
+// primaryColor: const Color(0xff416ff4),
+// canvasColor: const Color(0xff282828),
+// scaffoldBackgroundColor: const Color(0xff1d1d1d),
+// useMaterial3: true,
+// ),
+// dark: ThemeData(
+// colorScheme: ColorScheme.fromSeed(seedColor: Colors.black, brightness: Brightness.dark,),
+// useMaterial3: true,
+// ),
+// initial: AdaptiveThemeMode.dark,
+// builder: (theme, darkTheme) => MaterialApp(
+// title: 'Flutter Demo',
+// theme: darkTheme,
+// darkTheme: darkTheme,
+// builder: BotToastInit(), //1.调用BotToastInit
+// navigatorObservers: [BotToastNavigatorObserver()], //2.注册路由观察者
+// home: const MyHomePage(title: 'Flutter Demo Home Page'),
+// ),
+// );
