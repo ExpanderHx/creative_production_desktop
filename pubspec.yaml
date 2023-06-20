@@ -82,6 +82,23 @@ dependencies:
   # 允许 Flutter 应用程序观看剪贴板更改
   clipboard_watcher: ^0.2.0
 
+  # 允许 Flutter 桌面应用程序在启动/登录时自动启动
+  launch_at_startup: ^0.2.2
+
+  # 一个强大的Dart/FlutterHTTP客户端，支持全局配置， 拦截器、表单数据、请求取消、文件上传/下载、 超时和自定义适配器等
+  dio: ^5.2.0+1
+
+  # 用于调整屏幕和字体大小的颤振插件。让您的UI在不同的屏幕尺寸上显示合理的布局
+  flutter_screenutil: ^5.8.4
+
+  # 强大的官方扩展图像库，支持占位符（加载）/失败状态，缓存网络，缩放平移图像，照片视图，滑出页面，编辑器（裁剪，旋转，翻转），绘画自定义等
+  extended_image: ^8.0.2
+
+  # flutter markdown 它支持原始格式，但没有内联 .HTML。
+  flutter_markdown: ^0.6.15
+
+  # 一个简单易用的 markdown 渲染组件
+  markdown_widget: ^2.2.0
 
 
 dev_dependencies:
@@ -110,6 +127,15 @@ flutter:
 
   assets:
     - assets/translations/
+
+
+  fonts:
+    - family: Ping Fang
+      fonts:
+        - asset: assets/fonts/PingFang/PingFang-SC.ttf
+    - family: Roboto Mono
+      fonts:
+        - asset: assets/fonts/RobotoMono-Regular.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

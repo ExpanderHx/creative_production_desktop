@@ -6,6 +6,7 @@
     "delete": "Delete",
     "copied": "Copied",
     "please_choose": "Please Choose",
+    "model_dialog_description": "Models can generate inaccurate information about people, places, or facts",
     "language": {
       "af": "Afrikaans",
       "am": "Amharic",

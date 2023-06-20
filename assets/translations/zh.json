@@ -6,6 +6,7 @@
   "delete": "删除",
   "copied": "已复制",
   "please_choose": "请选择",
+  "model_dialog_description": "模型可能会生成有关人员、地点或事实的不准确信息",
   "language": {
     "af": "布尔语(南非荷兰语)",
     "am": "阿姆哈拉语",
