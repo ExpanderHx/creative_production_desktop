@@ -25,9 +25,9 @@ class _DialogBoxWidgetState extends State<DialogBoxWidget> {
 
     return ListView(
       children: [
-        FromAiRowWidget(),
-        ToAiRowWidget(),
-        FromAiRowWidget(),
+        // FromAiRowWidget(),
+        // ToAiRowWidget(),
+        // FromAiRowWidget(),
       ],
     );
   }
