@@ -8,19 +8,17 @@ import '../provider/router_provider.dart';
 
 class MenuConfig{
 
-  static String chat_menu = "CHAT";
+  static String chat_menu = "chat";
+  static String plus_in_menu = "plus_in";
 
   static Map<String,dynamic> menuMap = {
-    "chat": MenuData( "聊天",chat_menu,CupertinoIcons.ellipses_bubble_fill,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic>? map})=>ChatPage(key: menuValueKey) ),
-    "plus_in": MenuData( "聊天",chat_menu,CupertinoIcons.goforward_plus,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic>? map})=>TranslatePlugPage(key: menuValueKey) ),
+    "chat": MenuData( "聊天",chat_menu,CupertinoIcons.ellipses_bubble_fill,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>ChatPage(key: menuValueKey,paramMap: map,) ),
+    "plus_in": MenuData( "插件",plus_in_menu,CupertinoIcons.goforward_plus,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>TranslatePlugPage(key: menuValueKey,paramMap: map,) ),
   };
 
-  static a(){
-    // pageFunctionWarp(ChatPage);
-  }
 
   static pageFunctionWarp(String menuKey,functionPage){
-    return ({Map<String,dynamic>? map}){return functionPage(ValueKey(menuKey));};
+    return ({Map<String,dynamic?>? map}){return functionPage(ValueKey(menuKey),map:map);};
   }
 
 

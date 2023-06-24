@@ -90,7 +90,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
         ),
         child: Stack(
           children: [
-            ...menuWidgetList,
+            Column(
+              children: [
+                ...menuWidgetList
+              ],
+            ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -135,9 +139,9 @@ class _LeftSidebarState extends State<LeftSidebar> {
                 Container(
                   child: IconButton(
                     onPressed: () {
-                      if(null!=menuData.onPressed){
-                        menuData.onPressed!();
-                      }
+                      // if(null!=menuData.onPressed){
+                      //   menuData.onPressed!();
+                      // }
                       menuData.clickMenuWrap(routerProvider);
                       print("-------------");
                     },

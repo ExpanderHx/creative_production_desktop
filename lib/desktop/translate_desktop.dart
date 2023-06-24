@@ -67,7 +67,7 @@ class _TranslateDesktopState extends State<TranslateDesktop> {
             Expanded(
               child: Container(
                 constraints: BoxConstraints(minWidth: 300),
-                child: const Center(
+                child: Center(
                   // Center is a layout widget. It takes a single child and positions it
                   // in the middle of the parent.
                   child: ChatPage(),

@@ -42,7 +42,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+
   int isShowLeftSidebar = 1;
 
   var preferencesUtil = PreferencesUtil();
@@ -54,16 +54,13 @@ class _MyHomePageState extends State<MyHomePage> {
     if(null!=preferencesUtil.get(SharedPreferencesConst.isShowLeftSidebarKey)){
       isShowLeftSidebar = preferencesUtil.get("isShowLeftSidebar");
     }
-
     initHotKeyManager();
-
 
   }
 
   void initHotKeyManager() async{
-    ShortcutKeyUtil.registerTranslate();
-
-
+    RouterProvider routerProvider = context.read<RouterProvider>();
+    ShortcutKeyUtil.registerTranslate(routerProvider);
   }
   
   void onSidebarLeftTap(){
@@ -77,37 +74,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
-  void _incrementCounter() {
-    setState(() {
-      // print('11111111111111111111');
-      AdaptiveTheme.of(context).setDark();
-      if(_counter % 2 ==0){
-        AdaptiveTheme.of(context).setLight();
-      }
-
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
 
-    // Icon(CupertinoIcons.sidebar_left)
-    // Icon(CupertinoIcons.sidebar_right)
-
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-
-    // RouterProvider routerProvider = context.watch<RouterProvider>();
 
     return Scaffold(
       appBar: PreferredSize(

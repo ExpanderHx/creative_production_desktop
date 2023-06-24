@@ -15,7 +15,8 @@ import 'chat/chat_input_widget.dart';
 import 'chat/dialog_box_widget.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+  Map<String,dynamic?>? paramMap;
+  ChatPage({super.key,this.paramMap});
   @override
   State<ChatPage> createState() => _ChatPageState();
 }

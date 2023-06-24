@@ -1,5 +1,7 @@
 
 
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
@@ -10,24 +12,25 @@ import '../page/plug_in/translate_plug_page.dart';
 class RouterProvider with ChangeNotifier, DiagnosticableTreeMixin{
 
   String selectedMenuKey = MenuConfig.chat_menu;
-  Function _selectedPage = MenuConfig.pageFunctionWarp(MenuConfig.chat_menu, (menuValueKey,{Map<String,dynamic>? map})=>TranslatePlugPage(key: menuValueKey));
+  Function _selectedPage = MenuConfig.pageFunctionWarp(MenuConfig.chat_menu, (menuValueKey,{Map<String,dynamic?>? map})=>ChatPage(key: menuValueKey,paramMap: map,));
 
-  // ()=>{ChatPage()};
 
-  clickMenu(MenuData menuData){
+  clickMenu(MenuData menuData,{Map<String,dynamic>? map}){
     if(null!=menuData){
       selectedMenuKey = menuData.menuKey;
       var pageFunctionWarp = menuData.pageFunctionWarp();
       if(null!=pageFunctionWarp){
-        _selectedPage = pageFunctionWarp;
+        _selectedPage = () {
+          print("map : "+jsonEncode(map));
+          return pageFunctionWarp(map:map);
+        };
       }
-
     }
     notifyListeners();
   }
 
   Widget selectedPage(){
-    print('-------------------------');
+    print('-----------selectedPage--------------');
     return _selectedPage();
   }
 
