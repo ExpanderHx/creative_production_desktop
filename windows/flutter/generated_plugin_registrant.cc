@@ -10,6 +10,7 @@
 #include <clipboard_watcher/clipboard_watcher_plugin.h>
 #include <desktop_multi_window/desktop_multi_window_plugin.h>
 #include <hotkey_manager/hotkey_manager_plugin.h>
+#include <isar_flutter_libs/isar_flutter_libs_plugin.h>
 #include <screen_retriever/screen_retriever_plugin.h>
 #include <screen_text_extractor/screen_text_extractor_plugin.h>
 #include <tray_manager/tray_manager_plugin.h>
@@ -25,6 +26,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("DesktopMultiWindowPlugin"));
   HotkeyManagerPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("HotkeyManagerPlugin"));
+  IsarFlutterLibsPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("IsarFlutterLibsPlugin"));
   ScreenRetrieverPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("ScreenRetrieverPlugin"));
   ScreenTextExtractorPluginRegisterWithRegistrar(

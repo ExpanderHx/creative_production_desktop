@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   clipboard_watcher
   desktop_multi_window
   hotkey_manager
+  isar_flutter_libs
   screen_retriever
   screen_text_extractor
   tray_manager

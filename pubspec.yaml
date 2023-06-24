@@ -59,7 +59,7 @@ dependencies:
   shared_preferences: ^2.1.2
 
   # 用纯 Dart 编写的轻量级和超快的键值数据库。使用 AES-256 进行高度加密
-  hive: ^2.2.3
+#  hive: ^2.2.3
 
   # 可让您轻松地在 Windows、macOS 和 Linux 上自定义和使用 Flutter 桌面应用程序窗口
 #  bitsdojo_window: ^0.1.5
@@ -115,6 +115,13 @@ dependencies:
   # 允许 Flutter 桌面应用程序定义系统托盘
   tray_manager: ^0.2.0
 
+  # 非常快速，易于使用，并且完全异步的FlutterNoSQL数据库
+  isar: ^3.1.0+1
+
+  isar_flutter_libs: ^3.1.0+1
+
+
+
   # chat gpt sdk
 #  chat_gpt_sdk: ^2.2.1
 
@@ -131,6 +138,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
+  isar_generator: ^3.1.0+1
+  build_runner: ^2.4.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
