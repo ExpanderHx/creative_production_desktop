@@ -1,9 +1,16 @@
+import 'dart:async';
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
+import '../network/chat/chat_api.dart';
+import '../network/chat/chat_api_general.dart';
+import '../network/chat/chat_gpt_open_ai.dart';
+import '../network/chat/config/response_message.dart';
 import '../util/theme_utils.dart';
+import 'chat/chat_message.dart';
 import 'chat/chat_input_widget.dart';
 import 'chat/dialog_box_widget.dart';
 
@@ -15,8 +22,75 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
 
+  ChatApi? chatApi = null;
+
+  List<ChatMessage> messageList = [];
+
+  ScrollController? dialogBoxWidgetScrollController;
+
   @override
   void initState() {
+    // chatApi = ChatApiGeneral();
+    chatApi = ChatApiOpenAi();
+    dialogBoxWidgetScrollController = ScrollController();
+  }
+
+  void onSendMessage(String message){
+    print("message:"+message);
+    if(null!=message&&message.trim().length>0){
+
+      setState(() {
+        ChatMessage messageData = ChatMessage(message,true);
+        messageList.add(messageData);
+        Timer(Duration(milliseconds: 100), () {
+          //List滑动到底部
+          if(null!=dialogBoxWidgetScrollController){
+            dialogBoxWidgetScrollController?.jumpTo(dialogBoxWidgetScrollController!.position.maxScrollExtent);
+          }
+
+        });
+      });
+      if(null != chatApi){
+        chatApi!.sendMessage(message).then((response) {
+          // ResponseMessage response2 = response as ResponseMessage;
+          if(null!=response&&response.statusCode==200){
+            String? responseMessage = response.responseMessage;
+            if(null!=responseMessage){
+              setState(() {
+                ChatMessage messageData = ChatMessage(responseMessage,false);
+                messageList.add(messageData);
+                Timer(const Duration(milliseconds: 100), () {
+                  //List滑动到底部
+                  if(null!=dialogBoxWidgetScrollController){
+                    dialogBoxWidgetScrollController?.jumpTo(dialogBoxWidgetScrollController!.position.maxScrollExtent);
+                  }
+                });
+              });
+            }
+            print(response);
+          }
+        });
+        // chatApi!.sendMessage(message).then((ResponseMessage? response){
+        //   if(null!=response&&response.statusCode==200){
+        //     String? responseMessage = response.responseMessage;
+        //     if(null!=responseMessage){
+        //       setState(() {
+        //         Message messageData = Message(responseMessage,false);
+        //         messageList.add(messageData);
+        //         Timer(const Duration(milliseconds: 100), () {
+        //           //List滑动到底部
+        //           if(null!=dialogBoxWidgetScrollController){
+        //             dialogBoxWidgetScrollController?.jumpTo(dialogBoxWidgetScrollController!.position.maxScrollExtent);
+        //           }
+        //         });
+        //       });
+        //     }
+        //     print(response);
+        //   }
+        // });
+      }
+    }
+
 
   }
 
@@ -26,15 +100,30 @@ class _ChatPageState extends State<ChatPage> {
     // ScreenUtil.init(context, designSize: const Size(1920, 1080));
     return Container(
       color: ThemeUtils.getThemeColor(context),
-      child: const Column(
+      child: Stack(
         children: [
-          Expanded(
-              flex: 1,
-              child: DialogBoxWidget()
+          Column(
+            children: [
+              Expanded(
+                  flex: 1,
+                  child: DialogBoxWidget(messageList: messageList,dialogBoxWidgetScrollController:dialogBoxWidgetScrollController)
+              ),
+              Container(
+                height: 120,
+              )
+            ],
           ),
-          ChatInputWidget(),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              // margin: EdgeInsets.only(top: 15.h),
+              child: ChatInputWidget(
+                  onSendMessage:onSendMessage
+              ),
+            ),
+          )
         ],
-      ),
+      )  ,
     );
   }
 }

@@ -9,7 +9,8 @@ import '../../util/theme_utils.dart';
 
 
 class ToAiRowWidget extends StatefulWidget {
-  const ToAiRowWidget({super.key});
+  String? message;
+  ToAiRowWidget({super.key,this.message});
   @override
   State<ToAiRowWidget> createState() => _ToAiRowWidgetState();
 }
@@ -19,33 +20,45 @@ class ToAiRowWidget extends StatefulWidget {
 class _ToAiRowWidgetState extends State<ToAiRowWidget> {
 
 
+
+
   @override
   Widget build(BuildContext context) {
+    double containerMinHeight = 65.h;
 
     return Container(
-      constraints: BoxConstraints(minHeight: 90.h,minWidth: double.infinity),
-      color: ThemeUtils.getThemeColor(context),
+      decoration: BoxDecoration(
+        color: ThemeUtils.getThemeColor(context),
+        border:const Border(
+            bottom:BorderSide(
+              color: Color.fromARGB(25, 0,0,0), // 边框颜色
+              style: BorderStyle.solid, // 边框样式为实线
+              width: 1,
+            )
+        ),
+      ),
+      constraints: BoxConstraints(minHeight: containerMinHeight,minWidth: double.infinity),
       padding: EdgeInsets.only(top: 15.h,bottom: 15.h,left: 100.w,right: 100.w),
       child: Row(
         crossAxisAlignment:CrossAxisAlignment.start,
         children: [
           Container(
-            height: 50,
+            height: 30,
             margin: EdgeInsets.only(right: 20.w,),
             child:  ClipOval(
               child: Image.network(
                 "https://pic2.zhimg.com/v2-639b49f2f6578eabddc458b84eb3c6a1.jpg",
-                width: 50,
-                height: 50,
+                width: 30,
+                height: 30,
                 fit: BoxFit.cover,
               ),
             ),
           ),
           Expanded(
             child: Container(
-              constraints: BoxConstraints(minHeight: 90.h),
+              constraints: BoxConstraints(minHeight: containerMinHeight),
               child: MarkdownWidget(
-                data: 'a',
+                data: (widget.message!=null?widget.message!:""),
                 shrinkWrap:true,
                 physics: new NeverScrollableScrollPhysics(),
               ),
@@ -53,11 +66,15 @@ class _ToAiRowWidgetState extends State<ToAiRowWidget> {
           ),
           Container(
             width: 100.w,
-            height: 50,
+            height: 30,
             child: Row(
               children: [
                 Container(
-                  child: Icon(Icons.copy),
+                  child: const Icon(
+                      Icons.copy,
+                      color: Color.fromARGB(255, 120, 121, 131),
+                      size: 16,
+                  ),
                 )
               ],
             ),

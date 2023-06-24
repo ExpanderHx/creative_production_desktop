@@ -100,6 +100,18 @@ dependencies:
   # 一个简单易用的 markdown 渲染组件
   markdown_widget: ^2.2.0
 
+  # 使用FlexColorScheme制作漂亮的基于Flutter Material Design的主题
+  flex_color_scheme: ^7.1.2
+
+  # 用于在桌面中创建和管理多窗口
+  desktop_multi_window: ^0.2.0
+
+  # 对 InheritedWidget 组件的上层封装，使其更易用，更易复用
+  provider: ^6.0.5
+
+  # chat gpt sdk
+#  chat_gpt_sdk: ^2.2.1
+
 
 dev_dependencies:
   flutter_test:

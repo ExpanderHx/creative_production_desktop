@@ -1,10 +1,26 @@
+import 'dart:convert';
+
+import 'package:creative_production_desktop/desktop/sidebar/left_sidebar.dart';
+import 'package:creative_production_desktop/desktop/widget/app_preferred_size_child.dart';
+import 'package:desktop_multi_window/desktop_multi_window.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
+import 'package:hotkey_manager/hotkey_manager.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../config/const_app.dart';
+
+import '../config/shared_preferences_const.dart';
 import '../page/chat_page.dart';
+import '../provider/router_provider.dart';
+import '../shortcut_key/shortcut_key_util.dart';
+import '../util/preferences_util.dart';
+import '../util/widget/resizable_component.dart';
+import '../util/widget/resizable_widget.dart';
+import 'app_window_caption/app_window_caption.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -27,10 +43,37 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  int isShowLeftSidebar = 1;
+
+  var preferencesUtil = PreferencesUtil();
+
 
   @override
   void initState() {
+    
+    if(null!=preferencesUtil.get(SharedPreferencesConst.isShowLeftSidebarKey)){
+      isShowLeftSidebar = preferencesUtil.get("isShowLeftSidebar");
+    }
 
+    initHotKeyManager();
+
+
+  }
+
+  void initHotKeyManager() async{
+    ShortcutKeyUtil.registerTranslate();
+
+
+  }
+  
+  void onSidebarLeftTap(){
+    SharedPreferences.getInstance().then((prefs ) {
+      prefs.setInt(SharedPreferencesConst.isShowLeftSidebarKey, (isShowLeftSidebar == 1 ? 0 : 1)).then((value){
+        setState(() {
+          isShowLeftSidebar = (isShowLeftSidebar == 1 ? 0 : 1);
+        });
+      });
+    });
   }
 
 
@@ -54,44 +97,71 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
 
+    // Icon(CupertinoIcons.sidebar_left)
+    // Icon(CupertinoIcons.sidebar_right)
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+
+    // RouterProvider routerProvider = context.watch<RouterProvider>();
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kWindowCaptionHeight),
+        child: AppPreferredSizeChild(
+            onSidebarLeftTap:onSidebarLeftTap,
+            isShowLeftSidebar:isShowLeftSidebar
+        ),
+      ),
+      body: Container(
         child: Row(
           children: [
-            Container(
-              width: ConstApp.LeftSidebar,
-              color: Colors.black,
+            Visibility(
+              child: LeftSidebar(),
+              visible: (isShowLeftSidebar==1),
             ),
             Expanded(
-              child: WindowCaption(
-                brightness: Theme.of(context).brightness,
-                title: Text('app_name'.tr()),
+              child: Container(
+                constraints: BoxConstraints(minWidth: 300),
+                child: Center(
+                  // Center is a layout widget. It takes a single child and positions it
+                  // in the middle of the parent.
+                  child: getContent(),
+                ),
               ),
+            ),
+
+            ResizableComponent(
+              width: 50,
+              resizeDirection:ResizeDirection.resizeLeft,
             )
           ],
         ),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: ChatPage(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _incrementCounter,
+      //   tooltip: 'Increment',
+      //   child: const Icon(Icons.add),
+      // ),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+
+  Widget getContent(){
+    RouterProvider routerProvider = context.watch<RouterProvider>();
+    return routerProvider.selectedPage();
+  }
+
+
 }
+
+
+// MouseRegion(  onEnter: (_) {    // 鼠标进入组件时，设置鼠标样式为 resize    SystemMouseCursors.resizeColumn.requestMouseCursor();  },  onExit: (_) {    // 鼠标离开组件时，设置鼠标样式为默认    SystemMouseCursors.basic.requestMouseCursor();  },  child: Container(    // 组件内容  ),)
 
 
 

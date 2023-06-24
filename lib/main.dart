@@ -1,29 +1,36 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:creative_production_desktop/provider/router_provider.dart';
+import 'package:creative_production_desktop/util/preferences_util.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
+import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'desktop/home.dart';
+import 'desktop/translate_desktop.dart';
 import 'generated/codegen_loader.g.dart';
+
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 void main(List<String> args) async{
 
   // 必须加上这一行。 快捷键监听
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 窗口管理初始化
-  await windowManager.ensureInitialized();
+  // 保存的主题类型初始化
+  final savedThemeMode = await AdaptiveTheme.getThemeMode();
 
   // 国际化初始化
   await EasyLocalization.ensureInitialized();
 
-  // 保存的主题类型初始化
-  final savedThemeMode = await AdaptiveTheme.getThemeMode();
 
-  WindowOptions windowOptions = WindowOptions(
+  // 初始化PreferencesUtil
+  PreferencesUtil();
+
+  WindowOptions windowOptions = const WindowOptions(
     size: Size(800, 600),
     center: true,
     backgroundColor: Colors.transparent,
@@ -37,20 +44,37 @@ void main(List<String> args) async{
 
 
   if (args.firstOrNull == 'multi_window') {
+    print('执行了窗口：$args');
     final windowId = int.parse(args[1]);
+    print('窗口ID$windowId');
     // final argument = args[2].isEmpty
     //     ? const {}
     //     : jsonDecode(args[2]) as Map<String, dynamic>;
-    // runApp(_ExampleSubWindow(
-    //   windowController: WindowController.fromWindowId(windowId),
-    //   args: argument,
-    // ));
+    runApp(localization(MyApp(savedThemeMode: savedThemeMode,homeWidget: const TranslateDesktop())));
   } else {
+
+
+
+
+    // 窗口管理初始化
+    await windowManager.ensureInitialized();
+
+
 
     // 对于热重载，`unregisterAll()` 需要被调用。
     await hotKeyManager.unregisterAll();
-    runApp(localization(MyApp(savedThemeMode: savedThemeMode)));
+    // runApp(localization(MyApp(savedThemeMode: savedThemeMode,homeWidget: const MyHomePage())));
+    runApp(multiMainProvider(localization(MyApp(savedThemeMode: savedThemeMode,homeWidget: const MyHomePage()))));
   }
+}
+
+Widget multiMainProvider(Widget widget){
+  return MultiProvider(
+    providers: [
+      ChangeNotifierProvider<RouterProvider>(create: (_) => RouterProvider()),
+    ],
+    child: widget,
+  );
 }
 
 Widget localization(Widget widget){
@@ -67,20 +91,28 @@ Widget localization(Widget widget){
   );
 }
 
+
+
 class MyApp extends StatelessWidget {
 
   final AdaptiveThemeMode? savedThemeMode;
 
-  const MyApp({super.key, this.savedThemeMode});
+  final Widget? homeWidget;
+
+  const MyApp({super.key, this.savedThemeMode,this.homeWidget});
+
+
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
 
+
+
     // fontFamily
     return AdaptiveTheme(
-      light: ThemeData(colorScheme: const ColorScheme.light().copyWith(brightness: Brightness.light,primary:Colors.white),fontFamily: "Ping Fang",useMaterial3:true),
-      dark: ThemeData(colorScheme: const ColorScheme.dark().copyWith(brightness: Brightness.dark,primary:Colors.black),fontFamily: "Ping Fang",useMaterial3:true),
+      light: FlexThemeData.light(fontFamily: "Ping Fang",useMaterial3: true,scheme:FlexScheme.material),
+      dark: FlexThemeData.dark(fontFamily: "Ping Fang",useMaterial3: true,scheme:FlexScheme.material),
       initial: savedThemeMode ?? AdaptiveThemeMode.system,
       debugShowFloatingThemeButton:false,
       builder: (theme, darkTheme){
@@ -96,13 +128,18 @@ class MyApp extends StatelessWidget {
               localizationsDelegates: context.localizationDelegates,
               supportedLocales: context.supportedLocales,
               locale: context.locale,
-              home: MyHomePage(),
+              home: homeWidget,
             )
         );
       },
     );
   }
 }
+
+
+// light: ThemeData(colorScheme: const ColorScheme.light().copyWith(brightness: Brightness.light,primary:Colors.white),fontFamily: "Ping Fang",useMaterial3:true),
+// dark: ThemeData(colorScheme: const ColorScheme.dark().copyWith(brightness: Brightness.dark,primary:Colors.black),fontFamily: "Ping Fang",useMaterial3:true),
+
 
 //  light: ThemeData.from(colorScheme: const ColorScheme.light().copyWith(primary:Colors.blue),useMaterial3:true),
 //       dark: ThemeData.from(colorScheme: const ColorScheme.dark().copyWith(primary:Colors.blue),useMaterial3:true),

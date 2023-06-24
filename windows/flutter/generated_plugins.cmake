@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   auto_updater
   clipboard_watcher
+  desktop_multi_window
   hotkey_manager
   screen_retriever
   url_launcher_windows
