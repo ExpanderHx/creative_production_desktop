@@ -1,6 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:creative_production_desktop/provider/router_provider.dart';
+import 'package:creative_production_desktop/util/db/isar_db_util.dart';
 import 'package:creative_production_desktop/util/preferences_util.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +27,11 @@ void main(List<String> args) async{
   // 国际化初始化
   await EasyLocalization.ensureInitialized();
 
-
   // 初始化PreferencesUtil
   PreferencesUtil();
+
+  // 初始化数据库
+  IsarDBUtil();
 
   WindowOptions windowOptions = const WindowOptions(
     size: Size(800, 600),

@@ -1,9 +1,11 @@
 
 
+import 'package:creative_production_desktop/page/plugins_list_page.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../page/chat_page.dart';
-import '../page/plug_in/translate_plug_page.dart';
+
+import '../page/plugins/translate_plug_page.dart';
 import '../provider/router_provider.dart';
 
 class MenuConfig{
@@ -13,7 +15,8 @@ class MenuConfig{
 
   static Map<String,dynamic> menuMap = {
     "chat": MenuData( "聊天",chat_menu,CupertinoIcons.ellipses_bubble_fill,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>ChatPage(key: menuValueKey,paramMap: map,) ),
-    "plus_in": MenuData( "插件",plus_in_menu,CupertinoIcons.goforward_plus,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>TranslatePlugPage(key: menuValueKey,paramMap: map,) ),
+    "plus_in": MenuData( "插件",plus_in_menu,CupertinoIcons.goforward_plus,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>PluginsListPage(key: menuValueKey,paramMap: map,) ),
+    "plus_in_1": MenuData( "插件",plus_in_menu,CupertinoIcons.goforward_plus,showType:0,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>TranslatePlugPage(key: menuValueKey,paramMap: map,) ),
   };
 
 

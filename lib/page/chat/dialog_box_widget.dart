@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:markdown_widget/widget/markdown.dart';
 
-import 'chat_message.dart';
+import 'bean/chat_message.dart';
 
 
 

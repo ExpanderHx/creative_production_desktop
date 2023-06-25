@@ -2,18 +2,14 @@
 
 import 'dart:async';
 
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../config/const_app.dart';
 import '../../network/chat/chat_api.dart';
 import '../../network/chat/chat_gpt_open_ai.dart';
 import '../../util/theme_utils.dart';
-import '../chat/chat_input_widget.dart';
-import '../chat/chat_message.dart';
-import '../chat/dialog_box_widget.dart';
+import '../chat/bean/chat_message.dart';
 
 
 

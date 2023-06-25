@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 
 import '../config/menu_config.dart';
 import '../page/chat_page.dart';
-import '../page/plug_in/translate_plug_page.dart';
+import '../page/plugins/translate_plug_page.dart';
 
 class RouterProvider with ChangeNotifier, DiagnosticableTreeMixin{
 

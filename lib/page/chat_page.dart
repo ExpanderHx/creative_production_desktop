@@ -10,7 +10,7 @@ import '../network/chat/chat_api_general.dart';
 import '../network/chat/chat_gpt_open_ai.dart';
 import '../network/chat/config/response_message.dart';
 import '../util/theme_utils.dart';
-import 'chat/chat_message.dart';
+import 'chat/bean/chat_message.dart';
 import 'chat/chat_input_widget.dart';
 import 'chat/dialog_box_widget.dart';
 

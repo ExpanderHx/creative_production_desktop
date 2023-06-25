@@ -17,10 +17,11 @@ class ResizableComponent extends StatefulWidget {
 
   ResizeDirection resizeDirection;
   Widget? child;
+  Color? color;
   double? width;
   double? minWidth;
   double? maxWidth;
-  ResizableComponent({super.key,this.child,this.width,this.minWidth,this.maxWidth,this.resizeDirection = ResizeDirection.resizeLeft});
+  ResizableComponent({super.key,this.child,this.width,this.minWidth,this.maxWidth,this.color,this.resizeDirection = ResizeDirection.resizeLeft});
 
   @override
   _ResizableComponentState createState() => _ResizableComponentState();
@@ -44,6 +45,32 @@ class _ResizableComponentState extends State<ResizableComponent> {
 
   @override
   Widget build(BuildContext context) {
+
+    BoxDecoration? boxDecoration = null;
+    if(widget.resizeDirection==ResizeDirection.resizeLeft){
+      boxDecoration =  BoxDecoration(
+        color: widget.color,
+        border:Border(
+            left:BorderSide(
+              color: Color.fromARGB(25, 0,0,0), // 边框颜色
+              style: BorderStyle.solid, // 边框样式为实线
+              width: 2,
+            )
+        ),
+      );
+    }else{
+      boxDecoration =  BoxDecoration(
+        color: widget.color,
+        border:Border(
+            right:BorderSide(
+              color: Color.fromARGB(25, 0,0,0), // 边框颜色
+              style: BorderStyle.solid, // 边框样式为实线
+              width: 2,
+            )
+        ),
+      );
+    }
+
     return Listener(
       onPointerDown: (details) {
         setState(() {
@@ -85,6 +112,7 @@ class _ResizableComponentState extends State<ResizableComponent> {
         child: Container(
           width: _width,
           padding: EdgeInsets.only(left: (widget.resizeDirection==ResizeDirection.resizeLeft?10:0),right: (widget.resizeDirection==ResizeDirection.resizeRight?10:0)),
+          decoration:boxDecoration,
           child: MouseRegion(
             cursor:SystemMouseCursors.basic,
             child: widget.child,

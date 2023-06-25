@@ -106,7 +106,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
             ResizableComponent(
               width: 50,
+                color: Color.fromARGB(255, 0, 0, 0),
               resizeDirection:ResizeDirection.resizeLeft,
+              child:Container(
+
+              )
             )
           ],
         ),

@@ -79,21 +79,16 @@ class _LeftSidebarState extends State<LeftSidebar> {
       maxWidth: 150,
       child: Container(
         height: double.infinity,
-        decoration: const BoxDecoration(
-          border:Border(
-              right:BorderSide(
-                color: Color.fromARGB(25, 0,0,0), // 边框颜色
-                style: BorderStyle.solid, // 边框样式为实线
-                width: 2,
-              )
-          ),
-        ),
+        margin: EdgeInsets.only(left: 10),
         child: Stack(
           children: [
-            Column(
-              children: [
-                ...menuWidgetList
-              ],
+            Container(
+              width: double.infinity,
+              child: Column(
+                children: [
+                  ...menuWidgetList
+                ],
+              ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
