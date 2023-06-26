@@ -27,13 +27,20 @@ class _ChatPageState extends State<ChatPage> {
 
   List<ChatMessage> messageList = [];
 
-  ScrollController? dialogBoxWidgetScrollController;
+  ScrollController dialogBoxWidgetScrollController = ScrollController();
 
   @override
   void initState() {
     // chatApi = ChatApiGeneral();
-    chatApi = ChatApiOpenAi();
-    dialogBoxWidgetScrollController = ScrollController();
+    // chatApi = ChatApiOpenAi();
+    chatApi = ChatApiGeneral();
+
+  }
+
+  @override
+  void dispose() {
+    dialogBoxWidgetScrollController.dispose();
+    super.dispose();
   }
 
   void onSendMessage(String message){

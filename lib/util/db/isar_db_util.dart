@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../page/chat/bean/chat_model_config.dart';
 import '../../page/plugins/bean/plugins_bean.dart';
 
 /// Hive 数据操作
@@ -28,7 +29,7 @@ class IsarDBUtil {
     if(isar == null){
       final dir = await getApplicationDocumentsDirectory();
       isar = await Isar.open(
-        [PluginsBeanSchema],
+        [PluginsBeanSchema,ChatModelConfigSchema],
         directory: dir.path,
       );
     }

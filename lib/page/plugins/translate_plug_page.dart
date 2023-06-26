@@ -47,6 +47,7 @@ class _TranslatePlugPageState extends State<TranslatePlugPage> {
       }
     }
     dialogBoxWidgetScrollController = ScrollController();
+    changeOriginalText();
   }
 
   @override

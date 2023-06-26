@@ -5,6 +5,7 @@ import 'package:creative_production_desktop/util/db/isar_db_util.dart';
 import 'package:creative_production_desktop/util/preferences_util.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,13 @@ void main(List<String> args) async{
   // 国际化初始化
   await EasyLocalization.ensureInitialized();
 
+  // 窗口半透明效果
+  // await Window.initialize();
+  // await Window.setEffect(
+  //   effect: WindowEffect.acrylic,
+  //   color: Color(0xCC222222),
+  // );
+
   // 初始化PreferencesUtil
   PreferencesUtil();
 
@@ -34,7 +42,7 @@ void main(List<String> args) async{
   IsarDBUtil();
 
   WindowOptions windowOptions = const WindowOptions(
-    size: Size(800, 600),
+    size: Size(900, 600),
     center: true,
     backgroundColor: Colors.transparent,
     skipTaskbar: false,

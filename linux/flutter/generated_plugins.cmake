@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   clipboard_watcher
   desktop_multi_window
+  flutter_acrylic
   hotkey_manager
   isar_flutter_libs
   screen_retriever

@@ -9,7 +9,7 @@ class PluginsConfig{
 
   static String pluginsTypeTranslate= "translate";
 
-  static String pluginsTypeCommon= "translate";
+  static String pluginsTypeCommon= "common";
 
 
 

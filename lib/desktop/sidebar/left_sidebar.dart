@@ -1,5 +1,6 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +9,8 @@ import 'package:window_manager/window_manager.dart';
 import '../../config/menu_config.dart';
 import '../../provider/router_provider.dart';
 import '../../util/widget/resizable_component.dart';
-import '../app_window_caption/app_window_caption.dart';
+
+import '../widget/acrylic_warp.dart';
 
 
 class LeftSidebar extends StatefulWidget {
@@ -77,42 +79,44 @@ class _LeftSidebarState extends State<LeftSidebar> {
       width: 60,
       minWidth: 60,
       maxWidth: 150,
-      child: Container(
-        height: double.infinity,
-        margin: EdgeInsets.only(left: 10),
-        child: Stack(
-          children: [
-            Container(
-              width: double.infinity,
-              child: Column(
-                children: [
-                  ...menuWidgetList
-                ],
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 100,
+      child: AcrylicWarp(
+        child: Container(
+          height: double.infinity,
+          margin: EdgeInsets.only(left: 10),
+          child: Stack(
+            children: [
+              Container(
+                width: double.infinity,
                 child: Column(
                   children: [
-                    themeModeWidget,
-                    Container(
-                      child: IconButton(
-                        onPressed: () {
-                          print("-------------");
-                          // sendMessage();
-                        },
-                        icon: Icon(
-                          Icons.settings,
-                        ),
-                      ),
-                    ),
+                    ...menuWidgetList
                   ],
                 ),
               ),
-            )
-          ],
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: 100,
+                  child: Column(
+                    children: [
+                      themeModeWidget,
+                      Container(
+                        child: IconButton(
+                          onPressed: () {
+                            print("-------------");
+                            // sendMessage();
+                          },
+                          icon: Icon(
+                            Icons.settings,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

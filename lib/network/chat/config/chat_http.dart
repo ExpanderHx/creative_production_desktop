@@ -112,17 +112,17 @@ class ChatHttp {
     // }
     int? statusCode;
     var responseData;
-    var response;
+    var originalResponse;
     try{
-      response = await dio.request(
+      originalResponse = await dio.request(
         path,
         data: data,
         queryParameters: params,
         options: requestOptions,
         cancelToken: cancelToken ?? _cancelToken,
       );
-      statusCode = response.statusCode;
-      responseData = response.data;
+      statusCode = originalResponse.statusCode;
+      responseData = originalResponse.data;
     }on DioException catch( error){
       if(error is DioException){
         statusCode = error.response?.statusCode;
@@ -130,9 +130,9 @@ class ChatHttp {
     }catch(e){
       print(e);
     }
-    ResponseWrap(statusCode:(statusCode!=null?statusCode:500),data: responseData,originalResponse:response);
+    ResponseWrap responseWrap = ResponseWrap(statusCode:(statusCode!=null?statusCode:500),data: responseData,originalResponse:originalResponse);
 
-    return response;
+    return responseWrap;
   }
 
   Future get(

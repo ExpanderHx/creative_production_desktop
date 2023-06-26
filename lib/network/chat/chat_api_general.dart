@@ -21,7 +21,7 @@ class ChatApiGeneral extends ChatApi{
 
   Future<dynamic?> sendMessage(String message,{List<String>? historyList}) async {
     Map<String, dynamic>? data = {"question":message,"history":[]};
-    ResponseWrap responseWrap = await chatHttp.post("/chat",data:data);
+    ResponseWrap? responseWrap = await chatHttp.post("/chat",data:data);
     if(null!=responseWrap){
       if(responseWrap.statusCode==200){
         Map<String,dynamic> data =  responseWrap.data;

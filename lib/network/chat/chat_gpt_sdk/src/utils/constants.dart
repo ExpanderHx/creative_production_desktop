@@ -1,5 +1,7 @@
+import '../../../config/chat_config.dart';
+
 /// Base ChatGPT Url
-String kURL = "https://chat.magicvr.online/v1/";
+String kURL = ChatConfig.chatOpenAiBaseUrl;
 
 const kCompletion = 'completions';
 

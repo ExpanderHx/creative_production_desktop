@@ -120,6 +120,18 @@ dependencies:
 
   isar_flutter_libs: ^3.1.0+1
 
+  # Flutter的核心下拉按钮小部件，带有稳定的下拉菜单和许多其他选项，您可以 根据您的需求进行定制
+  dropdown_button2: ^2.1.3
+
+  # 使用 Flutter 设计漂亮的本机 Windows 应用程序
+  fluent_ui: ^4.6.2
+
+  # Windows、macOS 和 Linux 上 Flutter 的窗口亚克力、云母和透明效果
+  flutter_acrylic: ^1.1.3
+
+  # acrylic_any是一个可以将任何小部件转换为模糊对象的包
+#  acrylic_any: ^0.0.1
+
 
 
   # chat gpt sdk

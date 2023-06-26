@@ -14,6 +14,7 @@ import 'package:window_manager/window_manager.dart';
 
 
 import '../config/shared_preferences_const.dart';
+import '../page/config/model_config_page.dart';
 import '../page/chat_page.dart';
 import '../provider/router_provider.dart';
 import '../shortcut_key/shortcut_key_util.dart';
@@ -60,7 +61,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void initHotKeyManager() async{
     RouterProvider routerProvider = context.read<RouterProvider>();
+    // 注册全部 pluginsBean
+    ShortcutKeyUtil.registerPluginsBeanAll(routerProvider);
+
+    // 注册翻译功能
     ShortcutKeyUtil.registerTranslate(routerProvider);
+
   }
   
   void onSidebarLeftTap(){
@@ -105,12 +111,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
 
             ResizableComponent(
-              width: 50,
-                color: Color.fromARGB(255, 0, 0, 0),
+              width: 200,
+              minWidth: 200,
               resizeDirection:ResizeDirection.resizeLeft,
-              child:Container(
-
-              )
+              child:ModelConfigPage()
             )
           ],
         ),

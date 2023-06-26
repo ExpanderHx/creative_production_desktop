@@ -1,12 +1,16 @@
 // Create a Form widget.
 import 'dart:convert';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:creative_production_desktop/util/theme_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
+import 'package:provider/provider.dart';
 
+import '../../provider/router_provider.dart';
 import '../../shortcut_key/record_hotkey_dialog.dart';
+import '../../shortcut_key/shortcut_key_util.dart';
 import '../../util/db/isar_db_util.dart';
 import 'bean/plugins_bean.dart';
 import 'config/plugins_config.dart';
@@ -32,10 +36,13 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
 
   late PluginsBean pluginsBean;
 
+  PluginsBean? oldPluginsBean;
+
   @override
   void initState() {
     if(widget.pluginsBean!=null){
       pluginsBean = widget.pluginsBean!;
+      oldPluginsBean = widget.pluginsBean!;
     }else{
       pluginsBean = PluginsBean();
 
@@ -58,10 +65,12 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
           isSavePluginsBean = false;
         });
         if(isSavePluginsBean){
-          if(widget.onUpdatePluginsBeanDb!=null){
-            widget.onUpdatePluginsBeanDb!();
-          }
-          Navigator.pop(context);
+          // if(widget.onUpdatePluginsBeanDb!=null){
+          //   widget.onUpdatePluginsBeanDb!(oldPluginsBean:oldPluginsBean,newPluginsBean:pluginsBean);
+          // }
+          var cancel = BotToast.showText(text:"编辑成功");
+          Map<String,dynamic?> map = {"oldPluginsBean":oldPluginsBean,"newPluginsBean":pluginsBean};
+          Navigator.pop(context,map);
         }
 
       }
