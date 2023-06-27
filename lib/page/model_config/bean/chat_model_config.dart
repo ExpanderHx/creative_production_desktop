@@ -12,6 +12,7 @@ class ChatModelConfig{
   late String? modelName;
   late String? tokenizerName;
   String? loadDevice;
+  String? token;
   int? maxToken;
   double? temperature;
   bool? isGlobal;

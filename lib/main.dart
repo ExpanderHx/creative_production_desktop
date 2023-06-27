@@ -84,8 +84,15 @@ Widget multiMainProvider(Widget widget){
     providers: [
       ChangeNotifierProvider<RouterProvider>(create: (_) => RouterProvider()),
     ],
-    child: widget,
+    builder: (BuildContext context, Widget? child){
+      RouterProvider routerProvider = context.read<RouterProvider>();
+      routerProvider.init();
+      return widget;
+    },
+
   );
+
+  // child: widget,
 }
 
 Widget localization(Widget widget){

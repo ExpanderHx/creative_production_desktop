@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../page/chat/bean/chat_model_config.dart';
+import '../../page/model_config/bean/chat_model_config.dart';
 import '../../page/plugins/bean/plugins_bean.dart';
 
 /// Hive 数据操作

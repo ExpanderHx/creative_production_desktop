@@ -25,7 +25,25 @@ class ChatApiOpenAi extends ChatApi{
 
   ChatApiOpenAi._internal();
 
-  Future<dynamic?> sendMessage(String message,{List<String>? historyList}) async{
+  ChatApiOpenAi build(String? token, {required HttpSetup baseOption, required bool enableLog}) {
+    openAI =  OpenAI.instance.build(
+        token: token,
+        baseOption: baseOption,
+        enableLog: enableLog
+    );
+    return this;
+  }
+
+  // ChatApiOpenAi.build(String token,{HttpSetup? baseOption, bool enableLog = false}){
+  //   openAI =  OpenAI.instance.build(
+  //       token: token,
+  //       baseOption: baseOption,
+  //       enableLog: enableLog
+  //   );
+  // }
+
+
+  Future<dynamic?> sendMessage(String message,{List<String>? historyList,activeType}) async{
     List<Messages> messagesList = [];
 
     messagesList.add(Messages(role:Role.user,content: message));
@@ -60,6 +78,8 @@ class ChatApiOpenAi extends ChatApi{
   setToken(String token){
     openAI.setToken(token);
   }
+
+
 
 
 }

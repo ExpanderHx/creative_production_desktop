@@ -76,6 +76,12 @@ class ChatHttp {
     return this;
   }
 
+  void updateBaseUrl(String baseUrl){
+    dio.options = dio.options.copyWith(
+      baseUrl: baseUrl,
+    );
+  }
+
   // 关闭dio
   void cancelRequests({required CancelToken token}) {
     _cancelToken.cancel("cancelled");

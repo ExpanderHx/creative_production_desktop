@@ -19,7 +19,8 @@ class ChatApiGeneral extends ChatApi{
 
   ChatApiGeneral._internal();
 
-  Future<dynamic?> sendMessage(String message,{List<String>? historyList}) async {
+
+  Future<dynamic?> sendMessage(String message,{List<String>? historyList,activeType}) async {
     Map<String, dynamic>? data = {"question":message,"history":[]};
     ResponseWrap? responseWrap = await chatHttp.post("/chat",data:data);
     if(null!=responseWrap){

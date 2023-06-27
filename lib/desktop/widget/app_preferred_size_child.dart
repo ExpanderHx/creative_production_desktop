@@ -1,8 +1,10 @@
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
+import '../../provider/router_provider.dart';
 import '../app_window_caption/app_window_caption.dart';
 
 
@@ -27,6 +29,7 @@ class AppPreferredSizeChild extends StatefulWidget {
 
 class _AppPreferredSizeChildState extends State<AppPreferredSizeChild> {
 
+
   @override
   void initState() {
 
@@ -34,6 +37,7 @@ class _AppPreferredSizeChildState extends State<AppPreferredSizeChild> {
 
   @override
   Widget build(BuildContext context) {
+    RouterProvider routerProvider = context.watch<RouterProvider>();
     return Row(
       children: [
         Container(
@@ -52,30 +56,25 @@ class _AppPreferredSizeChildState extends State<AppPreferredSizeChild> {
                       margin: const EdgeInsets.only(right: 15),
                       child: IconButton(
                         onPressed: () {
-                          if(widget.onSidebarLeftTap!=null){
-                            widget.onSidebarLeftTap!();
-                          }
-                          print("-------------");
+                          routerProvider.updateIsShowLeftSidebarNew((routerProvider.isShowLeftSidebar==1?0:1));
                           // sendMessage();
                         },
                         icon: Icon(
                           CupertinoIcons.sidebar_left,
-                          color: (widget.isShowLeftSidebar!=1?Color.fromARGB(255, 124, 124, 124):Color.fromARGB(255, 111, 175, 249)),
+                          color: (routerProvider.isShowLeftSidebar!=1?Color.fromARGB(255, 124, 124, 124):Color.fromARGB(255, 111, 175, 249)),
                         ),
                       ),
                     ),
                     Container(
                       child: IconButton(
                         onPressed: () {
-                          if(widget.onSidebarRightTap!=null){
-                            widget.onSidebarRightTap!();
-                          }
+                          routerProvider.updateIsShowRightSidebar((routerProvider.isShowRightSidebar==1?0:1));
                           print("-------------");
                           // sendMessage();
                         },
                         icon: Icon(
                           CupertinoIcons.sidebar_right,
-                          color: Color.fromARGB(255, 124, 124, 124),
+                          color: (routerProvider.isShowRightSidebar!=1?Color.fromARGB(255, 124, 124, 124):Color.fromARGB(255, 111, 175, 249)),
                         ),
                       ),
                     )

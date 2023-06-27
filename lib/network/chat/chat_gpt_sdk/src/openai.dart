@@ -56,6 +56,7 @@ class OpenAI implements IOpenAI {
       sendTimeout: setup.sendTimeout,
       connectTimeout: setup.connectTimeout,
       receiveTimeout: setup.receiveTimeout,
+      baseUrl: setup.baseUrl
     ));
     if (setup.proxy.isNotEmpty) {
       dio.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {

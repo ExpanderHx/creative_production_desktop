@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
+import '../config/menu_config.dart';
 import '../network/chat/chat_api.dart';
 import '../network/chat/chat_api_general.dart';
+import '../network/chat/chat_api_handle.dart';
 import '../network/chat/chat_gpt_open_ai.dart';
 import '../network/chat/config/response_message.dart';
 import '../util/theme_utils.dart';
@@ -29,13 +31,27 @@ class _ChatPageState extends State<ChatPage> {
 
   ScrollController dialogBoxWidgetScrollController = ScrollController();
 
+  String activeType = MenuConfig.chat_menu;
+
   @override
   void initState() {
     // chatApi = ChatApiGeneral();
     // chatApi = ChatApiOpenAi();
-    chatApi = ChatApiGeneral();
-
+    chatApi = ChatApiHandle();
   }
+
+  @override
+  void didUpdateWidget(ChatPage oldWidget) {
+    if (widget.paramMap != oldWidget.paramMap) {
+      if(widget.paramMap!=null){
+        if(null!=widget.paramMap!["activeType"]&&widget.paramMap!["activeType"].length>0){
+          activeType = widget.paramMap!["activeType"];
+        }
+      }
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
 
   @override
   void dispose() {
@@ -46,7 +62,6 @@ class _ChatPageState extends State<ChatPage> {
   void onSendMessage(String message){
     print("message:"+message);
     if(null!=message&&message.trim().length>0){
-
       setState(() {
         ChatMessage messageData = ChatMessage(message,true);
         messageList.add(messageData);
@@ -59,8 +74,7 @@ class _ChatPageState extends State<ChatPage> {
         });
       });
       if(null != chatApi){
-        chatApi!.sendMessage(message).then((response) {
-          // ResponseMessage response2 = response as ResponseMessage;
+        chatApi!.sendMessage(message,activeType: activeType).then((response) {
           if(null!=response&&response.statusCode==200){
             String? responseMessage = response.responseMessage;
             if(null!=responseMessage){
@@ -78,28 +92,8 @@ class _ChatPageState extends State<ChatPage> {
             print(response);
           }
         });
-        // chatApi!.sendMessage(message).then((ResponseMessage? response){
-        //   if(null!=response&&response.statusCode==200){
-        //     String? responseMessage = response.responseMessage;
-        //     if(null!=responseMessage){
-        //       setState(() {
-        //         Message messageData = Message(responseMessage,false);
-        //         messageList.add(messageData);
-        //         Timer(const Duration(milliseconds: 100), () {
-        //           //List滑动到底部
-        //           if(null!=dialogBoxWidgetScrollController){
-        //             dialogBoxWidgetScrollController?.jumpTo(dialogBoxWidgetScrollController!.position.maxScrollExtent);
-        //           }
-        //         });
-        //       });
-        //     }
-        //     print(response);
-        //   }
-        // });
       }
     }
-
-
   }
 
   @override

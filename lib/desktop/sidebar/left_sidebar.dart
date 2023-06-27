@@ -74,15 +74,15 @@ class _LeftSidebarState extends State<LeftSidebar> {
 
 
 
-    return ResizableComponent(
-      resizeDirection:ResizeDirection.resizeRight,
-      width: 60,
-      minWidth: 60,
-      maxWidth: 150,
+    return Container(
+      // resizeDirection:ResizeDirection.resizeRight,
+      // width: 60,
+      // minWidth: 60,
+      // maxWidth: 150,
+      padding: EdgeInsets.only(left:10,right: 10),
       child: AcrylicWarp(
         child: Container(
           height: double.infinity,
-          margin: EdgeInsets.only(left: 10),
           child: Stack(
             children: [
               Container(

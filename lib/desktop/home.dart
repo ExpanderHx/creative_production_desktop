@@ -1,21 +1,26 @@
 import 'dart:convert';
 
 import 'package:creative_production_desktop/desktop/sidebar/left_sidebar.dart';
+import 'package:creative_production_desktop/desktop/sidebar/right_sidebar.dart';
 import 'package:creative_production_desktop/desktop/widget/app_preferred_size_child.dart';
+import 'package:creative_production_desktop/util/db/isar_db_util.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
+import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 
 
 import '../config/shared_preferences_const.dart';
-import '../page/config/model_config_page.dart';
+
 import '../page/chat_page.dart';
+import '../page/model_config/model_config_page.dart';
 import '../provider/router_provider.dart';
 import '../shortcut_key/shortcut_key_util.dart';
 import '../util/preferences_util.dart';
@@ -44,19 +49,23 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  int isShowLeftSidebar = 1;
+
 
   var preferencesUtil = PreferencesUtil();
 
 
   @override
   void initState() {
-    
-    if(null!=preferencesUtil.get(SharedPreferencesConst.isShowLeftSidebarKey)){
-      isShowLeftSidebar = preferencesUtil.get("isShowLeftSidebar");
-    }
+
     initHotKeyManager();
 
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    IsarDBUtil().isar!.close();
+    super.dispose();
   }
 
   void initHotKeyManager() async{
@@ -69,55 +78,73 @@ class _MyHomePageState extends State<MyHomePage> {
 
   }
   
-  void onSidebarLeftTap(){
-    SharedPreferences.getInstance().then((prefs ) {
-      prefs.setInt(SharedPreferencesConst.isShowLeftSidebarKey, (isShowLeftSidebar == 1 ? 0 : 1)).then((value){
-        setState(() {
-          isShowLeftSidebar = (isShowLeftSidebar == 1 ? 0 : 1);
-        });
-      });
-    });
-  }
+
 
 
   @override
   Widget build(BuildContext context) {
 
 
+    RouterProvider routerProvider = context.watch<RouterProvider>();
+
+    double leftSidebarWeight = 0;
+    double contentWeight = ScreenUtil().screenWidth;
+    double rightSidebarWeight = 0;
+    
+
+    List<Widget> multiSplitViewChildren = [];
+    if(routerProvider.isShowLeftSidebar==1){
+      multiSplitViewChildren.add(LeftSidebar());
+      leftSidebarWeight = 60;
+    }
+    multiSplitViewChildren.add(Container(child: getContent()));
+    if(routerProvider.isShowRightSidebar==1){
+      multiSplitViewChildren.add(RightSidebar(
+          child:ModelConfigPage(
+            activeType: routerProvider.selectedMenuKey,
+          )
+      ));
+      rightSidebarWeight = 240;
+    }
+
+    List<Area> areaList = [];
+    if(leftSidebarWeight>0){
+      areaList.add(Area(size: leftSidebarWeight,minimalSize: 60));
+    }
+    areaList.add(Area(size: (contentWeight - leftSidebarWeight - rightSidebarWeight), minimalWeight: 0.3));
+    if(rightSidebarWeight>0){
+      areaList.add(Area(size: rightSidebarWeight,minimalSize: 200));
+    }
+
+
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kWindowCaptionHeight),
-        child: AppPreferredSizeChild(
-            onSidebarLeftTap:onSidebarLeftTap,
-            isShowLeftSidebar:isShowLeftSidebar
-        ),
+        child: AppPreferredSizeChild(),
       ),
       body: Container(
-        child: Row(
-          children: [
-            Visibility(
-              child: LeftSidebar(),
-              visible: (isShowLeftSidebar==1),
+        child: MultiSplitViewTheme(
+            data:MultiSplitViewThemeData(
+                dividerPainter: DividerPainters.grooved1(
+                    color: Colors.indigo[100]!,
+                    backgroundColor: Color.fromARGB(25, 0,0,0),
+                    highlightedColor: Colors.indigo[900]!),
+                dividerThickness:5
             ),
-            Expanded(
-              child: Container(
-                constraints: BoxConstraints(minWidth: 300),
-                child: Center(
-                  // Center is a layout widget. It takes a single child and positions it
-                  // in the middle of the parent.
-                  child: getContent(),
-                ),
+            child: MultiSplitView(
+              children: [
+                ...multiSplitViewChildren
+              ],
+              controller: MultiSplitViewController(
+                  areas: areaList
               ),
-            ),
-
-            ResizableComponent(
-              width: 200,
-              minWidth: 200,
-              resizeDirection:ResizeDirection.resizeLeft,
-              child:ModelConfigPage()
-            )
-          ],
-        ),
+              // initialAreas: [
+              //   Area(size: 60,minimalSize: 60),
+              //   Area(weight:0.9,minimalWeight: 0.3),
+              //   Area(size: 240,minimalSize: 200),
+              // ]
+            )),
       ),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: _incrementCounter,
@@ -131,11 +158,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget getContent(){
     RouterProvider routerProvider = context.watch<RouterProvider>();
-    return routerProvider.selectedPage();
+    Map<String,dynamic>? paramMap = {};
+    paramMap["activeType"] = routerProvider.selectedMenuKey;
+    return routerProvider.selectedPage(paramMap:paramMap);
+  }
+
+  Widget getRightSidebarWidget(){
+    RouterProvider routerProvider = context.watch<RouterProvider>();
+    return Visibility(
+      visible: (routerProvider.isShowRightSidebar==1),
+      child: RightSidebar(
+          child:ModelConfigPage(
+            activeType: routerProvider.selectedMenuKey,
+          )
+      ),
+    );
   }
 
 
 }
+
+
+
 
 
 // MouseRegion(  onEnter: (_) {    // 鼠标进入组件时，设置鼠标样式为 resize    SystemMouseCursors.resizeColumn.requestMouseCursor();  },  onExit: (_) {    // 鼠标离开组件时，设置鼠标样式为默认    SystemMouseCursors.basic.requestMouseCursor();  },  child: Container(    // 组件内容  ),)
