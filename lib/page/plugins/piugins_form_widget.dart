@@ -88,7 +88,6 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
-
     pluginsBean.isOpenShortcutKeys ??= true;
 
     return Container(
