@@ -78,16 +78,18 @@ class _ChatPageState extends State<ChatPage> {
           if(null!=response&&response.statusCode==200){
             String? responseMessage = response.responseMessage;
             if(null!=responseMessage){
-              setState(() {
-                ChatMessage messageData = ChatMessage(responseMessage,false);
-                messageList.add(messageData);
-                Timer(const Duration(milliseconds: 100), () {
-                  //List滑动到底部
-                  if(null!=dialogBoxWidgetScrollController){
-                    dialogBoxWidgetScrollController?.jumpTo(dialogBoxWidgetScrollController!.position.maxScrollExtent);
-                  }
-                });
+              ChatMessage messageData = ChatMessage(responseMessage,false);
+              messageList.add(messageData);
+              Timer(const Duration(milliseconds: 100), () {
+                //List滑动到底部
+                if(null!=dialogBoxWidgetScrollController){
+                  dialogBoxWidgetScrollController?.jumpTo(dialogBoxWidgetScrollController!.position.maxScrollExtent);
+                }
               });
+              if(mounted){
+                setState(() {
+                });
+              }
             }
             print(response);
           }

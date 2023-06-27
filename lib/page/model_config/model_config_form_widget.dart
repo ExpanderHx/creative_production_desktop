@@ -8,6 +8,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:isar/isar.dart';
 
 
 import '../../network/chat/config/chat_config.dart';
@@ -32,7 +33,7 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
 
   bool isOpenShortcutKeys = true;
 
-  bool isSavePluginsBean = false;
+  bool isSaveChatModelConfig = false;
 
 
   late ChatModelConfig? chatModelConfig;
@@ -51,7 +52,7 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
       });
 
     }
-    isSavePluginsBean = false;
+    isSaveChatModelConfig = false;
     super.initState();
   }
 
@@ -62,16 +63,31 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
         // If the form is valid, display a snackbar. In the real world,
         // you'd often call a server or save the information in a database.
         if(null!=IsarDBUtil().isar){
-          isSavePluginsBean = true;
+          isSaveChatModelConfig = true;
           await IsarDBUtil().isar!.writeTxn(() async {
             await IsarDBUtil().isar!.collection<ChatModelConfig>().put(chatModelConfig!);
           }).catchError((onError){
-            isSavePluginsBean = false;
+            isSaveChatModelConfig = false;
           });
-          if(isSavePluginsBean){
-            // if(widget.onUpdatePluginsBeanDb!=null){
-            //   widget.onUpdatePluginsBeanDb!(oldPluginsBean:oldPluginsBean,newPluginsBean:pluginsBean);
-            // }
+          if(isSaveChatModelConfig){
+            if(chatModelConfig!.isGlobal!=null&&chatModelConfig!.isGlobal!){
+              List<ChatModelConfig>? chatModelConfigList =  await IsarDBUtil().isar!.collection<ChatModelConfig>().where().findAll();
+              if(null!=chatModelConfigList&&chatModelConfigList.length>0){
+                for(var i=0;i<chatModelConfigList.length;i++){
+                  ChatModelConfig? chatModelConfigS = chatModelConfigList![i];
+                  if(null!=chatModelConfigS){
+                    if(null!=chatModelConfigS.id&&chatModelConfigS.id!=chatModelConfig!.id){
+                      if(chatModelConfigS!.isGlobal!=null&&chatModelConfigS!.isGlobal!){
+                        chatModelConfigS.isGlobal = false;
+                        await IsarDBUtil().isar!.writeTxn(() async {
+                          await IsarDBUtil().isar!.collection<ChatModelConfig>().put(chatModelConfigS!);
+                        });
+                      }
+                    }
+                  }
+                }
+              }
+            }
             var cancel = BotToast.showText(text:"edit_ok".tr());
 
             Navigator.pop(context);
@@ -140,9 +156,9 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: ElevatedButton(
-                    onPressed: (){
+                    onPressed: (!isSaveChatModelConfig)? (){
                       saveChatModelConfig();
-                    },
+                    }:null,
                     child: Text('submit'.tr()),
                   ),
                 ),
@@ -174,12 +190,18 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
         value: chatModelConfig!.isGlobal,
         onChanged: (newValue) {
           chatModelConfig!.isGlobal = newValue;
+          setState(() {
+
+          });
         }
     ));
     widgetList.add(getDropdownButtonWidget(title: "${tr('local')} ",
         value: chatModelConfig!.isLocal,
         onChanged: (newValue) {
           chatModelConfig!.isLocal = newValue;
+          setState(() {
+
+          });
         }
     ));
     if(chatModelConfig!.isLocal!=null&&chatModelConfig!.isLocal!){

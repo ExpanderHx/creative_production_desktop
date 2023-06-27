@@ -199,9 +199,9 @@ class _PluginsListPageState extends State<PluginsListPage> {
               Container(
                 height: 160,
                 width: 200,
-                margin:  EdgeInsets.only(left: 20,right: 20,top: 5,bottom: 5),
+                margin:  EdgeInsets.only(left: 20,right: 20,top: 5,bottom: 15),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: ThemeUtils.getThemeColor(context),
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                   border: Border.all(
                     color: ThemeUtils.getThemeColor(context,lightColor: Color(0Xfff8f9fa),blackColor:  Color(0Xff495057)), // 边框颜色

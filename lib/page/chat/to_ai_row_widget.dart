@@ -44,6 +44,7 @@ class _ToAiRowWidgetState extends State<ToAiRowWidget> {
         children: [
           Container(
             height: 30,
+            width: 30,
             margin: EdgeInsets.only(right: 20.w,),
             child:  ClipOval(
               child: Image.network(

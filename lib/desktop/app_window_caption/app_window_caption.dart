@@ -70,6 +70,9 @@ class _AppWindowCaptionState extends State<AppWindowCaption> with WindowListener
       ),
       child: Row(
         children: [
+          Container(
+            width: 70,
+          ),
           Expanded(
             child: DragToMoveArea(
               child: SizedBox(
