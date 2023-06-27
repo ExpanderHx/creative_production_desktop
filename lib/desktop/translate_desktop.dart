@@ -1,5 +1,5 @@
 import 'package:creative_production_desktop/desktop/sidebar/left_sidebar.dart';
-import 'package:creative_production_desktop/desktop/widget/app_preferred_size_child.dart';
+import 'package:creative_production_desktop/desktop/app_window_caption/app_preferred_size_child.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';

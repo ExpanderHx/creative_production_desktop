@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:creative_production_desktop/desktop/sidebar/left_sidebar.dart';
 import 'package:creative_production_desktop/desktop/sidebar/right_sidebar.dart';
-import 'package:creative_production_desktop/desktop/widget/app_preferred_size_child.dart';
+import 'package:creative_production_desktop/desktop/app_window_caption/app_preferred_size_child.dart';
 import 'package:creative_production_desktop/util/db/isar_db_util.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:flutter/cupertino.dart';
@@ -104,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
             activeType: routerProvider.selectedMenuKey,
           )
       ));
-      rightSidebarWeight = 240;
+      rightSidebarWeight = 245;
     }
 
     List<Area> areaList = [];

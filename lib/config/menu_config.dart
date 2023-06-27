@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../page/chat_page.dart';
 
+import '../page/model_config_list_page.dart';
 import '../page/plugins/translate_plug_page.dart';
 import '../provider/router_provider.dart';
 
@@ -14,12 +15,14 @@ class MenuConfig{
   static String plugins_menu = "plugins";
   static String plugins_translate_menu = "plugins_translate";
   static String plugins_common_menu = "plugins_common";
+  static String model_config_list_menu = "model_config_list";
 
   static Map<String,dynamic> menuMap = {
-    chat_menu: MenuData( "聊天",chat_menu,CupertinoIcons.ellipses_bubble_fill,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>ChatPage(key: menuValueKey,paramMap: map,) ),
+    chat_menu: MenuData( "聊天",chat_menu,CupertinoIcons.ellipses_bubble,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>ChatPage(key: menuValueKey,paramMap: map,) ),
     plugins_menu: MenuData( "插件",plugins_menu,CupertinoIcons.goforward_plus,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>PluginsListPage(key: menuValueKey,paramMap: map,) ),
     plugins_translate_menu: MenuData( "插件",plugins_menu,CupertinoIcons.goforward_plus,showType:0,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>TranslatePlugPage(key: menuValueKey,paramMap: map,) ),
     plugins_common_menu: MenuData( "插件",plugins_menu,CupertinoIcons.goforward_plus,showType:0,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>TranslatePlugPage(key: menuValueKey,paramMap: map,) ),
+    model_config_list_menu: MenuData( "模型列表",model_config_list_menu,CupertinoIcons.layers,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>ModelConfigListPagePage(key: menuValueKey,paramMap: map,) ),
   };
 
 

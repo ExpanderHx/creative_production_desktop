@@ -101,13 +101,17 @@ class _LeftSidebarState extends State<LeftSidebar> {
                     children: [
                       themeModeWidget,
                       Container(
-                        child: IconButton(
-                          onPressed: () {
-                            print("-------------");
-                            // sendMessage();
-                          },
-                          icon: Icon(
-                            Icons.settings,
+                        child: Tooltip(
+                          message: 'set_up'.tr(),
+                          child: IconButton(
+                            onPressed: () {
+                              print("-------------");
+                              // sendMessage();
+                            },
+                            icon: Icon(
+                              Icons.settings,
+                              color: Color.fromARGB(255, 124, 124, 124),
+                            ),
                           ),
                         ),
                       ),
@@ -136,19 +140,24 @@ class _LeftSidebarState extends State<LeftSidebar> {
           if(menuData.showType == showType){
             menuWidgetList.add(
                 Container(
-                  child: IconButton(
-                    onPressed: () {
-                      // if(null!=menuData.onPressed){
-                      //   menuData.onPressed!();
-                      // }
-                      menuData.clickMenuWrap(routerProvider);
-                      print("-------------");
-                    },
-                    icon: Icon(
-                      menuData.menuIcon,
+                  child: Tooltip(
+                    message: tr(menuData.menuKey+'_menu'),
+                    child: IconButton(
+                      onPressed: () {
+                        // if(null!=menuData.onPressed){
+                        //   menuData.onPressed!();
+                        // }
+                        menuData.clickMenuWrap(routerProvider);
+                        print("-------------");
+                      },
+                      icon: Icon(
+                        menuData.menuIcon,
+                        color: (routerProvider.selectedMenuKey == menuData.menuKey ? Color.fromARGB(255, 111, 175, 249) : Color.fromARGB(255, 100, 100, 100)),
+                      ),
                     ),
                   ),
                 )
+
             );
           }
         }
@@ -159,25 +168,35 @@ class _LeftSidebarState extends State<LeftSidebar> {
 
   Widget getThemeModeWidget(){
     AdaptiveThemeMode? mode = AdaptiveTheme.maybeOf(context)?.mode;
+    String modeName = "";
+    if((mode == AdaptiveThemeMode.light)){
+      modeName = tr('during_the_day');
+    }else if((mode == AdaptiveThemeMode.dark)){
+      modeName = tr('at_night');
+    }else if((mode == AdaptiveThemeMode.system)){
+      modeName = tr('with_the_system');
+    }
     return Container(
-      child: IconButton(
-        onPressed: () {
-          updateThemeMode();
-          // print("-------------");
-          // sendMessage();
-        },
-        icon: Icon(
-          (
-              null!=mode?
-              (
-                  (mode == AdaptiveThemeMode.light)?CupertinoIcons.sun_max:
-                  (mode == AdaptiveThemeMode.dark)?CupertinoIcons.moon_stars:
-                  (mode == AdaptiveThemeMode.system)?Icons.brightness_auto_outlined:
-                  CupertinoIcons.moon_stars
-              ):
-              CupertinoIcons.sun_max
+      child: Tooltip(
+        message: modeName,
+        child: IconButton(
+          onPressed: () {
+            updateThemeMode();
+
+          },
+          icon: Icon(
+            (
+                null!=mode?
+                (
+                    (mode == AdaptiveThemeMode.light)?CupertinoIcons.sun_max:
+                    (mode == AdaptiveThemeMode.dark)?CupertinoIcons.moon_stars:
+                    (mode == AdaptiveThemeMode.system)?Icons.brightness_auto_outlined:
+                    CupertinoIcons.moon_stars
+                ):
+                CupertinoIcons.sun_max
+            ),
+            color: const Color.fromARGB(255, 111, 175, 249),
           ),
-          color: Color.fromARGB(255, 111, 175, 249),
         ),
       ),
     );

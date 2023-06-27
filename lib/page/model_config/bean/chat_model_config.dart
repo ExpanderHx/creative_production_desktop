@@ -8,9 +8,9 @@ class ChatModelConfig{
 
   Id id = Isar.autoIncrement; // 你也可以用 id = null 来表示 id 是自增的
 
-  late String configName;
-  late String? modelName;
-  late String? tokenizerName;
+  String? configName;
+  String? modelName;
+  String? tokenizerName;
   String? loadDevice;
   String? token;
   int? maxToken;

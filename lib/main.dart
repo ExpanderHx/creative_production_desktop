@@ -5,7 +5,6 @@ import 'package:creative_production_desktop/util/db/isar_db_util.dart';
 import 'package:creative_production_desktop/util/preferences_util.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:provider/provider.dart';

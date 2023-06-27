@@ -89,7 +89,7 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                   minLines:1,
                   maxLines:_isExpanded ? 1 : 3,
                   decoration:  InputDecoration(
-                    hintText: "请输入问题",
+                    hintText: "please_enter_a_question".tr(),
                     // contentPadding和border的设置是为了让TextField内容实现上下居中
                     contentPadding: EdgeInsets.all(10),
                     suffixIcon: IconButton(
@@ -97,10 +97,13 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                         print("-------------");
                         sendMessage();
                       },
-                      icon: Icon(
+                      icon:Tooltip(
+                        message: 'send'.tr(),
+                        child: Icon(
                           Icons.send,
                           color: Color.fromARGB(255, 222, 222, 229),
-                      ),
+                        ),
+                      ) ,
                     ),
                     border: InputBorder.none
                     // border: const OutlineInputBorder(

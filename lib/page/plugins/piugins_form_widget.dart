@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:creative_production_desktop/util/theme_utils.dart';
+import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
@@ -68,7 +69,7 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
           // if(widget.onUpdatePluginsBeanDb!=null){
           //   widget.onUpdatePluginsBeanDb!(oldPluginsBean:oldPluginsBean,newPluginsBean:pluginsBean);
           // }
-          var cancel = BotToast.showText(text:"编辑成功");
+          var cancel = BotToast.showText(text:"edit_ok".tr());
           Map<String,dynamic?> map = {"oldPluginsBean":oldPluginsBean,"newPluginsBean":pluginsBean};
           Navigator.pop(context,map);
         }
@@ -110,7 +111,7 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
                       flex:1,
                       child: Container(
                         child: Center(
-                          child: Text("编辑插件"),
+                          child: Text("edit_plugin".tr()),
                         ),
                       ),
                     ),
@@ -126,7 +127,7 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
                 ),
               ),
               getInputRowWidget(
-                  "名称  :",
+                  "${tr('name_title')}  :",
                   value: pluginsBean.title,
                   onSaved: (newValue){
                     pluginsBean.title = newValue;
@@ -137,7 +138,7 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
                   },
               ),
               getInputRowWidget(
-                  "提示词  :",
+                  "${tr('prompt_word')}  :",
                   maxLines: 5,
                   value: pluginsBean.prompt,
                   onChanged: (newValue){
@@ -146,7 +147,7 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
                   },
                   validator: (value){
                     if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
+                      return 'please_enter_some_text'.tr();
                     }
                     return null;
                   }
@@ -161,7 +162,7 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
               ),
               getCupertinoSwitchWidget(
                   pluginsBean.isOpenShortcutKeys!,
-                  "开启快捷键",
+                  "${tr('enable_shortcut_keys')} ",
                   onChanged: (newValue){
                     setState(() {
                       pluginsBean.isOpenShortcutKeys = newValue;
@@ -190,14 +191,14 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
                       width: 80,
                       margin: const EdgeInsets.only(right: 15),
                       child: Text(
-                        "模型配置",
+                        "${tr('model_configuration')}",
                         // style: TextStyle(fontSize: 20),
                       ),
                     ),
                     Expanded(
                         child: Container(
                           padding: EdgeInsets.only(top: 8,bottom: 8,left: 10,right: 10),
-                          child: Text("开发中..."),
+                          child: Text("${tr('in_development')}..."),
                         )
                     ),
                   ],
@@ -215,7 +216,7 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
                     onPressed: (!isSavePluginsBean)? () {
                       savePluginsBean();
                     }:null,
-                    child: const Text('Submit'),
+                    child: Text('submit'.tr()),
                   ),
                 ),
               ),
@@ -298,7 +299,7 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
             width: 80,
             margin: EdgeInsets.only(right: 15),
             child: Text(
-              "类型  :",
+              "${'type'.tr()}  :",
               // style: TextStyle(fontSize: 20),
             ),
           ),
@@ -321,11 +322,11 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
                     items: [
                       DropdownMenuItem(
                           value: PluginsConfig.pluginsTypeTranslate,
-                          child: Text('翻译')
+                          child: Text('translate'.tr())
                       ),
                       DropdownMenuItem(
                           value: PluginsConfig.pluginsTypeCommon,
-                          child: Text('通用')
+                          child: Text('universal'.tr())
                       ),
                     ],
                     onChanged: (String? newValue) {
@@ -415,7 +416,7 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
     return Visibility(
       visible:isOpenShortcutKeys,
       child: Container(
-        margin:  EdgeInsets.only(bottom: 15,),
+        margin:  const EdgeInsets.only(bottom: 15,),
         child: Row(
           // crossAxisAlignment:CrossAxisAlignment.end,
           children: [
@@ -423,7 +424,7 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
               width: 80,
               margin: EdgeInsets.only(right: 15),
               child: Text(
-                "快捷键",
+                "hot_key".tr(),
                 // style: TextStyle(fontSize: 20),
               ),
             ),
@@ -460,14 +461,14 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
                                   }
                               );
                             },
-                            child: Text("点击设置快捷键",
+                            child: Text("click_to_set_the_shortcut_key".tr(),
                               style: TextStyle(color: ThemeUtils.getFontThemeColor(context)),
                             ),
                           ),
                         ),
                         Container(
                           margin: EdgeInsets.only(left: 20,),
-                          child: Text("当前快捷键 :  ${shortcutKeySrc}"),
+                          child: Text("${tr('current_shortcut_key')} :  ${shortcutKeySrc}"),
                         )
                       ],
                     ),

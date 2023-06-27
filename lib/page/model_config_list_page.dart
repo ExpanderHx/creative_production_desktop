@@ -20,53 +20,45 @@ import '../../util/theme_utils.dart';
 import '../provider/router_provider.dart';
 import '../shortcut_key/shortcut_key_util.dart';
 import '../util/db/isar_db_util.dart';
+import 'model_config/bean/chat_model_config.dart';
+import 'model_config/model_config_form_widget.dart';
 
 
 
 
 
-class PluginsListPage extends StatefulWidget {
+class ModelConfigListPagePage extends StatefulWidget {
   Map<String,dynamic?>? paramMap;
-  PluginsListPage({super.key,this.paramMap});
+  ModelConfigListPagePage({super.key,this.paramMap});
   @override
-  State<PluginsListPage> createState() => _PluginsListPageState();
+  State<ModelConfigListPagePage> createState() => _ModelConfigListPagePageState();
 }
 
-class _PluginsListPageState extends State<PluginsListPage> {
+class _ModelConfigListPagePageState extends State<ModelConfigListPagePage> {
 
-  List<PluginsBean> pluginsBeanList = [];
+
+  List<ChatModelConfig>? chatModelConfigList = [];
 
   @override
   void initState() {
-    getPluginsDataList();
+    geChatModelConfigList();
 
   }
 
-  void getPluginsDataList() async{
+  void geChatModelConfigList() async{
     IsarDBUtil().init().then((value) async{
       if(null!=IsarDBUtil().isar){
-        // var pluginsBeanCollection = IsarDBUtil().isar!.collection<PluginsBean>();
-        List<PluginsBean> pluginsBeans = await IsarDBUtil().isar!.pluginsBeans.where().findAll();
-        // var pluginsBeans = await IsarDBUtil().isar!.pluginsBeans.getAll([]);
-        // var pluginsBeans = await pluginsBeanCollection.getAll([]);
-        // var pluginsBeans = await pluginsBeanCollection.where().findAll();
-        print(pluginsBeans);
-        if(null!=pluginsBeans&&pluginsBeans.length>0){
-          if(mounted){
-            setState(() {
-              pluginsBeanList = pluginsBeans;
-            });
-          }else{
-            pluginsBeanList = pluginsBeans;
-          }
+        chatModelConfigList = await IsarDBUtil().isar!.chatModelConfigs.where().findAll();
+        if(mounted){
+          setState(() {
 
+          });
         }
-
       }
     });
   }
 
-  void editPluginsBean({PluginsBean? pluginsBean}) async{
+  void editChatModelConfig({ChatModelConfig? chatModelConfig}) async{
     Map<String,dynamic>? map = await showDialog(
         context: context,
         // barrierColor: Colors.red.withAlpha(30),
@@ -79,33 +71,23 @@ class _PluginsListPageState extends State<PluginsListPage> {
             insetAnimationCurve: Curves.decelerate, // 动画效果
             insetPadding: EdgeInsets.all(50), // 弹框距离屏幕边缘距离
             clipBehavior: Clip.none, // 剪切方式
-            child: PiuginsFormWidget(onUpdatePluginsBeanDb:onUpdatePluginsBeanDb,pluginsBean: pluginsBean,),
+            child: ModelConfigFormWidget(chatModelConfig: chatModelConfig,),
           );
         }
     );
     print(map);
     map = map ?? {};
-    onUpdatePluginsBeanDb(oldPluginsBean: map["oldPluginsBean"],newPluginsBean: map["newPluginsBean"]);
+    onUpdateModelConfigBeanDb();
   }
 
-  void onUpdatePluginsBeanDb({PluginsBean? oldPluginsBean,PluginsBean? newPluginsBean}) async{
-    if(null!=oldPluginsBean){
-      await ShortcutKeyUtil.unregisterByPluginsBean(oldPluginsBean);
-    }
-    if(null!=newPluginsBean){
-      ShortcutKeyUtil.registerByPluginsBean(newPluginsBean, context.read<RouterProvider>());
-    }
-    getPluginsDataList();
-    // Timer(const Duration(milliseconds: 100), () {
-    //
-    // });
-
+  void onUpdateModelConfigBeanDb() async{
+    geChatModelConfigList();
   }
 
-  deletePluginsBeanById(int id) async{
+  deleteonUpdateModelConfigBeanDbById(int id) async{
     if(id!=null){
       await IsarDBUtil().isar!.writeTxn(() async {
-        await IsarDBUtil().isar!.pluginsBeans.delete(id);
+        await IsarDBUtil().isar!.chatModelConfigs.delete(id);
       });
     }
   }
@@ -113,7 +95,7 @@ class _PluginsListPageState extends State<PluginsListPage> {
 
   @override
   void didChangeDependencies(){
-    getPluginsDataList();
+    geChatModelConfigList();
   }
 
 
@@ -121,7 +103,7 @@ class _PluginsListPageState extends State<PluginsListPage> {
 
 
   @override
-  void didUpdateWidget(PluginsListPage oldWidget) {
+  void didUpdateWidget(ModelConfigListPagePage oldWidget) {
     if (widget.paramMap != oldWidget.paramMap) {
       // 参数发生变化
       // 执行你的逻辑操作
@@ -171,7 +153,7 @@ class _PluginsListPageState extends State<PluginsListPage> {
                     child: IconButton(
                       onPressed: () {
                         print("-------------");
-                        editPluginsBean();
+                        editChatModelConfig();
                       },
                       icon: const Icon(
                         Icons.add,
@@ -191,14 +173,14 @@ class _PluginsListPageState extends State<PluginsListPage> {
 
   List<Widget> getPluginsWidgetList(){
     List<Widget> pluginsWidget = [];
-    if(null!=pluginsBeanList&&pluginsBeanList.length>0){
-      for(var i=0;i<pluginsBeanList.length;i++){
-        PluginsBean pluginsBean = pluginsBeanList[i];
-        if(null!=pluginsBean){
+    if(null!=chatModelConfigList&&chatModelConfigList!.length>0){
+      for(var i=0;i<chatModelConfigList!.length;i++){
+        ChatModelConfig chatModelConfig = chatModelConfigList![i];
+        if(null!=chatModelConfig){
           pluginsWidget.add(
               Container(
-                height: 160,
-                width: 200,
+                height: 260,
+                width: 260,
                 margin:  EdgeInsets.only(left: 20,right: 20,top: 5,bottom: 5),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -235,7 +217,7 @@ class _PluginsListPageState extends State<PluginsListPage> {
                         children: [
                           Expanded(
                             child: Text(
-                                pluginsBean.title??"",
+                              chatModelConfig.configName??"",
                                 style: TextStyle(
                                   color: ThemeUtils.getFontThemeColor(context,lightColor: Color(0Xff343a40),blackColor: Color(0Xfff1f3f5)),
                                   fontWeight: FontWeight.w600,
@@ -244,19 +226,10 @@ class _PluginsListPageState extends State<PluginsListPage> {
                             ),
                           ),
                           Container(
-                            child: Text((pluginsBean.type!=null&&pluginsBean.type==PluginsConfig.pluginsTypeTranslate?"翻译":"通用"),
-                              style: TextStyle(
-                                  color: ThemeUtils.getFontThemeColor(context,lightColor: Color(0Xff343a40),blackColor: Color(0Xfff1f3f5)),
-                                  // fontWeight: FontWeight.w500,
-                                  fontSize: 12
-                              ),
-                            ),
-                          ),
-                          Container(
                             margin: const EdgeInsets.only(left: 5),
                             child: GestureDetector(
                               onTap: (){
-                                editPluginsBean(pluginsBean:pluginsBean);
+                                editChatModelConfig(chatModelConfig:chatModelConfig);
                               },
                               child: Tooltip(
                                 message: "edit".tr(),
@@ -273,7 +246,7 @@ class _PluginsListPageState extends State<PluginsListPage> {
                             child: InkWell(
                               onTap: (){
                                 // 删除需要二次确认
-                                pluginsBeanDeleteDialog(pluginsBean);
+                                chatModelConfigDeleteDialog(chatModelConfig);
                               },
                               child: Tooltip(
                                 message: "delete".tr(),
@@ -293,13 +266,16 @@ class _PluginsListPageState extends State<PluginsListPage> {
                         padding:  EdgeInsets.only(left: 5,right: 5,top: 5,bottom: 5),
                         width: double.infinity,
                         height: double.infinity,
-                        child: Text(
-                          (pluginsBean.prompt??"---"),
-                          style: TextStyle(
-                              color: ThemeUtils.getFontThemeColor(context,lightColor: Color(0Xff343a40),blackColor: Color(0Xfff1f3f5)),
-                              // fontWeight: FontWeight.w700,
-                              fontSize: 12
-                          ),
+                        child: Column(
+                          children: [
+                            getItemRowWidget('model_name'.tr(),chatModelConfig.modelName),
+                            getItemRowWidget('tokenizer'.tr(),chatModelConfig.tokenizerName),
+                            getItemRowWidget('global'.tr(),(null!=chatModelConfig.isGlobal?chatModelConfig.isGlobal!.toString():'')),
+                            getItemRowWidget('local'.tr(),(null!=chatModelConfig.isLocal?chatModelConfig.isLocal!.toString():'')),
+                            getItemRowWidget('max_token'.tr(),(null!=chatModelConfig.maxToken?chatModelConfig.maxToken!.toString():'')),
+                            getItemRowWidget('temperature'.tr(),(null!=chatModelConfig.temperature?chatModelConfig.temperature!.toString():'')),
+                            getItemRowWidget('base_url'.tr(),(null!=chatModelConfig.baseUrl?chatModelConfig.baseUrl!.toString():'')),
+                          ],
                         ),
                       ),
                     )
@@ -313,8 +289,35 @@ class _PluginsListPageState extends State<PluginsListPage> {
     return pluginsWidget;
   }
 
+  Widget getItemRowWidget(String? title,String? value ){
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 5),
+      child: Row(
+        children: [
+          Container(
+            child: Text('${title} :'),
+          ),
+          // Expanded(
+          //   flex:1,
+          //   child: Container(),
+          // ),
+          Expanded(
+            flex: 2,
+            child: Container(
+              child: Text(
+                  '${value}',
+                textAlign: TextAlign.right,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
 
-  Future<void> pluginsBeanDeleteDialog(PluginsBean pluginsBean) async {
+
+  Future<void> chatModelConfigDeleteDialog(ChatModelConfig chatModelConfig) async {
     return showDialog<Null>(
         context: context,
         barrierDismissible: true,
@@ -332,10 +335,10 @@ class _PluginsListPageState extends State<PluginsListPage> {
                       ElevatedButton(
                         child:  Text('ok'.tr()),
                         onPressed: () async{
-                          if(null!=pluginsBean){
-                           await deletePluginsBeanById(pluginsBean.id);
+                          if(null!=chatModelConfig){
+                           await deleteonUpdateModelConfigBeanDbById(chatModelConfig.id);
                           }
-                          onUpdatePluginsBeanDb(oldPluginsBean:pluginsBean );
+                          onUpdateModelConfigBeanDb();
                           var cancel = BotToast.showText(text:"delete_ok".tr());
                           Navigator.of(context).pop();
                         },

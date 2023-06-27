@@ -17,9 +17,11 @@ class RouterProvider with ChangeNotifier, DiagnosticableTreeMixin{
   String selectedMenuKey = MenuConfig.chat_menu;
   Function _selectedPage = MenuConfig.pageFunctionWarp(MenuConfig.chat_menu, (menuValueKey,{Map<String,dynamic?>? map})=>ChatPage(key: menuValueKey,paramMap: map,));
 
+  int isShowLeftSidebar = 1;
+
   int isShowRightSidebar = 1;
 
-  int isShowLeftSidebar = 1;
+  int isUpdateShowRightSidebar = -1;
 
   var preferencesUtil = PreferencesUtil();
 
@@ -44,6 +46,16 @@ class RouterProvider with ChangeNotifier, DiagnosticableTreeMixin{
   clickMenu(MenuData menuData,{Map<String,dynamic>? map}){
     if(null!=menuData){
       selectedMenuKey = menuData.menuKey;
+      if(selectedMenuKey==MenuConfig.plugins_menu){
+        isShowRightSidebar = 0;
+      }
+      if(selectedMenuKey==MenuConfig.chat_menu){
+        if(isUpdateShowRightSidebar==-1||isUpdateShowRightSidebar==1){
+          isShowRightSidebar = 1;
+        }
+      }
+
+
       Map<String,dynamic>? paramMap = map;
       var pageFunctionWarp = menuData.pageFunctionWarp();
       if(null!=pageFunctionWarp){
@@ -79,6 +91,7 @@ class RouterProvider with ChangeNotifier, DiagnosticableTreeMixin{
 
   void updateIsShowRightSidebar(int isShowRightSidebarNew){
     isShowRightSidebar = isShowRightSidebarNew;
+    isUpdateShowRightSidebar = isShowRightSidebarNew;
     preferencesUtil.setInt(SharedPreferencesConst.isShowRightSidebarKey, isShowRightSidebar);
     notifyListeners();
   }

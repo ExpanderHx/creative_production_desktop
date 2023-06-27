@@ -1,135 +1,147 @@
+// Create a Form widget.
+import 'dart:convert';
+
 import 'package:bot_toast/bot_toast.dart';
-import 'package:creative_production_desktop/page/model_config/bean/chat_model_config.dart';
-import 'package:creative_production_desktop/page/chat/from_ai_row_widget.dart';
-import 'package:creative_production_desktop/page/chat/to_ai_row_widget.dart';
 import 'package:creative_production_desktop/util/theme_utils.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:isar/isar.dart';
 
-import 'package:markdown_widget/widget/markdown.dart';
 
-import '../../network/chat/chat_api_handle.dart';
-import '../../network/chat/chat_gpt_sdk/src/utils/constants.dart';
 import '../../network/chat/config/chat_config.dart';
+
 import '../../util/db/isar_db_util.dart';
-import '../../util/model_config/model_config_util.dart';
-import '../plugins/config/plugins_config.dart';
-import '../chat/bean/chat_message.dart';
+import 'bean/chat_model_config.dart';
 
 
+class ModelConfigFormWidget extends StatefulWidget {
+  ChatModelConfig? chatModelConfig;
+  Function? onUpdatePluginsBeanDb;
+  ModelConfigFormWidget({super.key,this.chatModelConfig,this.onUpdatePluginsBeanDb});
 
-class ModelConfigPage extends StatefulWidget {
-  String? activeType;
-  ModelConfigPage({super.key,this.activeType});
   @override
-  State<ModelConfigPage> createState() => _ModelConfigPageState();
+  State<ModelConfigFormWidget> createState() => _ModelConfigFormWidgetState();
+
 }
 
+// Create a corresponding State class.
+// This class holds data related to the form.
+class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
+
+  bool isOpenShortcutKeys = true;
+
+  bool isSavePluginsBean = false;
 
 
-class _ModelConfigPageState extends State<ModelConfigPage> {
+  late ChatModelConfig? chatModelConfig;
 
-
-  ChatModelConfig? activeChatModelConfig;
-
-  List<ChatModelConfig>? chatModelConfigList = [];
-
-  final _formKey = GlobalKey<FormState>();
+  ChatModelConfig? oldChatModelConfig;
 
   @override
   void initState() {
-    getGlobalChatModelConfig();
+    if(widget.chatModelConfig!=null){
+      chatModelConfig = widget.chatModelConfig!;
+      oldChatModelConfig = widget.chatModelConfig!;
+    }else{
+      setState((){
+        chatModelConfig = ChatModelConfig();
+        // chatModelConfig!.configName = "";
+      });
+
+    }
+    isSavePluginsBean = false;
+    super.initState();
   }
 
-  void getGlobalChatModelConfig() async{
-    chatModelConfigList = await ModelConfigUtil.getChatModelConfigList();
-    activeChatModelConfig = await ModelConfigUtil.getGlobalChatModelConfig(chatModelConfigList);
-    setState(() {
+  void saveChatModelConfig() async{
+    // Validate returns true if the form is valid, or false otherwise.
+    if (_formKey.currentState!.validate()) {
+      if(null!=chatModelConfig){
+        // If the form is valid, display a snackbar. In the real world,
+        // you'd often call a server or save the information in a database.
+        if(null!=IsarDBUtil().isar){
+          isSavePluginsBean = true;
+          await IsarDBUtil().isar!.writeTxn(() async {
+            await IsarDBUtil().isar!.collection<ChatModelConfig>().put(chatModelConfig!);
+          }).catchError((onError){
+            isSavePluginsBean = false;
+          });
+          if(isSavePluginsBean){
+            // if(widget.onUpdatePluginsBeanDb!=null){
+            //   widget.onUpdatePluginsBeanDb!(oldPluginsBean:oldPluginsBean,newPluginsBean:pluginsBean);
+            // }
+            var cancel = BotToast.showText(text:"edit_ok".tr());
 
-    });
-  }
+            Navigator.pop(context);
+          }
 
-  void reloadModel() async{
-    if(null!=activeChatModelConfig&&null!=widget.activeType){
-      if(null!=activeChatModelConfig!.isLocal&&activeChatModelConfig!.isLocal!){
-        activeChatModelConfig!.baseUrl = activeChatModelConfig!.baseUrl ?? ChatConfig.chatGeneralBaseUrl;
-      }else{
-        if(null==activeChatModelConfig!.token||activeChatModelConfig!.token!.length<=0){
-          var cancel = BotToast.showText(text:"please_enter_openai_token".tr());
-          return;
         }
-        activeChatModelConfig!.baseUrl = activeChatModelConfig!.baseUrl ?? ChatConfig.chatOpenAiBaseUrl;
       }
-      if(null==activeChatModelConfig!.maxToken||activeChatModelConfig!.maxToken!<=0){
-        activeChatModelConfig!.maxToken = 1000;
-      }
-
-
-      if(null!=activeChatModelConfig!.temperature){
-        if(activeChatModelConfig!.temperature!<=1&&activeChatModelConfig!.temperature!>0){
-
-        }else{
-          activeChatModelConfig!.temperature = 0.7;
-        }
-      }else{
-        activeChatModelConfig!.temperature = 0.7;
-      }
-
-      await ChatApiHandle().reloadActiveChatModel(activeChatModelConfig,activeType: widget.activeType);
-      BotToast.showText(text:"model_reloaded_successfully".tr());
 
     }
   }
 
-  void updateActiveChatModelConfig(String newValue) async{
-    if(null!=newValue){
-      int id = int.parse(newValue);
-      List<ChatModelConfig>? chatModelConfigSelectList = await IsarDBUtil().isar!.chatModelConfigs.where().idEqualTo(id).findAll();
-      if(null!=chatModelConfigSelectList&&chatModelConfigSelectList.length>0){
-        setState(() {
-          activeChatModelConfig = chatModelConfigSelectList[0];
-        });
-      }
-    }
-  }
-
-
-
+  // Create a global key that uniquely identifies the Form widget
+  // and allows validation of the form.
+  //
+  // Note: This is a GlobalKey<FormState>,
+  // not a GlobalKey<MyCustomFormState>.
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    // Build a Form widget using the _formKey created above.
 
-
-    if(null==activeChatModelConfig){
+    if(chatModelConfig==null){
       return Container();
     }
 
-
     List<Widget> widgetList = getFormItemList();
 
-
-
     return Container(
-      width: double.infinity,
+      color: Theme.of(context).dialogBackgroundColor,
       height: double.infinity,
-      padding: EdgeInsets.only(top: 20,bottom: 20),
+      width: double.infinity,
+      padding: EdgeInsets.only(top: 5,bottom: 5,left: 15,right: 15),
       child: Form(
         key: _formKey,
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Container(
+                height: 50,
+                margin: EdgeInsets.only(bottom: 15),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex:1,
+                      child: Container(
+                        child: Center(
+                          child: Text("edit_model".tr()),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: (){
+                          Navigator.pop(context);
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
               ...widgetList,
               Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: ElevatedButton(
                     onPressed: (){
-                      reloadModel();
+                      saveChatModelConfig();
                     },
                     child: Text('submit'.tr()),
                   ),
@@ -144,57 +156,70 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
 
   List<Widget> getFormItemList(){
     List<Widget> widgetList = [];
-    widgetList.add(getDropdownButtonWidget(
-        value: activeChatModelConfig?.id.toString(),
-        onChanged: (newValue){
-          updateActiveChatModelConfig(newValue);
-        }
-    ));
-    widgetList.add(getInputRowWidget("${tr('model_name')} : ",
-        key: ValueKey("modelName " + activeChatModelConfig!.id.toString()),
-        value: activeChatModelConfig!.modelName,
+
+    widgetList.add(getInputRowWidget("${tr('config_name')} : ",
+        key: ValueKey("configName " + chatModelConfig!.id.toString()),
+        value: chatModelConfig!.configName,
         onChanged: (newValue) {
-          activeChatModelConfig!.modelName = newValue;
+          chatModelConfig!.configName = newValue;
+        }
+    ));widgetList.add(getInputRowWidget("${tr('model_name')} : ",
+        key: ValueKey("modelName " + chatModelConfig!.id.toString()),
+        value: chatModelConfig!.modelName,
+        onChanged: (newValue) {
+          chatModelConfig!.modelName = newValue;
         }
     ));
-    if(activeChatModelConfig!.isLocal!=null&&activeChatModelConfig!.isLocal!){
+    widgetList.add(getDropdownButtonWidget(title: "${tr('global')} ",
+        value: chatModelConfig!.isGlobal,
+        onChanged: (newValue) {
+          chatModelConfig!.isGlobal = newValue;
+        }
+    ));
+    widgetList.add(getDropdownButtonWidget(title: "${tr('local')} ",
+        value: chatModelConfig!.isLocal,
+        onChanged: (newValue) {
+          chatModelConfig!.isLocal = newValue;
+        }
+    ));
+    if(chatModelConfig!.isLocal!=null&&chatModelConfig!.isLocal!){
       widgetList.add(getInputRowWidget("${tr('tokenizer')} : ",
-          key: ValueKey("tokenizer " + activeChatModelConfig!.id.toString()),
-          value: activeChatModelConfig!.tokenizerName,
+          key: ValueKey("tokenizer " + chatModelConfig!.id.toString()),
+          value: chatModelConfig!.tokenizerName,
           onChanged: (newValue) {
-            activeChatModelConfig!.tokenizerName = newValue;
+            chatModelConfig!.tokenizerName = newValue;
           }
       ));
       widgetList.add(getInputRowWidget("${tr('device')}:",
-          key: ValueKey("device " + activeChatModelConfig!.id.toString()),
-          value: activeChatModelConfig!.loadDevice,
+          key: ValueKey("device " + chatModelConfig!.id.toString()),
+          value: chatModelConfig!.loadDevice,
           onChanged: (newValue) {
-            activeChatModelConfig!.loadDevice = newValue;
+            chatModelConfig!.loadDevice = newValue;
           }
       ));
       widgetList.add(getInputRowWidget("${tr('base_url')}:",
-          key: ValueKey("baseUrl " + activeChatModelConfig!.id.toString()),
-          value: activeChatModelConfig!.baseUrl??ChatConfig.chatGeneralBaseUrl,
+          key: ValueKey("baseUrl " + chatModelConfig!.id.toString()),
+          value: chatModelConfig!.baseUrl??ChatConfig.chatGeneralBaseUrl,
           maxLines: 1,
           onChanged: (newValue) {
-            activeChatModelConfig!.token = newValue;
+            chatModelConfig!.token = newValue;
           }
       ));
     }else{
       widgetList.add(getInputRowWidget("${tr('token')}:",
-          key: ValueKey("token " + activeChatModelConfig!.id.toString()),
+          key: ValueKey("token " + chatModelConfig!.id.toString()),
           maxLines: 2,
-          value: activeChatModelConfig!.token,
+          value: chatModelConfig!.token,
           onChanged: (newValue) {
-            activeChatModelConfig!.token = newValue;
+            chatModelConfig!.token = newValue;
           }
       ));
       widgetList.add(getInputRowWidget("${tr('base_url')}:",
-          key: ValueKey("baseUrl " + activeChatModelConfig!.id.toString()),
-          value: activeChatModelConfig!.baseUrl??ChatConfig.chatOpenAiBaseUrl,
+          key: ValueKey("baseUrl " + chatModelConfig!.id.toString()),
+          value: chatModelConfig!.baseUrl??ChatConfig.chatOpenAiBaseUrl,
           maxLines: 1,
           onChanged: (newValue) {
-            activeChatModelConfig!.token = newValue;
+            chatModelConfig!.token = newValue;
           }
       ));
     }
@@ -202,9 +227,9 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
 
 
     widgetList.add(getInputRowWidget("${tr('max_token')}:",
-        key: ValueKey("maxToken " + activeChatModelConfig!.id.toString()),
-        value: (null != activeChatModelConfig!.maxToken
-            ? activeChatModelConfig!.maxToken.toString()
+        key: ValueKey("maxToken " + chatModelConfig!.id.toString()),
+        value: (null != chatModelConfig!.maxToken
+            ? chatModelConfig!.maxToken.toString()
             : ""),
         keyboardType:TextInputType.number,
         inputFormatters: [
@@ -212,14 +237,14 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
         ],
         onChanged: (newValue) {
           if(null!=newValue&&newValue.length>0){
-            activeChatModelConfig!.maxToken =  int.parse(newValue);
+            chatModelConfig!.maxToken =  int.parse(newValue);
           }
         }
     ));
     widgetList.add( getInputRowWidget("${tr('temperature')}:",
-        key: ValueKey("temperature " + activeChatModelConfig!.id.toString()),
-        value: (null != activeChatModelConfig!.temperature
-            ? activeChatModelConfig!.temperature.toString()
+        key: ValueKey("temperature " + chatModelConfig!.id.toString()),
+        value: (null != chatModelConfig!.temperature
+            ? chatModelConfig!.temperature.toString()
             : ""),
         keyboardType:const TextInputType.numberWithOptions(decimal: true),
         inputFormatters: [
@@ -227,10 +252,10 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
         ],
         onChanged: (newValue) {
           if(null!=newValue&&newValue.length>0){
-            activeChatModelConfig!.temperature =  double.parse(newValue);
+            chatModelConfig!.temperature =  double.parse(newValue);
           }
           // else{
-          //   activeChatModelConfig!.temperature = 0.6;
+          //   chatModelConfig!.temperature = 0.6;
           // }
         }
     ));
@@ -276,7 +301,7 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
                   keyboardType:keyboardType,
                   inputFormatters:inputFormatters,
                   style: const TextStyle(
-                    fontSize: 10
+                      fontSize: 10
                   ),
                   decoration: const InputDecoration(
                       isCollapsed:true,
@@ -308,23 +333,24 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
     );
   }
 
+  Widget getDropdownButtonWidget({String? title,bool? value,Function? onChanged}){
 
 
-  Widget getDropdownButtonWidget({String? value,Function? onChanged}){
-    if(null==chatModelConfigList||chatModelConfigList!.length<=0){
-      return Container();
-    }
+    List<DropdownMenuItem<bool>> dropdownMenuItemList = [];
 
-    List<DropdownMenuItem<String>> dropdownMenuItemList = [];
-    for(var i=0;i<chatModelConfigList!.length;i++){
-      ChatModelConfig chatModelConfig = chatModelConfigList![i];
-      dropdownMenuItemList.add(
-          DropdownMenuItem(
-              value: chatModelConfig.id.toString(),
-              child: Text(chatModelConfig.configName!)
-          )
-      );
-    }
+    dropdownMenuItemList.add(
+        DropdownMenuItem(
+            value: true,
+            child: Text("yes".tr())
+        )
+    );
+
+    dropdownMenuItemList.add(
+        DropdownMenuItem(
+            value: false,
+            child: Text("no".tr())
+        )
+    );
 
     return  Container(
       margin:  EdgeInsets.only(bottom: 15,),
@@ -335,7 +361,7 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
             width: 60,
             margin: EdgeInsets.only(right: 15),
             child: Text(
-              "${tr('configuration')}  :",
+              "${title}  :",
               // style: TextStyle(fontSize: 20),
             ),
           ),
@@ -352,8 +378,6 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton2(
-
-                    // menuMaxHeight:40,
                     buttonStyleData: const ButtonStyleData(
                       height: 30,
                       padding: EdgeInsets.only(top: 0,bottom: 0,left: 3,right: 3),
@@ -373,7 +397,7 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
                     items: [
                       ...dropdownMenuItemList
                     ],
-                    onChanged: (String? newValue) {
+                    onChanged: (bool? newValue) {
                       if(null!=onChanged){
                         onChanged(newValue);
                       }
@@ -387,5 +411,9 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
       ),
     );
   }
+
+
+ 
+
 
 }

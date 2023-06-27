@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../../provider/router_provider.dart';
-import '../app_window_caption/app_window_caption.dart';
+import 'app_window_caption.dart';
 
 
 class AppPreferredSizeChild extends StatefulWidget {
