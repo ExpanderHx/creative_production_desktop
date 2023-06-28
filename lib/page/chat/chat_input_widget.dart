@@ -3,12 +3,14 @@ import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../util/theme_utils.dart';
 
 class ChatInputWidget extends StatefulWidget {
   Function? onSendMessage;
-  ChatInputWidget({super.key,this.onSendMessage});
+  bool? isLoading;
+  ChatInputWidget({super.key,this.onSendMessage,this.isLoading});
   @override
   State<ChatInputWidget> createState() => _ChatInputWidgetState();
 }
@@ -97,13 +99,7 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                         print("-------------");
                         sendMessage();
                       },
-                      icon:Tooltip(
-                        message: 'send'.tr(),
-                        child: Icon(
-                          Icons.send,
-                          color: Color.fromARGB(255, 222, 222, 229),
-                        ),
-                      ) ,
+                      icon: getSendIconWidget() ,
                     ),
                     border: InputBorder.none
                     // border: const OutlineInputBorder(
@@ -161,6 +157,35 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
         ],
       ),
     );
+  }
+
+  Widget getSendIconWidget(){
+    bool isLoading = widget.isLoading ?? false;
+    Widget sendIconWidget = Container();
+    if(!isLoading){
+      sendIconWidget = Tooltip(
+        message: 'send'.tr(),
+        child: const Icon(
+          Icons.send,
+          color: Color.fromARGB(255, 222, 222, 229),
+        ),
+      );
+    }else{
+      sendIconWidget = Tooltip(
+        message: 'sending'.tr(),
+        child: SizedBox(
+          width: 20,
+          height: 20,
+          child: LoadingAnimationWidget.hexagonDots(
+            color: const Color.fromARGB(255, 120, 120, 120),
+            size: 20,
+          ),
+        ),
+      );
+    }
+
+    return sendIconWidget;
+
   }
 
 

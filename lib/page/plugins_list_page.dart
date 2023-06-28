@@ -234,7 +234,7 @@ class _PluginsListPageState extends State<PluginsListPage> {
                       child: Row(
                         children: [
                           Expanded(
-                            child: Text(
+                            child: SelectableText(
                                 pluginsBean.title??"",
                                 style: TextStyle(
                                   color: ThemeUtils.getFontThemeColor(context,lightColor: Color(0Xff343a40),blackColor: Color(0Xfff1f3f5)),
@@ -244,7 +244,7 @@ class _PluginsListPageState extends State<PluginsListPage> {
                             ),
                           ),
                           Container(
-                            child: Text((pluginsBean.type!=null&&pluginsBean.type==PluginsConfig.pluginsTypeTranslate?"翻译":"通用"),
+                            child: Text((pluginsBean.type!=null&&pluginsBean.type==PluginsConfig.pluginsTypeTranslate?"translate".tr():"universal".tr()),
                               style: TextStyle(
                                   color: ThemeUtils.getFontThemeColor(context,lightColor: Color(0Xff343a40),blackColor: Color(0Xfff1f3f5)),
                                   // fontWeight: FontWeight.w500,
@@ -293,7 +293,7 @@ class _PluginsListPageState extends State<PluginsListPage> {
                         padding:  EdgeInsets.only(left: 5,right: 5,top: 5,bottom: 5),
                         width: double.infinity,
                         height: double.infinity,
-                        child: Text(
+                        child: SelectableText(
                           (pluginsBean.prompt??"---"),
                           style: TextStyle(
                               color: ThemeUtils.getFontThemeColor(context,lightColor: Color(0Xff343a40),blackColor: Color(0Xfff1f3f5)),

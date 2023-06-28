@@ -1,3 +1,6 @@
+import 'package:bot_toast/bot_toast.dart';
+import 'package:clipboard/clipboard.dart';
+import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -71,10 +74,19 @@ class _ToAiRowWidgetState extends State<ToAiRowWidget> {
             child: Row(
               children: [
                 Container(
-                  child: const Icon(
+                  child: IconButton(
+                    onPressed: () {
+                      if(null!=widget.message){
+                        FlutterClipboard.copy(widget.message!).then(( value ) {
+                          BotToast.showText(text:"the_copy_succeeded".tr());
+                        });
+                      }
+                    },
+                    icon: const Icon(
                       Icons.copy,
                       color: Color.fromARGB(255, 120, 121, 131),
                       size: 16,
+                    ),
                   ),
                 )
               ],
@@ -86,90 +98,97 @@ class _ToAiRowWidgetState extends State<ToAiRowWidget> {
   }
 }
 
-String a = '''
+// const Icon(
+// Icons.copy,
+// color: Color.fromARGB(255, 120, 121, 131),
+// size: 16,
+// )
+//
+//
+// String a = '''
+//
+// # I'm h1
+// ## I'm h2
+// ### I'm h3
+// #### I'm h4
+// ###### I'm h5
+// ###### I'm h6
+//
+// ```
+// class MarkdownHelper {
+//
+//
+//   Map<String, Widget> getTitleWidget(m.Node node) => title.getTitleWidget(node);
+//
+//   Widget getPWidget(m.Element node) => p.getPWidget(node);
+//
+//   Widget getPreWidget(m.Node node) => pre.getPreWidget(node);
+//
+// }
+// ```
 
-# I'm h1
-## I'm h2
-### I'm h3
-#### I'm h4
-###### I'm h5
-###### I'm h6
-
-```
-class MarkdownHelper {
-
-
-  Map<String, Widget> getTitleWidget(m.Node node) => title.getTitleWidget(node);
-
-  Widget getPWidget(m.Element node) => p.getPWidget(node);
-
-  Widget getPreWidget(m.Node node) => pre.getPreWidget(node);
-
-}
-```
-
-
-*italic text*
-
-**strong text**
-
-`I'm code`
-
-~~del~~
-
-***~~italic strong and del~~***
-
-> Test for blockquote and **strong**
-
-
-- ul list
-- one
-    - aa *a* a
-    - bbbb
-        - CCCC
-
-1. ol list
-2. aaaa
-3. bbbb
-    1. AAAA
-    2. BBBB
-    3. CCCC
-
-
-[I'm link](https://github.com/asjqkkkk/flutter-todos)
-
-
-- [ ] I'm *CheckBox*
-
-- [x] I'm *CheckBox* too
-
-Test for divider(hr):
-
----
-
-Test for Table:
-
-header 1 | header 2
----|---
-row 1 col 1 | row 1 col 2
-row 2 col 1 | row 2 col 2
-
-Image:
-
-![support](assets/script_medias/1675527935336.png)
-
-Image with link:
-
-[![pub package](assets/script_medias/1675527938945.png)](https://pub.dartlang.org/packages/markdown_widget)
-
-Html Image:
-
-<img width="250" height="250" src="assets/script_medias/1675527939855.png"/>
-
-Video:
-
-<video src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">
-
-
-
-''';
+//
+// *italic text*
+//
+// **strong text**
+//
+// `I'm code`
+//
+// ~~del~~
+//
+// ***~~italic strong and del~~***
+//
+// > Test for blockquote and **strong**
+//
+//
+// - ul list
+// - one
+//     - aa *a* a
+//     - bbbb
+//         - CCCC
+//
+// 1. ol list
+// 2. aaaa
+// 3. bbbb
+//     1. AAAA
+//     2. BBBB
+//     3. CCCC
+//
+//
+// [I'm link](https://github.com/asjqkkkk/flutter-todos)
+//
+//
+// - [ ] I'm *CheckBox*
+//
+// - [x] I'm *CheckBox* too
+//
+// Test for divider(hr):
+//
+// ---
+//
+// Test for Table:
+//
+// header 1 | header 2
+// ---|---
+// row 1 col 1 | row 1 col 2
+// row 2 col 1 | row 2 col 2
+//
+// Image:
+//
+// ![support](assets/script_medias/1675527935336.png)
+//
+// Image with link:
+//
+// [![pub package](assets/script_medias/1675527938945.png)](https://pub.dartlang.org/packages/markdown_widget)
+//
+// Html Image:
+//
+// <img width="250" height="250" src="assets/script_medias/1675527939855.png"/>
+//
+// Video:
+//
+// <video src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">
+//
+//
+//
+// ''';

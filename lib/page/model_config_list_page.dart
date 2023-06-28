@@ -216,7 +216,7 @@ class _ModelConfigListPagePageState extends State<ModelConfigListPagePage> {
                       child: Row(
                         children: [
                           Expanded(
-                            child: Text(
+                            child: SelectableText(
                               chatModelConfig.configName??"",
                                 style: TextStyle(
                                   color: ThemeUtils.getFontThemeColor(context,lightColor: Color(0Xff343a40),blackColor: Color(0Xfff1f3f5)),
@@ -296,7 +296,7 @@ class _ModelConfigListPagePageState extends State<ModelConfigListPagePage> {
       child: Row(
         children: [
           Container(
-            child: Text('${title} :'),
+            child: SelectableText('${title} :'),
           ),
           // Expanded(
           //   flex:1,
@@ -305,7 +305,7 @@ class _ModelConfigListPagePageState extends State<ModelConfigListPagePage> {
           Expanded(
             flex: 2,
             child: Container(
-              child: Text(
+              child: SelectableText(
                   '${value}',
                 textAlign: TextAlign.right,
               ),

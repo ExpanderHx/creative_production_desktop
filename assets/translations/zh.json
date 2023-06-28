@@ -33,6 +33,7 @@
   "with_the_system": "随系统",
   "set_up": "设置",
   "send": "发送",
+  "sending": "发送中",
   "please_enter_a_question": "请输入问题",
   "please_enter_openai_token": "请输入openai token",
   "model_reloaded_successfully": "模型重新加载成功",
@@ -51,6 +52,10 @@
   "yes": "是",
   "no": "否",
   "config_name": "配置名称",
+  "the_copy_succeeded": "复制成功",
+  "in_translation": "翻译中",
+  "network_request_exception": "网络请求异常",
+  "translation_anomaly": "翻译异常，请重试或者检查配置",
   "language": {
     "af": "布尔语(南非荷兰语)",
     "am": "阿姆哈拉语",

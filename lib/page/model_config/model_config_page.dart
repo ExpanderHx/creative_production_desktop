@@ -104,6 +104,8 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
   @override
   Widget build(BuildContext context) {
 
+    // ElevatedButton
+
 
     if(null==activeChatModelConfig){
       return Container();
@@ -127,7 +129,7 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
               Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: ElevatedButton(
+                  child: FilledButton(
                     onPressed: (){
                       reloadModel();
                     },

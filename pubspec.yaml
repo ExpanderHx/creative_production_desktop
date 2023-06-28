@@ -132,6 +132,19 @@ dependencies:
   # 一个为Flutter提供水平或垂直多重拆分视图的小部件
   multi_split_view: ^2.4.0
 
+  # 加载中动画
+  loading_animation_widget: ^1.2.0+4
+
+  # 剪切板
+  clipboard: ^0.1.3
+
+  # 表单生成器
+  flutter_form_builder: ^9.0.0
+
+  # 全面的剪切板 需要安装 Rust 对于 macOS 或 Linux，请在终端中执行以下命令 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+#  super_clipboard: ^0.4.0
+
+
   # acrylic_any是一个可以将任何小部件转换为模糊对象的包
 #  acrylic_any: ^0.0.1
 

@@ -1,5 +1,7 @@
 
 
+import 'package:bot_toast/bot_toast.dart';
+import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:dio/dio.dart';
 
 import '../../config/response_wrap.dart';
@@ -108,6 +110,7 @@ class ChatHttp {
         Map<String, dynamic>? params,
         Options? options,
         CancelToken? cancelToken,
+        bool showErrorToast = true
       }) async {
     Options requestOptions = options ?? Options();
     requestOptions.method = method;
@@ -129,12 +132,25 @@ class ChatHttp {
       );
       statusCode = originalResponse.statusCode;
       responseData = originalResponse.data;
-    }on DioException catch( error){
-      if(error is DioException){
-        statusCode = error.response?.statusCode;
+    }on DioException catch(error){
+      if(null!=error){
+        if(showErrorToast){
+          BotToast.showText(text:error.message??"network_request_exception".tr());
+        }
+        if(error is DioException){
+          statusCode = error.response?.statusCode;
+        }
+      }else{
+        statusCode = 500;
       }
     }catch(e){
       print(e);
+      if(null!=e){
+        if(showErrorToast){
+          BotToast.showText(text:e.toString()??"network_request_exception".tr());
+        }
+      }
+      statusCode = 500;
     }
     ResponseWrap responseWrap = ResponseWrap(statusCode:(statusCode!=null?statusCode:500),data: responseData,originalResponse:originalResponse);
 
@@ -150,6 +166,7 @@ class ChatHttp {
         bool noCache = !false,
         String? cacheKey,
         bool cacheDisk = false,
+        bool showErrorToast = true
       }) async {
     Options requestOptions = options ?? Options();
     requestOptions = requestOptions.copyWith(
@@ -163,6 +180,7 @@ class ChatHttp {
     return request(path, "GET",
         options:requestOptions,
         cancelToken:cancelToken,
+        showErrorToast: showErrorToast,
     );
   }
 
@@ -172,12 +190,14 @@ class ChatHttp {
         data,
         Options? options,
         CancelToken? cancelToken,
+        bool showErrorToast = true
       }) async {
     return request(path, "POST",
       data:data,
       params:params,
       options:options,
       cancelToken:cancelToken,
+      showErrorToast: showErrorToast,
     );
   }
 
@@ -187,12 +207,14 @@ class ChatHttp {
         Map<String, dynamic>? params,
         Options? options,
         CancelToken? cancelToken,
+        bool showErrorToast = true,
       }) async {
     return request(path, "PUT",
       data:data,
       params:params,
       options:options,
       cancelToken:cancelToken,
+      showErrorToast: showErrorToast,
     );
   }
 
@@ -202,6 +224,7 @@ class ChatHttp {
         Map<String, dynamic>? params,
         Options? options,
         CancelToken? cancelToken,
+        bool showErrorToast = true,
       }) async {
     Options requestOptions = options ?? Options();
     Map<String, dynamic>? _authorization = getAuthorizationHeader();
@@ -224,12 +247,14 @@ class ChatHttp {
         Map<String, dynamic>? params,
         Options? options,
         CancelToken? cancelToken,
+        bool showErrorToast = true,
       }) async {
     return request(path, "DELETE",
       data:data,
       params:params,
       options:options,
       cancelToken:cancelToken,
+      showErrorToast: showErrorToast,
     );
   }
 }

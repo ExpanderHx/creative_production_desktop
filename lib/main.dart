@@ -128,8 +128,8 @@ class MyApp extends StatelessWidget {
 
     // fontFamily
     return AdaptiveTheme(
-      light: FlexThemeData.light(fontFamily: "Ping Fang",useMaterial3: true,scheme:FlexScheme.material),
-      dark: FlexThemeData.dark(fontFamily: "Ping Fang",useMaterial3: true,scheme:FlexScheme.material),
+      light: FlexThemeData.light(fontFamily: "Ping Fang",useMaterial3: true,scheme:FlexScheme.flutterDash),
+      dark: FlexThemeData.dark(fontFamily: "Ping Fang",useMaterial3: true,scheme:FlexScheme.flutterDash),
       initial: savedThemeMode ?? AdaptiveThemeMode.system,
       debugShowFloatingThemeButton:false,
       builder: (theme, darkTheme){

@@ -33,6 +33,8 @@ class _ChatPageState extends State<ChatPage> {
 
   String activeType = MenuConfig.chat_menu;
 
+  bool isLoading = false;
+
   @override
   void initState() {
     // chatApi = ChatApiGeneral();
@@ -62,6 +64,7 @@ class _ChatPageState extends State<ChatPage> {
   void onSendMessage(String message){
     print("message:"+message);
     if(null!=message&&message.trim().length>0){
+      isLoading = true;
       setState(() {
         ChatMessage messageData = ChatMessage(message,true);
         messageList.add(messageData);
@@ -93,6 +96,7 @@ class _ChatPageState extends State<ChatPage> {
             }
             print(response);
           }
+          isLoading = false;
         });
       }
     }
@@ -122,7 +126,8 @@ class _ChatPageState extends State<ChatPage> {
             child: Container(
               // margin: EdgeInsets.only(top: 15.h),
               child: ChatInputWidget(
-                  onSendMessage:onSendMessage
+                  onSendMessage:onSendMessage,
+                  isLoading:isLoading
               ),
             ),
           )

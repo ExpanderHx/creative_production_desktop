@@ -1,4 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:bot_toast/bot_toast.dart';
+import 'package:clipboard/clipboard.dart';
+import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:markdown_widget/widget/markdown.dart';
@@ -69,10 +72,19 @@ class _FromAiRowWidgetState extends State<FromAiRowWidget> {
             child: Row(
               children: [
                 Container(
-                  child: Icon(
+                  child: IconButton(
+                    onPressed: () {
+                      if(null!=widget.message){
+                        FlutterClipboard.copy(widget.message!).then(( value ) {
+                          BotToast.showText(text:"the_copy_succeeded".tr());
+                        });
+                      }
+                    },
+                    icon: const Icon(
                       Icons.copy,
                       color: Color.fromARGB(255, 120, 121, 131),
                       size: 16,
+                    ),
                   ),
                 )
               ],

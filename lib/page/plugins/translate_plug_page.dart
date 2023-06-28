@@ -4,9 +4,12 @@ import 'dart:async';
 
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../config/const_app.dart';
+import '../../config/menu_config.dart';
 import '../../network/chat/chat_api.dart';
+import '../../network/chat/chat_api_handle.dart';
 import '../../network/chat/chat_gpt_open_ai.dart';
 import '../../util/theme_utils.dart';
 import '../chat/bean/chat_message.dart';
@@ -33,20 +36,26 @@ class _TranslatePlugPageState extends State<TranslatePlugPage> {
 
   List<ChatMessage> messageList = [];
 
-  ScrollController? dialogBoxWidgetScrollController;
+
+
+  String activeType = MenuConfig.plugins_translate_menu;
+
+  bool isLoading = false;
 
   @override
   void initState() {
     // chatApi = ChatApiGeneral();
-    chatApi = ChatApiOpenAi();
+    chatApi = ChatApiHandle();
     inputTextEditingController.text = "请将以下内容翻译为中文 : ";
     if(widget.paramMap!=null){
       Map<String,dynamic?> paramMap = widget.paramMap!;
       if(null!=paramMap[ConstApp.screenSelectionTextKey]){
         originalController.text = paramMap[ConstApp.screenSelectionTextKey];
       }
+      if(null!=paramMap!["activeType"]&&paramMap!["activeType"].length>0){
+        activeType = paramMap!["activeType"];
+      }
     }
-    dialogBoxWidgetScrollController = ScrollController();
     changeOriginalText();
   }
 
@@ -91,17 +100,28 @@ class _TranslatePlugPageState extends State<TranslatePlugPage> {
   void translate(String text){
     print("message:"+text);
     if(null!=text&&text.trim().length>0){
+      setState(() {
+        isLoading = true;
+      });
       if(null != chatApi){
-        chatApi!.sendMessage(inputTextEditingController.text + text).then((response) {
+        print("发起请求 ------- ");
+        chatApi!.sendMessage(inputTextEditingController.text + text,activeType: activeType).then((response) {
+          print("接收内容 ------- ");
           if(null!=response&&response.statusCode==200){
             if(originalController.text == text){
               String? responseMessage = response.responseMessage;
               if(null!=responseMessage){
                 targetController.text = responseMessage;
               }
-              print(response);
+              print("处理完成 ： "+response.toString());
             }
+          }else{
+            targetController.text = "translation_anomaly".tr();
           }
+          isLoading = false;
+          setState(() {
+
+          });
         });
       }
     }
@@ -146,17 +166,11 @@ class _TranslatePlugPageState extends State<TranslatePlugPage> {
                   minLines:1,
                   decoration: InputDecoration(
                       border: InputBorder.none,
-                      suffixIcon: Tooltip(
-                        message:"click_translate".tr(),
-                        child: IconButton(
-                          onPressed: () {
-                            onTranslate();
-                          },
-                          icon: const Icon(
-                            Icons.translate,
-                            // color: Color.fromARGB(255, 222, 222, 229),
-                          ),
-                        ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          onTranslate();
+                        },
+                        icon: getSendIconWidget(),
                       ),
                   )
               ),
@@ -244,6 +258,36 @@ class _TranslatePlugPageState extends State<TranslatePlugPage> {
       )  ,
     );
   }
+
+
+  Widget getSendIconWidget(){
+    Widget sendIconWidget = Container();
+    if(!isLoading){
+      sendIconWidget = Tooltip(
+        message: 'click_translate'.tr(),
+        child: const Icon(
+          Icons.translate,
+          color: Color.fromARGB(255, 222, 222, 229),
+        ),
+      );
+    }else{
+      sendIconWidget = Tooltip(
+        message: 'in_translation'.tr(),
+        child: SizedBox(
+          width: 20,
+          height: 20,
+          child: LoadingAnimationWidget.hexagonDots(
+            color: const Color.fromARGB(255, 120, 120, 120),
+            size: 20,
+          ),
+        ),
+      );
+    }
+
+    return sendIconWidget;
+
+  }
+
 }
 
 
