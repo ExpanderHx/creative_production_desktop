@@ -3,18 +3,19 @@ import 'package:creative_production_desktop/utilities/language_util.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../../config/menu_config.dart';
 import '../../provider/router_provider.dart';
+import '../../util/theme_utils.dart';
 import '../../util/widget/resizable_component.dart';
 
 import '../widget/acrylic_warp.dart';
 
 
 class LeftSidebar extends StatefulWidget {
-
 
 
   LeftSidebar({
@@ -27,9 +28,35 @@ class LeftSidebar extends StatefulWidget {
 
 class _LeftSidebarState extends State<LeftSidebar> {
 
+
+  bool launchAtStartupIsEnabled = false;
+
   @override
   void initState() {
+    getLaunchAtStartupIsEnabled();
+  }
 
+  void getLaunchAtStartupIsEnabled() async{
+    launchAtStartupIsEnabled = await launchAtStartup.isEnabled();
+    if(mounted){
+      setState(() {
+
+      });
+    }
+  }
+
+  void updateLaunchAtStartupEnabled() async{
+    bool _launchAtStartupIsEnabled = await launchAtStartup.isEnabled();
+    if(_launchAtStartupIsEnabled){
+      await launchAtStartup.disable();
+      launchAtStartupIsEnabled = false;
+    }else{
+      await launchAtStartup.enable();
+      launchAtStartupIsEnabled = true;
+    }
+    setState(() {
+
+    });
   }
 
   void updateThemeMode(){
@@ -101,20 +128,63 @@ class _LeftSidebarState extends State<LeftSidebar> {
                     children: [
                       themeModeWidget,
                       Container(
-                        child: Tooltip(
-                          message: 'set_up'.tr(),
-                          child: IconButton(
-                            onPressed: () {
-                              print("-------------");
-                              // sendMessage();
-                            },
-                            icon: Icon(
-                              Icons.settings,
-                              color: Color.fromARGB(255, 124, 124, 124),
-                            ),
-                          ),
-                        ),
+                        width: double.infinity,
+                        child: MenuAnchor(
+
+                          menuChildren: _meunList(),
+                          builder: (BuildContext context, MenuController controller, Widget? child) {
+                            return Tooltip(
+                              message: 'set_up'.tr(),
+                              child: IconButton(
+                                onPressed: () {
+                                  if (controller.isOpen) {
+                                    controller.close();
+                                  } else {
+                                    controller.open();
+                                  }
+                                },
+                                icon: Icon(
+                                  Icons.settings,
+                                  color: Color.fromARGB(255, 124, 124, 124),
+                                ),
+                              ),
+                            );
+                          },
+                        )
                       ),
+                      // Container(
+                      //   child: Tooltip(
+                      //     message: 'set_up'.tr(),
+                      //     child: IconButton(
+                      //       onPressed: () {
+                      //         print("-------------");
+                      //         // sendMessage();
+                      //       },
+                      //       icon: Icon(
+                      //         Icons.settings,
+                      //         color: Color.fromARGB(255, 124, 124, 124),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      // Container(
+                      //   width: double.infinity,
+                      //   child: Tooltip(
+                      //     message: 'set_up'.tr(),
+                      //     child: IconButton(
+                      //       onPressed: () {
+                      //         print("-------------");
+                      //         // sendMessage();
+                      //       },
+                      //       icon: Center(
+                      //         child: Icon(
+                      //           Icons.settings,
+                      //           color: Color.fromARGB(255, 124, 124, 124),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // )
                     ],
                   ),
                 ),
@@ -201,5 +271,83 @@ class _LeftSidebarState extends State<LeftSidebar> {
       ),
     );
   }
+
+
+  List<Widget> _meunList() {
+    return <Widget>[
+
+      MenuItemButton(
+        child: Container(
+          child: Row(
+            children: [
+              Container(
+                margin: EdgeInsets.only(right: 15,),
+                child: Text("开机自启动"),
+              ),
+              Container(
+                child: CupertinoSwitch(
+                  // overrides the default green color of the track
+                  // color of the round icon, which moves from right to left
+                  // when the switch is off
+                  trackColor: Colors.black12,
+                  // boolean variable value
+                  value: launchAtStartupIsEnabled,
+                  // changes the state of the switch
+                  onChanged: (newValue){
+                    updateLaunchAtStartupEnabled();
+                    // if(null!=onChanged){
+                    //   onChanged(newValue);
+                    // }
+                  },
+                ),
+              )
+            ],
+          ),
+        ),
+        onPressed: () {
+          // windowManager.close();
+        },
+      ),
+      MenuItemButton(
+        child: Text("exit".tr()),
+        onPressed: () {
+
+          exitDialog();
+          // windowManager.close();
+        },
+      ),
+
+    ];
+  }
+
+
+  Future<void> exitDialog() async {
+    return showDialog<Null>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            surfaceTintColor: ThemeUtils.getThemeColor(context),
+            title: Text(
+                'is_exit'.tr(), style: TextStyle(fontSize: 17.0)),
+            actions: <Widget>[
+              ElevatedButton(
+                child: Text('cancel'.tr()),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              ElevatedButton(
+                child: Text('ok'.tr()),
+                onPressed: () async {
+                  windowManager.close();
+                },
+              )
+            ],
+          );
+        }
+    );
+  }
+
 }
 

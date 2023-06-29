@@ -183,6 +183,8 @@ flutter:
 
   assets:
     - assets/translations/
+    - assets/images/
+    - assets/images/system/
 
 
   fonts:

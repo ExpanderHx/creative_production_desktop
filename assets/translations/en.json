@@ -61,6 +61,8 @@
   "run_anomaly": "Run the exception, please try again or check the configuration",
   "go_to_the_plugins_page": "Go to the Plugins page",
   "open_the_plugin": "Open the plugin",
+  "exit": "exit",
+  "is_exit": "Are you sure you're launching the app?",
     "language": {
       "af": "Afrikaans",
       "am": "Amharic",

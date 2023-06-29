@@ -61,6 +61,8 @@
   "run_anomaly": "运行异常，请重试或者检查配置",
   "go_to_the_plugins_page": "前往插件页面",
   "open_the_plugin": "打开插件",
+  "exit": "退出",
+  "is_exit": "您确定推出app吗?",
   "language": {
     "af": "布尔语(南非荷兰语)",
     "am": "阿姆哈拉语",

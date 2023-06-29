@@ -105,6 +105,10 @@ class _AppWindowCaptionState extends State<AppWindowCaption> with WindowListener
 
   Widget getOperationWidget(){
 
+    // Icon(Icons.construction)
+
+    // Icon(CupertinoIcons.hammer)
+
     if(kIsMacOS){
       return Container();
     }
@@ -142,10 +146,12 @@ class _AppWindowCaptionState extends State<AppWindowCaption> with WindowListener
             );
           },
         ),
+
         WindowCaptionButton.close(
           brightness: widget.brightness,
           onPressed: () {
-            windowManager.close();
+            // windowManager.close();
+            windowManager.hide();
           },
         ),
       ],

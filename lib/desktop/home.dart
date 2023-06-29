@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:creative_production_desktop/desktop/sidebar/left_sidebar.dart';
@@ -14,6 +15,7 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 
@@ -24,6 +26,7 @@ import '../page/model_config/model_config_page.dart';
 import '../provider/router_provider.dart';
 import '../shortcut_key/shortcut_key_util.dart';
 import '../util/preferences_util.dart';
+import '../util/tray_manager_util.dart';
 import '../util/widget/resizable_component.dart';
 import '../util/widget/resizable_widget.dart';
 import 'app_window_caption/app_window_caption.dart';
@@ -47,7 +50,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with TrayListener{
 
 
 
@@ -58,6 +61,15 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
 
     initHotKeyManager();
+    trayManagerInit();
+    super.initState();
+
+  }
+
+  void trayManagerInit(){
+    TrayManagerUtil.init().then((value){
+      TrayManagerUtil.addListener(this);
+    });
 
   }
 
@@ -65,7 +77,24 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     // TODO: implement dispose
     IsarDBUtil().isar!.close();
+    TrayManagerUtil.removeListener(this);
     super.dispose();
+  }
+
+  @override
+  void onTrayIconRightMouseDown() async {
+    await TrayManagerUtil.popUpContextMenu();
+  }
+
+  @override
+  void onTrayMenuItemClick(MenuItem menuItem) {
+    print(menuItem.label);
+    TrayManagerUtil.onTrayIconMouseDown();
+  }
+
+  @override
+  void onTrayIconMouseDown() {
+    TrayManagerUtil.onTrayIconMouseDown();
   }
 
   void initHotKeyManager() async{

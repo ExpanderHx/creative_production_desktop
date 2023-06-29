@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:creative_production_desktop/provider/router_provider.dart';
@@ -7,6 +9,8 @@ import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
+import 'package:launch_at_startup/launch_at_startup.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -26,6 +30,18 @@ void main(List<String> args) async{
 
   // 国际化初始化
   await EasyLocalization.ensureInitialized();
+
+
+  // 设置开机自启动
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  launchAtStartup.setup(
+    appName: packageInfo.appName,
+    appPath: Platform.resolvedExecutable,
+  );
+  await launchAtStartup.enable();
+
+  bool isEnabled = await launchAtStartup.isEnabled();
+  print("isEnabled : ${isEnabled}");
 
   // 窗口半透明效果
   // await Window.initialize();

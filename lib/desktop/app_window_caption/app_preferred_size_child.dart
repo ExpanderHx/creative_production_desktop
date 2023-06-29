@@ -30,9 +30,25 @@ class AppPreferredSizeChild extends StatefulWidget {
 class _AppPreferredSizeChildState extends State<AppPreferredSizeChild> {
 
 
+  bool isAlwaysOnTop = false;
+
   @override
   void initState() {
+    getIsAlwaysOnTop();
+  }
 
+  void getIsAlwaysOnTop() async{
+    isAlwaysOnTop = await windowManager.isAlwaysOnTop();
+  }
+
+  void updateIsAlwaysOnTop() async{
+    bool _isAlwaysOnTop = await windowManager.isAlwaysOnTop();
+    _isAlwaysOnTop = !_isAlwaysOnTop;
+    await windowManager.setAlwaysOnTop(_isAlwaysOnTop);
+    isAlwaysOnTop = _isAlwaysOnTop;
+    setState(() {
+
+    });
   }
 
   @override
@@ -56,12 +72,27 @@ class _AppPreferredSizeChildState extends State<AppPreferredSizeChild> {
                       margin: const EdgeInsets.only(right: 15),
                       child: IconButton(
                         onPressed: () {
+                          updateIsAlwaysOnTop();
+                          // sendMessage();
+                        },
+                        icon: Icon(
+                          (isAlwaysOnTop?CupertinoIcons.pin_fill:CupertinoIcons.pin),
+                          color: Color.fromARGB(255, 124, 124, 124),
+                          size: 18,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(right: 15),
+                      child: IconButton(
+                        onPressed: () {
                           routerProvider.updateIsShowLeftSidebarNew((routerProvider.isShowLeftSidebar==1?0:1));
                           // sendMessage();
                         },
                         icon: Icon(
                           CupertinoIcons.sidebar_left,
                           color: (routerProvider.isShowLeftSidebar!=1?Color.fromARGB(255, 124, 124, 124):Color.fromARGB(255, 111, 175, 249)),
+                          size: 18,
                         ),
                       ),
                     ),
@@ -75,6 +106,7 @@ class _AppPreferredSizeChildState extends State<AppPreferredSizeChild> {
                         icon: Icon(
                           CupertinoIcons.sidebar_right,
                           color: (routerProvider.isShowRightSidebar!=1?Color.fromARGB(255, 124, 124, 124):Color.fromARGB(255, 111, 175, 249)),
+                          size: 18,
                         ),
                       ),
                     )
