@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:isar/isar.dart';
 import 'package:screen_text_extractor/screen_text_extractor.dart';
@@ -61,6 +62,9 @@ class ShortcutKeyUtil{
               if(null!=extractedDataText){
                 map[ConstApp.screenSelectionTextKey] = extractedDataText;
               }
+              map[ConstApp.promptStatementsKey] = pluginsBean.prompt;
+              map[ConstApp.pluginsBeanIdKey] = pluginsBean.id.toString();
+
               pluginsBean.type = (pluginsBean.type ?? MenuConfig.plugins_translate_menu);
               routerProvider.clickMenu(MenuConfig.menuMap[("plugins_"+pluginsBean.type!)],map:map);
               WindowsUtil.bringToFront();
@@ -107,10 +111,31 @@ class ShortcutKeyUtil{
                 HotKey hotKey = registeredHotKeyList[i];
                 if(hotKey.keyCode==_hotKey.keyCode){
                   if(null!=hotKey.modifiers&&null!=_hotKey.modifiers){
-                    if(jsonEncode(hotKey.modifiers) == jsonEncode(_hotKey.modifiers)){
-                      await hotKeyManager.unregister(_hotKey);
-                      return;
+                    if(hotKey.modifiers!.length == _hotKey.modifiers!.length){
+                      bool isAllEqual = true;
+                      for(var i=0;i<hotKey.modifiers!.length;i++){
+                        bool isEqual = false;
+                        for(var z=0;z<_hotKey.modifiers!.length;z++){
+                          if(hotKey.modifiers![i].keyLabel == _hotKey.modifiers![z].keyLabel){
+                            isEqual = true;
+                          }
+                        }
+                        if(!isEqual){
+                          isAllEqual = false;
+                        }
+                      }
+                      if(isAllEqual){
+                        await hotKeyManager.unregister(_hotKey);
+                        return;
+                      }
                     }
+
+                    // listEquals(hotKey.modifiers,_hotKey.modifiers);
+                    // if(jsonEncode(hotKey.modifiers) == jsonEncode(_hotKey.modifiers)){
+                    //   await hotKeyManager.unregister(_hotKey);
+                    //   return;
+                    // }
+
                   }
                 }
               }

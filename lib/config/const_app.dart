@@ -5,6 +5,10 @@ class ConstApp{
 
   static String screenSelectionTextKey = "screenSelectionText";
 
+  static String promptStatementsKey = "promptStatements";
+
+  static String pluginsBeanIdKey = "pluginsBeanId";
+
 
 
 }

@@ -160,6 +160,9 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
   }
 
   Widget getSendIconWidget(){
+    
+    // const Color.fromARGB(255, 120, 120, 120)
+    
     bool isLoading = widget.isLoading ?? false;
     Widget sendIconWidget = Container();
     if(!isLoading){
@@ -177,7 +180,7 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
           width: 20,
           height: 20,
           child: LoadingAnimationWidget.hexagonDots(
-            color: const Color.fromARGB(255, 120, 120, 120),
+            color: ThemeUtils.getThemeColor(context,lightColor: Color.fromARGB(255, 50, 50, 50),blackColor: Color.fromARGB(255, 22, 222, 229)),
             size: 20,
           ),
         ),

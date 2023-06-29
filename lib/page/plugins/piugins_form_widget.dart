@@ -248,9 +248,9 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                   border: Border.all(
-                    color: Color.fromARGB(255, 0,0,0), // 边框颜色
+                    color: const Color.fromARGB(125, 67,67,67), // 边框颜色
                     style: BorderStyle.solid, // 边框样式为实线
-                    width: 1.5,
+                    width: 1,
                   ),
                 ),
                 child: TextFormField(
@@ -308,9 +308,9 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(8)),
                   border: Border.all(
-                    color: Color.fromARGB(255, 0,0,0), // 边框颜色
+                    color: Color.fromARGB(125, 67,67,67), // 边框颜色
                     style: BorderStyle.solid, // 边框样式为实线
-                    width: 1.5,
+                    width: 1,
                   ),
                 ),
                 child: DropdownButtonHideUnderline(
@@ -434,9 +434,9 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                     border: Border.all(
-                      color: Color.fromARGB(255, 0,0,0), // 边框颜色
+                      color: Color.fromARGB(125, 67,67,67), // 边框颜色
                       style: BorderStyle.solid, // 边框样式为实线
-                      width: 1.5,
+                      width: 1,
                     ),
                   ),
                   child: Container(

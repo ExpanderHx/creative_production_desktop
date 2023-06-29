@@ -8,6 +8,7 @@ import 'package:creative_production_desktop/page/plugins/bean/plugins_bean.dart'
 import 'package:creative_production_desktop/page/plugins/config/plugins_config.dart';
 import 'package:creative_production_desktop/page/plugins/piugins_form_widget.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:isar/isar.dart';
@@ -17,6 +18,7 @@ import '../../config/const_app.dart';
 import '../../network/chat/chat_api.dart';
 import '../../network/chat/chat_gpt_open_ai.dart';
 import '../../util/theme_utils.dart';
+import '../config/menu_config.dart';
 import '../provider/router_provider.dart';
 import '../shortcut_key/shortcut_key_util.dart';
 import '../util/db/isar_db_util.dart';
@@ -64,6 +66,19 @@ class _PluginsListPageState extends State<PluginsListPage> {
 
       }
     });
+  }
+
+  void toPlugins({PluginsBean? pluginsBean}){
+    if(null!=pluginsBean){
+      RouterProvider routerProvider = context.read<RouterProvider>();
+      Map<String,dynamic> map = {};
+
+      map[ConstApp.promptStatementsKey] = pluginsBean.prompt;
+      map[ConstApp.pluginsBeanIdKey] = pluginsBean.id.toString();
+
+      pluginsBean.type = (pluginsBean.type ?? MenuConfig.plugins_translate_menu);
+      routerProvider.clickMenu(MenuConfig.menuMap[("plugins_"+pluginsBean.type!)],map:map);
+    }
   }
 
   void editPluginsBean({PluginsBean? pluginsBean}) async{
@@ -249,6 +264,22 @@ class _PluginsListPageState extends State<PluginsListPage> {
                                   color: ThemeUtils.getFontThemeColor(context,lightColor: Color(0Xff343a40),blackColor: Color(0Xfff1f3f5)),
                                   // fontWeight: FontWeight.w500,
                                   fontSize: 12
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(left: 5),
+                            child: GestureDetector(
+                              onTap: (){
+                                toPlugins(pluginsBean:pluginsBean);
+                              },
+                              child: Tooltip(
+                                message: "open_the_plugin".tr(),
+                                child: const Icon(
+                                  Icons.open_in_new,
+                                  size: 12,
+                                  color: Color.fromARGB(255, 124, 124, 124),
+                                ),
                               ),
                             ),
                           ),

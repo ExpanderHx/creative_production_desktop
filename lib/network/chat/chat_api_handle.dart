@@ -76,7 +76,7 @@ class ChatApiHandle extends ChatApi{
         ChatHttp activeChatHttp = ChatHttp().init(
             baseUrl: activeChatModelConfig.baseUrl
         );
-        await activeChatHttp.post("reload_model",data: activeChatModelConfig);
+        await activeChatHttp.post("/reload_model",data: activeChatModelConfig);
         if(null!=activeType){
           activeMap[activeType] = chatApiGeneral;
         }

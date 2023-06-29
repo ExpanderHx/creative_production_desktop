@@ -2,10 +2,12 @@
 
 import 'package:creative_production_desktop/page/plugins_list_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../page/chat_page.dart';
 
 import '../page/model_config_list_page.dart';
+import '../page/plugins/common_plug_page.dart';
 import '../page/plugins/translate_plug_page.dart';
 import '../provider/router_provider.dart';
 
@@ -19,9 +21,9 @@ class MenuConfig{
 
   static Map<String,dynamic> menuMap = {
     chat_menu: MenuData( "聊天",chat_menu,CupertinoIcons.ellipses_bubble,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>ChatPage(key: menuValueKey,paramMap: map,) ),
-    plugins_menu: MenuData( "插件",plugins_menu,CupertinoIcons.goforward_plus,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>PluginsListPage(key: menuValueKey,paramMap: map,) ),
-    plugins_translate_menu: MenuData( "插件",plugins_menu,CupertinoIcons.goforward_plus,showType:0,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>TranslatePlugPage(key: menuValueKey,paramMap: map,) ),
-    plugins_common_menu: MenuData( "插件",plugins_menu,CupertinoIcons.goforward_plus,showType:0,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>TranslatePlugPage(key: menuValueKey,paramMap: map,) ),
+    plugins_menu: MenuData( "插件",plugins_menu,Icons.now_widgets_outlined,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>PluginsListPage(key: menuValueKey,paramMap: map,) ),
+    plugins_translate_menu: MenuData( "插件",plugins_menu,Icons.now_widgets_outlined,showType:0,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>TranslatePlugPage(key: menuValueKey,paramMap: map,) ),
+    plugins_common_menu: MenuData( "插件",plugins_menu,Icons.now_widgets_outlined,showType:0,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>CommonPlugPage(key: menuValueKey,paramMap: map,) ),
     model_config_list_menu: MenuData( "模型列表",model_config_list_menu,CupertinoIcons.layers,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>ModelConfigListPagePage(key: menuValueKey,paramMap: map,) ),
   };
 

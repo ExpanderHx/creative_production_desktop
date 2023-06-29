@@ -7,6 +7,7 @@ import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 // import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:isar/isar.dart';
@@ -120,7 +121,7 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
       width: double.infinity,
       height: double.infinity,
       padding: EdgeInsets.only(top: 20,bottom: 20),
-      child: Form(
+      child: FormBuilder(
         key: _formKey,
         child: SingleChildScrollView(
           child: Column(
@@ -147,6 +148,7 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
   List<Widget> getFormItemList(){
     List<Widget> widgetList = [];
     widgetList.add(getDropdownButtonWidget(
+        key: ValueKey("configId " + activeChatModelConfig!.id.toString()),
         value: activeChatModelConfig?.id.toString(),
         onChanged: (newValue){
           updateActiveChatModelConfig(newValue);
@@ -218,24 +220,43 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
           }
         }
     ));
-    widgetList.add( getInputRowWidget("${tr('temperature')}:",
+    // widgetList.add( getInputRowWidget("${tr('temperature')}:",
+    //     key: ValueKey("temperature " + activeChatModelConfig!.id.toString()),
+    //     value: (null != activeChatModelConfig!.temperature
+    //         ? activeChatModelConfig!.temperature.toString()
+    //         : ""),
+    //     keyboardType:const TextInputType.numberWithOptions(decimal: true),
+    //     inputFormatters: [
+    //       FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}'))
+    //     ],
+    //     onChanged: (newValue) {
+    //       if(null!=newValue&&newValue.length>0){
+    //         activeChatModelConfig!.temperature =  double.parse(newValue);
+    //       }
+    //       // else{
+    //       //   activeChatModelConfig!.temperature = 0.6;
+    //       // }
+    //     }
+    // ));
+
+    widgetList.add(getSliderWidget("${tr('temperature')}:",
         key: ValueKey("temperature " + activeChatModelConfig!.id.toString()),
-        value: (null != activeChatModelConfig!.temperature
-            ? activeChatModelConfig!.temperature.toString()
-            : ""),
+        value: activeChatModelConfig!.temperature,
         keyboardType:const TextInputType.numberWithOptions(decimal: true),
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}'))
         ],
         onChanged: (newValue) {
-          if(null!=newValue&&newValue.length>0){
-            activeChatModelConfig!.temperature =  double.parse(newValue);
+          if(null!=newValue){
+            activeChatModelConfig!.temperature = double.parse(newValue.toStringAsFixed(2));
           }
           // else{
           //   activeChatModelConfig!.temperature = 0.6;
           // }
         }
     ));
+
+
 
     return widgetList;
   }
@@ -245,6 +266,86 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
     String? value,Function? onSaved,Function? validator,
     Function? onChanged,TextEditingController? textEditingController,
     List<TextInputFormatter>? inputFormatters,TextInputType? keyboardType}){
+
+    print(key.toString());
+    return Container(
+      child: FormBuilderTextField(
+        key: UniqueKey(),
+        name: title + (key!=null?key.toString():""),
+        initialValue: value,
+        controller: textEditingController,
+        style: const TextStyle(
+            fontSize: 14
+        ),
+        decoration: InputDecoration(
+          contentPadding:const EdgeInsets.only(bottom: 2,top: 10),
+          labelText: title,
+          labelStyle:const TextStyle(
+              fontSize: 12
+          ),
+        ),
+        inputFormatters: inputFormatters,
+        keyboardType: keyboardType,
+        validator: (newValue){
+          print(newValue); // Print the text value write into TextField
+          if(null!=validator){
+            validator(newValue);
+          }
+        },
+        onChanged: (newValue) {
+          print(newValue); // Print the text value write into TextField
+          if(null!=onChanged){
+            onChanged(newValue);
+          }
+        },
+      ),
+    );
+
+
+
+
+    // return Container(
+    //   height: 30,
+    //   margin: EdgeInsets.only(bottom: 100,),
+    //   child: TextFormField(
+    //     key: key,
+    //     initialValue:value,
+    //     minLines: 1,
+    //     maxLines: 1,
+    //     keyboardType:keyboardType,
+    //     inputFormatters:inputFormatters,
+    //     style: const TextStyle(
+    //         fontSize: 10
+    //     ),
+    //     decoration: InputDecoration(
+    //         // isCollapsed:true,
+    //         // contentPadding:const EdgeInsets.only(bottom: 2,top: 10),
+    //         labelText: title,
+    //
+    //
+    //       // labelStyle:const TextStyle(
+    //         //     fontSize: 12
+    //         // ),
+    //     ),
+    //     // The validator receives the text that the user has entered.
+    //     validator: (value) {
+    //       if(null!=validator){
+    //         return validator(value);
+    //       }
+    //       return null;
+    //     },
+    //     onSaved: (newValue){
+    //       if(null!=onSaved){
+    //         onSaved(newValue);
+    //       }
+    //     },
+    //     onChanged: (newValue){
+    //       if(null!=onChanged){
+    //         onChanged(newValue);
+    //       }
+    //     },
+    //   ),
+    // );
 
     return Container(
       margin:  EdgeInsets.only(bottom: 15,),
@@ -310,14 +411,40 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
     );
   }
 
+  Widget getSliderWidget(String title,{int? maxLines,ValueKey? key,
+    double? value,Function? onSaved,Function? validator,
+    Function? onChanged,TextEditingController? textEditingController,
+    List<TextInputFormatter>? inputFormatters,TextInputType? keyboardType}){
+    value = value ?? 0.7;
+    return FormBuilderSlider(
+      key: key,
+      name: 'title',
+      onChanged: (newValue){
+        if(null!=newValue){
+          onChanged!(newValue);
+        }
+      },
+      min: 0.0,
+      max: 1.0,
+      initialValue: value,
+      // divisions: 0.1,
+      // activeColor: Colors.red,
+      // inactiveColor: Colors.pink[100],
+      decoration: InputDecoration(
+        labelText: title??"",
+      ),
+    );
+  }
 
 
-  Widget getDropdownButtonWidget({String? value,Function? onChanged}){
+
+  Widget getDropdownButtonWidget({String? value,Function? onChanged,ValueKey? key}){
     if(null==chatModelConfigList||chatModelConfigList!.length<=0){
       return Container();
     }
 
     List<DropdownMenuItem<String>> dropdownMenuItemList = [];
+
     for(var i=0;i<chatModelConfigList!.length;i++){
       ChatModelConfig chatModelConfig = chatModelConfigList![i];
       dropdownMenuItemList.add(
@@ -326,7 +453,25 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
               child: Text(chatModelConfig.configName!)
           )
       );
+
     }
+
+    return FormBuilderDropdown<String>(
+      name: 'configId',
+      key: key,
+      initialValue: value,
+      decoration: InputDecoration(
+        labelText: '${tr('configuration')}',
+        hintText: 'Select ${tr('configuration')}',
+      ),
+      items: dropdownMenuItemList,
+      onChanged: (newValue) {
+        if(null!=onChanged){
+          onChanged(newValue);
+        }
+      },
+      valueTransformer: (val) => val?.toString(),
+    );
 
     return  Container(
       margin:  EdgeInsets.only(bottom: 15,),
