@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../../provider/router_provider.dart';
+import '../../util/servce_util.dart';
 import 'app_window_caption.dart';
 
 
@@ -46,6 +47,7 @@ class _AppPreferredSizeChildState extends State<AppPreferredSizeChild> {
     _isAlwaysOnTop = !_isAlwaysOnTop;
     await windowManager.setAlwaysOnTop(_isAlwaysOnTop);
     isAlwaysOnTop = _isAlwaysOnTop;
+    ServceUtil.startServce();
     setState(() {
 
     });

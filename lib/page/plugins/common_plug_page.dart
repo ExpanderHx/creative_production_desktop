@@ -154,6 +154,10 @@ class _TranslatePlugPageState extends State<CommonPlugPage> {
   Widget build(BuildContext context) {
     //设置尺寸（填写设计中设备的屏幕尺寸）如果设计基于360dp * 690dp的屏幕
     // ScreenUtil.init(context, designSize: const Size(1920, 1080));
+
+    // Icon(Icons.construction)
+    // Icon(CupertinoIcons.hammer)
+
     return Container(
       // margin: EdgeInsets.only(left: 20,right: 20),
       padding: EdgeInsets.only(left: 20,right: 20),
@@ -166,7 +170,7 @@ class _TranslatePlugPageState extends State<CommonPlugPage> {
                 width: 50,
                 child: Tooltip(
                   message: inputTextEditingController.text,
-                  child: Text("提示词"),
+                  child: Text("prompt_word".tr()),
                 ),
               ),
               Expanded(
