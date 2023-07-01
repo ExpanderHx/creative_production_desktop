@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../config/const_app.dart';
 import '../../page/model_config/bean/chat_model_config.dart';
 import '../../page/plugins/bean/plugins_bean.dart';
+import 'package:path/path.dart' as path;
 
 /// Hive 数据操作
 class IsarDBUtil {
@@ -28,9 +30,11 @@ class IsarDBUtil {
   Future<void> init() async {
     if(isar == null){
       final dir = await getApplicationDocumentsDirectory();
+      String projectIsarDbPath = path.join(dir.path , ConstApp.projectNameKey, ConstApp.projectDbNameKey,ConstApp.projectIsarDbNameKey);
+
       isar = await Isar.open(
         [PluginsBeanSchema,ChatModelConfigSchema],
-        directory: dir.path,
+        directory: projectIsarDbPath,
       );
     }
 

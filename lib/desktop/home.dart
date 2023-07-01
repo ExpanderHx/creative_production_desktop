@@ -149,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener{
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kWindowCaptionHeight),
+        preferredSize: const Size.fromHeight(kWindowCaptionHeight + 20),
         child: AppPreferredSizeChild(),
       ),
       body: Container(

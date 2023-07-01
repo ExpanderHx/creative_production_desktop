@@ -77,7 +77,7 @@ class _ChatPageState extends State<ChatPage> {
         });
       });
       if(null != chatApi){
-        chatApi!.sendMessage(message,activeType: activeType).then((response) {
+        chatApi!.sendMessage(message,activeType: activeType,historyList: messageList).then((response) {
           if(null!=response&&response.statusCode==200){
             String? responseMessage = response.responseMessage;
             if(null!=responseMessage){

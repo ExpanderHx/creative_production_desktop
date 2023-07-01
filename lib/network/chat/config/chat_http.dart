@@ -20,7 +20,7 @@ class ChatHttp {
 
     dio = Dio(options);
 
-    dio.interceptors.add(LogInterceptor(responseBody: false));
+    dio.interceptors.add(LogInterceptor(responseBody: true));
 
     // // 添加request拦截器
     // dio.interceptors.add(RequestInterceptor());
@@ -60,8 +60,8 @@ class ChatHttp {
   /// [interceptors] 基础拦截器
   ChatHttp init({
     String? baseUrl,
-    Duration connectTimeout = const Duration(seconds:120),
-    Duration receiveTimeout = const Duration(seconds:120),
+    Duration connectTimeout = const Duration(seconds:360),
+    Duration receiveTimeout = const Duration(seconds:360),
     Map<String, String>? headers,
     List<Interceptor>? interceptors,
   }) {

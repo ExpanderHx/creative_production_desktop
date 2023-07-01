@@ -10,11 +10,13 @@ class ChatModelConfig{
 
   String? configName;
   String? modelName;
+  String? modelPath;
   String? tokenizerName;
   String? loadDevice;
   String? token;
   int? maxToken;
   double? temperature;
+  int? historyLen;
   bool? isGlobal;
   bool? isLocal;
   String? baseUrl;

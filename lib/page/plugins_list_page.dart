@@ -92,7 +92,7 @@ class _PluginsListPageState extends State<PluginsListPage> {
             elevation: 4.0, // 阴影高度
             insetAnimationDuration: Duration(milliseconds: 300), // 动画时间
             insetAnimationCurve: Curves.decelerate, // 动画效果
-            insetPadding: EdgeInsets.all(50), // 弹框距离屏幕边缘距离
+            insetPadding: const EdgeInsets.all(100), // 弹框距离屏幕边缘距离
             clipBehavior: Clip.none, // 剪切方式
             child: PiuginsFormWidget(onUpdatePluginsBeanDb:onUpdatePluginsBeanDb,pluginsBean: pluginsBean,),
           );

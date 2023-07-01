@@ -1,6 +1,7 @@
 
 
 
+import '../../page/chat/bean/chat_message.dart';
 import '../config/response_wrap.dart';
 import 'chat_api.dart';
 import 'config/chat_config.dart';
@@ -20,8 +21,30 @@ class ChatApiGeneral extends ChatApi{
   ChatApiGeneral._internal();
 
 
-  Future<dynamic?> sendMessage(String message,{List<String>? historyList,activeType}) async {
-    Map<String, dynamic>? data = {"question":message,"history":[]};
+
+
+  Future<dynamic?> sendMessage(String message,{List<ChatMessage>? historyList,activeType}) async {
+    List<List<String>> history = [];
+    if(null!=historyList&&historyList.length>0){
+      for(var i=0;i<historyList.length-1;i++){
+        if(null!=historyList[i]){
+          ChatMessage historyChatMessage = historyList[i]!;
+          if(null!=historyChatMessage.message){
+            List<String> _history = [];
+            _history.add(historyChatMessage.message);
+            if(null!=historyChatMessage.isToAi&&historyChatMessage.isToAi){
+              if(historyList.length-2>i){
+                if(null!=historyList[i+1].isToAi&&!historyList[i+1].isToAi){
+                  _history.add(historyList[i+1].message);
+                  history.add(_history);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    Map<String, dynamic>? data = {"question":message,"history":history};
     ResponseWrap? responseWrap = await chatHttp.post("/chat",data:data);
     if(null!=responseWrap){
       if(responseWrap.statusCode==200){

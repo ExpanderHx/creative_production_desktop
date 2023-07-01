@@ -205,6 +205,17 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
         }
     ));
     if(chatModelConfig!.isLocal!=null&&chatModelConfig!.isLocal!){
+      widgetList.add(getInputRowWidget("${tr('model_local_path')} : ",
+          key: ValueKey("modelPath " + chatModelConfig!.id.toString()),
+          value: chatModelConfig!.modelPath,
+          suffixIcon: Tooltip(
+            message: "model_local_path_description".tr(),
+            child: Icon(CupertinoIcons.info_circle),
+          ),
+          onChanged: (newValue) {
+            chatModelConfig!.modelPath = newValue;
+          }
+      ));
       widgetList.add(getInputRowWidget("${tr('tokenizer')} : ",
           key: ValueKey("tokenizer " + chatModelConfig!.id.toString()),
           value: chatModelConfig!.tokenizerName,
@@ -212,9 +223,30 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
             chatModelConfig!.tokenizerName = newValue;
           }
       ));
+      widgetList.add(getInputRowWidget("${tr('history_len_title')} : ",
+          key: ValueKey("historyLen " + chatModelConfig!.id.toString()),
+          value: chatModelConfig!.historyLen?.toString(),
+          keyboardType:TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly
+          ],
+          onChanged: (newValue) {
+            if(null!=newValue&&newValue.length>0){
+              try{
+                chatModelConfig!.historyLen = int.parse(newValue);
+              }catch(e){
+                print(e.toString());
+              }
+            }
+          }
+      ));
       widgetList.add(getInputRowWidget("${tr('device')}:",
           key: ValueKey("device " + chatModelConfig!.id.toString()),
           value: chatModelConfig!.loadDevice,
+          suffixIcon: Tooltip(
+            message: "device_description".tr(),
+            child: Icon(CupertinoIcons.info_circle),
+          ),
           onChanged: (newValue) {
             chatModelConfig!.loadDevice = newValue;
           }
@@ -224,13 +256,14 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
           value: chatModelConfig!.baseUrl??ChatConfig.chatGeneralBaseUrl,
           maxLines: 1,
           onChanged: (newValue) {
-            chatModelConfig!.token = newValue;
+            chatModelConfig!.baseUrl = newValue;
           }
       ));
     }else{
       widgetList.add(getInputRowWidget("${tr('token')}:",
           key: ValueKey("token " + chatModelConfig!.id.toString()),
-          maxLines: 2,
+          obscureText: true,
+          maxLines:1,
           value: chatModelConfig!.token,
           onChanged: (newValue) {
             chatModelConfig!.token = newValue;
@@ -241,7 +274,7 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
           value: chatModelConfig!.baseUrl??ChatConfig.chatOpenAiBaseUrl,
           maxLines: 1,
           onChanged: (newValue) {
-            chatModelConfig!.token = newValue;
+            chatModelConfig!.baseUrl = newValue;
           }
       ));
     }
@@ -259,7 +292,11 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
         ],
         onChanged: (newValue) {
           if(null!=newValue&&newValue.length>0){
-            chatModelConfig!.maxToken =  int.parse(newValue);
+            try{
+              chatModelConfig!.maxToken =  int.parse(newValue);
+            }catch(e){
+              print(e.toString());
+            }
           }
         }
     ));
@@ -274,7 +311,11 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
         ],
         onChanged: (newValue) {
           if(null!=newValue&&newValue.length>0){
-            chatModelConfig!.temperature =  double.parse(newValue);
+            try{
+              chatModelConfig!.temperature =  double.parse(newValue);
+            }catch(e){
+              print(e.toString());
+            }
           }
           // else{
           //   chatModelConfig!.temperature = 0.6;
@@ -289,7 +330,9 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
   Widget getInputRowWidget(String title,{int? maxLines,ValueKey? key,
     String? value,Function? onSaved,Function? validator,
     Function? onChanged,TextEditingController? textEditingController,
-    List<TextInputFormatter>? inputFormatters,TextInputType? keyboardType}){
+    List<TextInputFormatter>? inputFormatters,TextInputType? keyboardType,
+    Widget? suffixIcon, bool obscureText = false
+  }){
 
     return Container(
       margin:  EdgeInsets.only(bottom: 15,),
@@ -319,16 +362,18 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
                   key: key,
                   // controller: textEditingController,
                   initialValue:value,
+                  obscureText: obscureText,
                   maxLines: maxLines,
                   keyboardType:keyboardType,
                   inputFormatters:inputFormatters,
                   style: const TextStyle(
                       fontSize: 10
                   ),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                       isCollapsed:true,
                       contentPadding: EdgeInsets.all(0),
-                      border: InputBorder.none
+                      border: InputBorder.none,
+                      suffixIcon: suffixIcon
                   ),
                   // The validator receives the text that the user has entered.
                   validator: (value) {

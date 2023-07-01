@@ -5,6 +5,7 @@ import 'package:creative_production_desktop/page/chat/to_ai_row_widget.dart';
 import 'package:creative_production_desktop/util/theme_utils.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -162,6 +163,17 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
         }
     ));
     if(activeChatModelConfig!.isLocal!=null&&activeChatModelConfig!.isLocal!){
+      widgetList.add(getInputRowWidget("${tr('model_local_path')} : ",
+          key: ValueKey("modelPath " + activeChatModelConfig!.id.toString()),
+          value: activeChatModelConfig!.modelPath,
+          suffixIcon: Tooltip(
+            message: "model_local_path_description".tr(),
+            child: Icon(CupertinoIcons.info_circle),
+          ),
+          onChanged: (newValue) {
+            activeChatModelConfig!.modelPath = newValue;
+          }
+      ));
       widgetList.add(getInputRowWidget("${tr('tokenizer')} : ",
           key: ValueKey("tokenizer " + activeChatModelConfig!.id.toString()),
           value: activeChatModelConfig!.tokenizerName,
@@ -169,9 +181,30 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
             activeChatModelConfig!.tokenizerName = newValue;
           }
       ));
+      widgetList.add(getInputRowWidget("${tr('history_len_title')} : ",
+          key: ValueKey("historyLen " + activeChatModelConfig!.id.toString()),
+          value: activeChatModelConfig!.historyLen?.toString(),
+          keyboardType:TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly
+          ],
+          onChanged: (newValue) {
+            if(null!=newValue&&newValue.length>0){
+              try{
+                activeChatModelConfig!.historyLen = int.parse(newValue);
+              }catch(e){
+                print(e.toString());
+              }
+            }
+          }
+      ));
       widgetList.add(getInputRowWidget("${tr('device')}:",
           key: ValueKey("device " + activeChatModelConfig!.id.toString()),
           value: activeChatModelConfig!.loadDevice,
+          suffixIcon: Tooltip(
+            message: "device_description".tr(),
+            child: Icon(CupertinoIcons.info_circle),
+          ),
           onChanged: (newValue) {
             activeChatModelConfig!.loadDevice = newValue;
           }
@@ -181,13 +214,14 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
           value: activeChatModelConfig!.baseUrl??ChatConfig.chatGeneralBaseUrl,
           maxLines: 1,
           onChanged: (newValue) {
-            activeChatModelConfig!.token = newValue;
+            activeChatModelConfig!.baseUrl = newValue;
           }
       ));
     }else{
       widgetList.add(getInputRowWidget("${tr('token')}:",
           key: ValueKey("token " + activeChatModelConfig!.id.toString()),
-          maxLines: 2,
+          obscureText: true,
+          maxLines: 1,
           value: activeChatModelConfig!.token,
           onChanged: (newValue) {
             activeChatModelConfig!.token = newValue;
@@ -198,7 +232,7 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
           value: activeChatModelConfig!.baseUrl??ChatConfig.chatOpenAiBaseUrl,
           maxLines: 1,
           onChanged: (newValue) {
-            activeChatModelConfig!.token = newValue;
+            activeChatModelConfig!.baseUrl = newValue;
           }
       ));
     }
@@ -216,7 +250,11 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
         ],
         onChanged: (newValue) {
           if(null!=newValue&&newValue.length>0){
-            activeChatModelConfig!.maxToken =  int.parse(newValue);
+            try{
+              activeChatModelConfig!.maxToken =  int.parse(newValue);
+            }catch(e){
+              print(e.toString());
+            }
           }
         }
     ));
@@ -265,7 +303,9 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
   Widget getInputRowWidget(String title,{int? maxLines,ValueKey? key,
     String? value,Function? onSaved,Function? validator,
     Function? onChanged,TextEditingController? textEditingController,
-    List<TextInputFormatter>? inputFormatters,TextInputType? keyboardType}){
+    List<TextInputFormatter>? inputFormatters,TextInputType? keyboardType,
+    Widget? suffixIcon, bool obscureText = false
+  }){
 
     print(key.toString());
     return Container(
@@ -273,6 +313,8 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
         key: UniqueKey(),
         name: title + (key!=null?key.toString():""),
         initialValue: value,
+        obscureText: obscureText,
+        maxLines: maxLines,
         controller: textEditingController,
         style: const TextStyle(
             fontSize: 14
@@ -283,6 +325,7 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
           labelStyle:const TextStyle(
               fontSize: 12
           ),
+          suffixIcon:suffixIcon
         ),
         inputFormatters: inputFormatters,
         keyboardType: keyboardType,

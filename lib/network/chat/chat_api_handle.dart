@@ -3,6 +3,7 @@
 
 
 
+import '../../page/chat/bean/chat_message.dart';
 import '../../page/model_config/bean/chat_model_config.dart';
 
 import '../../util/model_config/model_config_util.dart';
@@ -50,7 +51,7 @@ class ChatApiHandle extends ChatApi{
     }
   }
 
-  Future<dynamic?> sendMessage(String message,{List<String>? historyList,activeType}) async {
+  Future<dynamic?> sendMessage(String message,{List<ChatMessage>? historyList,activeType}) async {
     ChatApi? chatApi = await getChatApi(activeType:activeType);
     if(null!=chatApi){
      return chatApi.sendMessage(message,historyList: historyList);
@@ -76,7 +77,17 @@ class ChatApiHandle extends ChatApi{
         ChatHttp activeChatHttp = ChatHttp().init(
             baseUrl: activeChatModelConfig.baseUrl
         );
-        await activeChatHttp.post("/reload_model",data: activeChatModelConfig);
+        Map<String,dynamic> dataMap = {
+          "model_name":activeChatModelConfig.modelName,
+          "model_path":activeChatModelConfig.modelPath,
+          "tokenizer_name":activeChatModelConfig.tokenizerName,
+          "load_device":activeChatModelConfig.loadDevice,
+          "history_len":activeChatModelConfig.historyLen??10,
+          "max_token":activeChatModelConfig.maxToken??1000,
+          "temperature":activeChatModelConfig.temperature,
+          "top_p":activeChatModelConfig.temperature,
+        };
+        await activeChatHttp.post("/reload_model",data: dataMap);
         if(null!=activeType){
           activeMap[activeType] = chatApiGeneral;
         }

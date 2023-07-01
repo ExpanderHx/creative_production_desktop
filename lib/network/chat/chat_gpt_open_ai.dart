@@ -5,6 +5,8 @@ import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/chat_gpt_s
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/src/model/chat_complete/response/chat_choice.dart';
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/src/model/chat_complete/response/message.dart';
 
+import '../../page/chat/bean/chat_message.dart';
+import '../../page/model_config/bean/chat_model_config.dart';
 import 'chat_api.dart';
 import 'config/response_message.dart';
 
@@ -25,12 +27,15 @@ class ChatApiOpenAi extends ChatApi{
 
   ChatApiOpenAi._internal();
 
-  ChatApiOpenAi build(String? token, {required HttpSetup baseOption, required bool enableLog}) {
+  ChatModelConfig? chatModelConfig;
+
+  ChatApiOpenAi build(String? token, {required HttpSetup baseOption, required bool enableLog,ChatModelConfig? activeChatModelConfig}) {
     openAI =  OpenAI.instance.build(
         token: token,
         baseOption: baseOption,
         enableLog: enableLog
     );
+    chatModelConfig = activeChatModelConfig;
     return this;
   }
 
@@ -43,12 +48,31 @@ class ChatApiOpenAi extends ChatApi{
   // }
 
 
-  Future<dynamic?> sendMessage(String message,{List<String>? historyList,activeType}) async{
+  Future<dynamic?> sendMessage(String message,{List<ChatMessage>? historyList,activeType}) async{
     List<Messages> messagesList = [];
+    if(null!=historyList&&historyList.length>0){
+      for(var i=0;i<historyList.length-1;i++){
+        if(null!=historyList[i]){
+          ChatMessage historyChatMessage = historyList[i]!;
+          if(null!=historyChatMessage.message){
+            if(null!=historyChatMessage.isToAi&&historyChatMessage.isToAi){
+              messagesList.add(Messages(role:Role.user,content: historyChatMessage.message));
+            }else{
+              messagesList.add(Messages(role:Role.assistant,content: historyChatMessage.message));
+            }
+          }
+        }
+      }
+    }
 
     messagesList.add(Messages(role:Role.user,content: message));
 
-    final request = ChatCompleteText(messages: messagesList, maxToken: 2000, model: GptTurboChatModel());
+    final request = ChatCompleteText(
+        messages: messagesList,
+        temperature:chatModelConfig?.temperature??0.3,
+        maxToken: chatModelConfig?.maxToken??2000,
+        model: GptTurboChatModel()
+    );
     ChatCTResponse? response = await openAI.onChatCompletion(request: request);
 
     if(null!=response){

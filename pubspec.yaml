@@ -144,6 +144,7 @@ dependencies:
   # 适用于 Linux/Win/Mac 的进程运行帮助程序
   process_run: ^0.13.0
 
+
   # 全面的剪切板 需要安装 Rust 对于 macOS 或 Linux，请在终端中执行以下命令 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 #  super_clipboard: ^0.4.0
 

@@ -27,43 +27,53 @@ const ChatModelConfigSchema = CollectionSchema(
       name: r'configName',
       type: IsarType.string,
     ),
-    r'isGlobal': PropertySchema(
+    r'historyLen': PropertySchema(
       id: 2,
+      name: r'historyLen',
+      type: IsarType.long,
+    ),
+    r'isGlobal': PropertySchema(
+      id: 3,
       name: r'isGlobal',
       type: IsarType.bool,
     ),
     r'isLocal': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'isLocal',
       type: IsarType.bool,
     ),
     r'loadDevice': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'loadDevice',
       type: IsarType.string,
     ),
     r'maxToken': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'maxToken',
       type: IsarType.long,
     ),
     r'modelName': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'modelName',
       type: IsarType.string,
     ),
+    r'modelPath': PropertySchema(
+      id: 8,
+      name: r'modelPath',
+      type: IsarType.string,
+    ),
     r'temperature': PropertySchema(
-      id: 7,
+      id: 9,
       name: r'temperature',
       type: IsarType.double,
     ),
     r'token': PropertySchema(
-      id: 8,
+      id: 10,
       name: r'token',
       type: IsarType.string,
     ),
     r'tokenizerName': PropertySchema(
-      id: 9,
+      id: 11,
       name: r'tokenizerName',
       type: IsarType.string,
     )
@@ -113,6 +123,12 @@ int _chatModelConfigEstimateSize(
     }
   }
   {
+    final value = object.modelPath;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.token;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -135,14 +151,16 @@ void _chatModelConfigSerialize(
 ) {
   writer.writeString(offsets[0], object.baseUrl);
   writer.writeString(offsets[1], object.configName);
-  writer.writeBool(offsets[2], object.isGlobal);
-  writer.writeBool(offsets[3], object.isLocal);
-  writer.writeString(offsets[4], object.loadDevice);
-  writer.writeLong(offsets[5], object.maxToken);
-  writer.writeString(offsets[6], object.modelName);
-  writer.writeDouble(offsets[7], object.temperature);
-  writer.writeString(offsets[8], object.token);
-  writer.writeString(offsets[9], object.tokenizerName);
+  writer.writeLong(offsets[2], object.historyLen);
+  writer.writeBool(offsets[3], object.isGlobal);
+  writer.writeBool(offsets[4], object.isLocal);
+  writer.writeString(offsets[5], object.loadDevice);
+  writer.writeLong(offsets[6], object.maxToken);
+  writer.writeString(offsets[7], object.modelName);
+  writer.writeString(offsets[8], object.modelPath);
+  writer.writeDouble(offsets[9], object.temperature);
+  writer.writeString(offsets[10], object.token);
+  writer.writeString(offsets[11], object.tokenizerName);
 }
 
 ChatModelConfig _chatModelConfigDeserialize(
@@ -154,15 +172,17 @@ ChatModelConfig _chatModelConfigDeserialize(
   final object = ChatModelConfig();
   object.baseUrl = reader.readStringOrNull(offsets[0]);
   object.configName = reader.readStringOrNull(offsets[1]);
+  object.historyLen = reader.readLongOrNull(offsets[2]);
   object.id = id;
-  object.isGlobal = reader.readBoolOrNull(offsets[2]);
-  object.isLocal = reader.readBoolOrNull(offsets[3]);
-  object.loadDevice = reader.readStringOrNull(offsets[4]);
-  object.maxToken = reader.readLongOrNull(offsets[5]);
-  object.modelName = reader.readStringOrNull(offsets[6]);
-  object.temperature = reader.readDoubleOrNull(offsets[7]);
-  object.token = reader.readStringOrNull(offsets[8]);
-  object.tokenizerName = reader.readStringOrNull(offsets[9]);
+  object.isGlobal = reader.readBoolOrNull(offsets[3]);
+  object.isLocal = reader.readBoolOrNull(offsets[4]);
+  object.loadDevice = reader.readStringOrNull(offsets[5]);
+  object.maxToken = reader.readLongOrNull(offsets[6]);
+  object.modelName = reader.readStringOrNull(offsets[7]);
+  object.modelPath = reader.readStringOrNull(offsets[8]);
+  object.temperature = reader.readDoubleOrNull(offsets[9]);
+  object.token = reader.readStringOrNull(offsets[10]);
+  object.tokenizerName = reader.readStringOrNull(offsets[11]);
   return object;
 }
 
@@ -178,20 +198,24 @@ P _chatModelConfigDeserializeProp<P>(
     case 1:
       return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 3:
       return (reader.readBoolOrNull(offset)) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 5:
-      return (reader.readLongOrNull(offset)) as P;
-    case 6:
       return (reader.readStringOrNull(offset)) as P;
+    case 6:
+      return (reader.readLongOrNull(offset)) as P;
     case 7:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 8:
       return (reader.readStringOrNull(offset)) as P;
     case 9:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 10:
+      return (reader.readStringOrNull(offset)) as P;
+    case 11:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -597,6 +621,80 @@ extension ChatModelConfigQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'configName',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      historyLenIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'historyLen',
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      historyLenIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'historyLen',
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      historyLenEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'historyLen',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      historyLenGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'historyLen',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      historyLenLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'historyLen',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      historyLenBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'historyLen',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -1096,6 +1194,160 @@ extension ChatModelConfigQueryFilter
   }
 
   QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelPathIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'modelPath',
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelPathIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'modelPath',
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelPathEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'modelPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelPathGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'modelPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelPathLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'modelPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelPathBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'modelPath',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelPathStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'modelPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelPathEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'modelPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelPathContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'modelPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelPathMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'modelPath',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelPathIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'modelPath',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelPathIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'modelPath',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
       temperatureIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1524,6 +1776,20 @@ extension ChatModelConfigQuerySortBy
   }
 
   QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      sortByHistoryLen() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'historyLen', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      sortByHistoryLenDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'historyLen', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
       sortByIsGlobal() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isGlobal', Sort.asc);
@@ -1589,6 +1855,20 @@ extension ChatModelConfigQuerySortBy
       sortByModelNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'modelName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      sortByModelPath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'modelPath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      sortByModelPathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'modelPath', Sort.desc);
     });
   }
 
@@ -1660,6 +1940,20 @@ extension ChatModelConfigQuerySortThenBy
       thenByConfigNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'configName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      thenByHistoryLen() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'historyLen', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      thenByHistoryLenDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'historyLen', Sort.desc);
     });
   }
 
@@ -1745,6 +2039,20 @@ extension ChatModelConfigQuerySortThenBy
   }
 
   QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      thenByModelPath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'modelPath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      thenByModelPathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'modelPath', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
       thenByTemperature() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'temperature', Sort.asc);
@@ -1803,6 +2111,13 @@ extension ChatModelConfigQueryWhereDistinct
   }
 
   QueryBuilder<ChatModelConfig, ChatModelConfig, QDistinct>
+      distinctByHistoryLen() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'historyLen');
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QDistinct>
       distinctByIsGlobal() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'isGlobal');
@@ -1834,6 +2149,13 @@ extension ChatModelConfigQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'modelName', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QDistinct> distinctByModelPath(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'modelPath', caseSensitive: caseSensitive);
     });
   }
 
@@ -1881,6 +2203,12 @@ extension ChatModelConfigQueryProperty
     });
   }
 
+  QueryBuilder<ChatModelConfig, int?, QQueryOperations> historyLenProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'historyLen');
+    });
+  }
+
   QueryBuilder<ChatModelConfig, bool?, QQueryOperations> isGlobalProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isGlobal');
@@ -1909,6 +2237,12 @@ extension ChatModelConfigQueryProperty
   QueryBuilder<ChatModelConfig, String?, QQueryOperations> modelNameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'modelName');
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, String?, QQueryOperations> modelPathProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'modelPath');
     });
   }
 
