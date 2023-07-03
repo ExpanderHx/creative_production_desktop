@@ -122,13 +122,15 @@ class _ModelConfigListPagePageState extends State<ModelConfigListPagePage> {
     //设置尺寸（填写设计中设备的屏幕尺寸）如果设计基于360dp * 690dp的屏幕
     // ScreenUtil.init(context, designSize: const Size(1920, 1080));
 
+    // color: ThemeUtils.getThemeColor(context),
+
     List<Widget> pluginsWidgetList = getPluginsWidgetList();
 
     return Container(
       width: double.infinity,
       height: double.infinity,
       margin: const EdgeInsets.only(top: 20,bottom: 20),
-      color: ThemeUtils.getThemeColor(context),
+
       child: Stack(
         children: [
           SingleChildScrollView(
@@ -172,6 +174,9 @@ class _ModelConfigListPagePageState extends State<ModelConfigListPagePage> {
   }
 
   List<Widget> getPluginsWidgetList(){
+
+    // color: ThemeUtils.getThemeColor(context),
+
     List<Widget> pluginsWidget = [];
     if(null!=chatModelConfigList&&chatModelConfigList!.length>0){
       for(var i=0;i<chatModelConfigList!.length;i++){

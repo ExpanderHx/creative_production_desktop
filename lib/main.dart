@@ -8,6 +8,8 @@ import 'package:creative_production_desktop/util/init_utils.dart';
 import 'package:creative_production_desktop/util/preferences_util.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_acrylic/window.dart';
+import 'package:flutter_acrylic/window_effect.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
@@ -36,10 +38,14 @@ void main(List<String> args) async{
 
 
   // 窗口半透明效果
-  // await Window.initialize();
+  await Window.initialize();
+  await Window.setEffect(
+    effect: WindowEffect.acrylic,
+    color: Color(0xCCA1A1A1),
+  );
   // await Window.setEffect(
   //   effect: WindowEffect.acrylic,
-  //   color: Color(0xCC222222),
+  //   dark: true,
   // );
 
   // 初始化PreferencesUtil
@@ -135,7 +141,8 @@ class MyApp extends StatelessWidget {
 
 
 
-    // fontFamily
+    // fontFamily .copyWith(primaryColor: Colors.transparent)
+
     return AdaptiveTheme(
       light: FlexThemeData.light(fontFamily: "Ping Fang",useMaterial3: true,scheme:FlexScheme.flutterDash),
       dark: FlexThemeData.dark(fontFamily: "Ping Fang",useMaterial3: true,scheme:FlexScheme.flutterDash),

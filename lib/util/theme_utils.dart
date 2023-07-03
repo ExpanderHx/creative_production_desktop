@@ -12,6 +12,10 @@ class ThemeUtils{
     return AdaptiveTheme.maybeOf(context)?.brightness == Brightness.light ? lightColor : blackColor;
   }
 
+  static Color? getThemeColorNotMandatory(BuildContext context,{Color? lightColor = Colors.white,Color? blackColor = Colors.black}){
+    return AdaptiveTheme.maybeOf(context)?.brightness == Brightness.light ? lightColor : blackColor;
+  }
+
   static Color getFontThemeColor(BuildContext context,{Color lightColor = Colors.black,Color blackColor = Colors.white}){
     return AdaptiveTheme.maybeOf(context)?.brightness == Brightness.light ? lightColor : blackColor;
   }

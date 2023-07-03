@@ -127,7 +127,7 @@ dependencies:
 #  fluent_ui: ^4.6.2
 
   # Windows、macOS 和 Linux 上 Flutter 的窗口亚克力、云母和透明效果
-#  flutter_acrylic: ^1.1.3
+  flutter_acrylic: ^1.1.3
 
   # 一个为Flutter提供水平或垂直多重拆分视图的小部件
   multi_split_view: ^2.4.0
@@ -189,6 +189,8 @@ flutter:
     - assets/translations/
     - assets/images/
     - assets/images/system/
+    - assets/images/background/
+    - assets/images/chat/
 
 
   fonts:

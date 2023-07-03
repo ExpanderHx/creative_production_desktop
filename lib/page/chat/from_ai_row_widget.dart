@@ -30,7 +30,7 @@ class _FromAiRowWidgetState extends State<FromAiRowWidget> {
 
     return Container(
       decoration: BoxDecoration(
-        color: ThemeUtils.getThemeColor(context,lightColor:const Color.fromARGB(255, 247,247,248),blackColor: const Color.fromARGB(1, 247,247,248)),
+        color: ThemeUtils.getThemeColor(context,lightColor:const Color.fromARGB(255, 247,247,248),blackColor: const Color.fromARGB(20, 247,247,248)),
         border:const Border(
             bottom:BorderSide(
               color: Color.fromARGB(25, 0,0,0), // 边框颜色
@@ -48,8 +48,8 @@ class _FromAiRowWidgetState extends State<FromAiRowWidget> {
             height: 30,
             margin: EdgeInsets.only(right: 20.w,),
             child:  ClipOval(
-              child: Image.network(
-                "https://www.beihaiting.com/uploads/allimg/180114/10723-1P1140Z0092b.jpg",
+              child: Image.asset(
+                "assets/images/chat/ai-1.png",
                 width: 30,
                 height: 30,
                 fit: BoxFit.cover,

@@ -50,13 +50,13 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
   @override
   Widget build(BuildContext context){
     //设置尺寸（填写设计中设备的屏幕尺寸）如果设计基于360dp * 690dp的屏幕 Icon(Icons.send)
-
+    // color: ThemeUtils.getThemeColor(context),
 
     return Container(
       height: 100,
       padding: EdgeInsets.only(left: 100.w,right: 100.w),
       width: double.infinity,
-      color: ThemeUtils.getThemeColor(context),
+
       child: Column(
         children: [
           Container(

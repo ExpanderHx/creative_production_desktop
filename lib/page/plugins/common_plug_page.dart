@@ -4,17 +4,24 @@ import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:creative_production_desktop/page/plugins/piugins_form_widget.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../../config/const_app.dart';
 import '../../config/menu_config.dart';
 import '../../network/chat/chat_api.dart';
 import '../../network/chat/chat_api_handle.dart';
 import '../../network/chat/chat_gpt_open_ai.dart';
+import '../../provider/router_provider.dart';
+import '../../shortcut_key/shortcut_key_util.dart';
+import '../../util/db/isar_db_util.dart';
 import '../../util/theme_utils.dart';
 import '../chat/bean/chat_message.dart';
+import 'bean/plugins_bean.dart';
 
 
 
@@ -148,6 +155,59 @@ class _TranslatePlugPageState extends State<CommonPlugPage> {
     }
   }
 
+  void onUpdatePluginsBeanDb({PluginsBean? oldPluginsBean,PluginsBean? newPluginsBean}) async{
+    if(null!=oldPluginsBean){
+      await ShortcutKeyUtil.unregisterByPluginsBean(oldPluginsBean);
+    }
+    if(null!=newPluginsBean){
+      ShortcutKeyUtil.registerByPluginsBean(newPluginsBean, context.read<RouterProvider>());
+    }
+
+
+  }
+
+  void editPluginsBean() async{
+    if(null!=pluginsBeanId){
+      await IsarDBUtil().init();
+      List<PluginsBean> pluginsBeans =  await IsarDBUtil().isar!.pluginsBeans.where().idEqualTo(int.parse(pluginsBeanId!)).findAll();
+      if(null!=pluginsBeans&&pluginsBeans.length>0){
+        PluginsBean? oldPluginsBean = pluginsBeans[0];
+        if(null!=oldPluginsBean){
+          Map<String,dynamic>? map = await showDialog(
+              context: context,
+              // barrierColor: Colors.red.withAlpha(30),
+              barrierDismissible: true,
+              builder: (BuildContext context) {
+                return Dialog(
+                  backgroundColor: Colors.yellow.shade100, // 背景色
+                  elevation: 4.0, // 阴影高度
+                  insetAnimationDuration: Duration(milliseconds: 300), // 动画时间
+                  insetAnimationCurve: Curves.decelerate, // 动画效果
+                  insetPadding: const EdgeInsets.all(100), // 弹框距离屏幕边缘距离
+                  clipBehavior: Clip.none, // 剪切方式
+                  child: PiuginsFormWidget(pluginsBean: oldPluginsBean,),
+                );
+              }
+          );
+          print(map);
+          map = map ?? {};
+          onUpdatePluginsBeanDb(oldPluginsBean: map["oldPluginsBean"],newPluginsBean: map["newPluginsBean"]);
+          PluginsBean? newPluginsBean = map["newPluginsBean"];
+          if(null!=newPluginsBean){
+            setState(() {
+              inputTextEditingController.text = newPluginsBean.prompt!;
+              onTranslate();
+            });
+          }
+        }
+      }
+
+    }
+
+
+
+  }
+
 
 
   @override
@@ -155,22 +215,29 @@ class _TranslatePlugPageState extends State<CommonPlugPage> {
     //设置尺寸（填写设计中设备的屏幕尺寸）如果设计基于360dp * 690dp的屏幕
     // ScreenUtil.init(context, designSize: const Size(1920, 1080));
 
+    //  color: ThemeUtils.getThemeColor(context),
+
     // Icon(Icons.construction)
     // Icon(CupertinoIcons.hammer)
 
     return Container(
       // margin: EdgeInsets.only(left: 20,right: 20),
       padding: EdgeInsets.only(left: 20,right: 20),
-      color: ThemeUtils.getThemeColor(context),
+
       child: Column(
         children: [
           Row(
             children: [
               Container(
-                width: 50,
+                width: 90,
                 child: Tooltip(
                   message: inputTextEditingController.text,
-                  child: Text("prompt_word".tr()),
+                  child: TextButton(
+                    onPressed: () {
+                      editPluginsBean();
+                    },
+                    child: Text("prompt_word".tr()),
+                  ),
                 ),
               ),
               Expanded(

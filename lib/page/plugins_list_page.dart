@@ -157,11 +157,14 @@ class _PluginsListPageState extends State<PluginsListPage> {
 
     List<Widget> pluginsWidgetList = getPluginsWidgetList();
 
+    //  color: ThemeUtils.getThemeColor(context),
+
+
     return Container(
       width: double.infinity,
       height: double.infinity,
       margin: const EdgeInsets.only(top: 20,bottom: 20),
-      color: ThemeUtils.getThemeColor(context),
+
       child: Stack(
         children: [
           SingleChildScrollView(

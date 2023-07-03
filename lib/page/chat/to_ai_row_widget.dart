@@ -28,10 +28,10 @@ class _ToAiRowWidgetState extends State<ToAiRowWidget> {
   @override
   Widget build(BuildContext context) {
     double containerMinHeight = 65.h;
-
+    // color: ThemeUtils.getThemeColor(context),
     return Container(
       decoration: BoxDecoration(
-        color: ThemeUtils.getThemeColor(context),
+
         border:const Border(
             bottom:BorderSide(
               color: Color.fromARGB(25, 0,0,0), // 边框颜色
@@ -50,8 +50,8 @@ class _ToAiRowWidgetState extends State<ToAiRowWidget> {
             width: 30,
             margin: EdgeInsets.only(right: 20.w,),
             child:  ClipOval(
-              child: Image.network(
-                "https://pic2.zhimg.com/v2-639b49f2f6578eabddc458b84eb3c6a1.jpg",
+              child: Image.asset(
+                "assets/images/chat/user-2.png",
                 width: 30,
                 height: 30,
                 fit: BoxFit.cover,

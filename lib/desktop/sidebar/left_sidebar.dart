@@ -43,10 +43,20 @@ class _LeftSidebarState extends State<LeftSidebar> {
 
   int service_state = 0;
 
+  Timer? serviceStateTimer;
+
   @override
   void initState() {
     getLaunchAtStartupIsEnabled();
     timerServiceState();
+  }
+
+  @override
+  void dispose() {
+    if(null!=serviceStateTimer){
+      serviceStateTimer!.cancel();
+    }
+    super.dispose();
   }
 
   void getLaunchAtStartupIsEnabled() async{
@@ -86,9 +96,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
   }
 
   void timerServiceState(){
-    Timer.periodic(Duration(seconds: 30), (Timer timer) {
-      getServiceState();
-    });
+    if(null==serviceStateTimer){
+      serviceStateTimer = Timer.periodic(Duration(seconds: 30), (Timer timer) {
+        getServiceState();
+      });
+    }
   }
 
   Future<int?> getServiceState() async{
@@ -111,9 +123,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
     }catch(e){
       _service_state = 0;
     }
-    setState(() {
-      service_state = _service_state;
-    });
+    if(mounted){
+      setState(() {
+        service_state = _service_state;
+      });
+    }
     return _service_state;
 
   }

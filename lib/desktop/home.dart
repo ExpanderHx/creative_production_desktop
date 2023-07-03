@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+// import 'package:acrylic_any/acrylic_any.dart';
 import 'package:creative_production_desktop/desktop/sidebar/left_sidebar.dart';
 import 'package:creative_production_desktop/desktop/sidebar/right_sidebar.dart';
 import 'package:creative_production_desktop/desktop/app_window_caption/app_preferred_size_child.dart';
@@ -145,42 +146,53 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener{
       areaList.add(Area(size: rightSidebarWeight,minimalSize: 200));
     }
 
+    // NetworkImage('https://www.beihaiting.com/uploads/allimg/180114/10723-1P1140Z0092b.jpg'),
 
 
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kWindowCaptionHeight + 20),
-        child: AppPreferredSizeChild(),
-      ),
-      body: Container(
-        child: MultiSplitViewTheme(
-            data:MultiSplitViewThemeData(
-                dividerPainter: DividerPainters.grooved1(
-                    color: Colors.indigo[100]!,
-                    backgroundColor: Color.fromARGB(25, 0,0,0),
-                    highlightedColor: Colors.indigo[900]!),
-                dividerThickness:5
-            ),
-            child: MultiSplitView(
-              children: [
-                ...multiSplitViewChildren
-              ],
-              controller: MultiSplitViewController(
-                  areas: areaList
-              ),
-              // initialAreas: [
-              //   Area(size: 60,minimalSize: 60),
-              //   Area(weight:0.9,minimalWeight: 0.3),
-              //   Area(size: 240,minimalSize: 200),
-              // ]
-            )),
-      ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _incrementCounter,
-      //   tooltip: 'Increment',
-      //   child: const Icon(Icons.add),
+    return Container(
+      // decoration: BoxDecoration(
+      //   image: DecorationImage(
+      //     image: AssetImage('assets/images/background/background_2.webp'),
+      //     fit: BoxFit.fill, // 完全填充
+      //   ),
       // ),
-      // This trailing comma makes auto-formatting nicer for build methods.
+      child: Scaffold(
+        // backgroundColor: Colors.transparent,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kWindowCaptionHeight + 20),
+          child: AppPreferredSizeChild(),
+        ),
+        body: Container(
+          child: MultiSplitViewTheme(
+              data:MultiSplitViewThemeData(
+                  dividerPainter: DividerPainters.grooved1(
+                      color: Colors.indigo[100]!,
+                      backgroundColor: Color.fromARGB(25, 0,0,0),
+                      highlightedColor: Colors.indigo[900]!),
+                  dividerThickness:5
+              ),
+              child: MultiSplitView(
+                children: [
+                  ...multiSplitViewChildren
+                ],
+                controller: MultiSplitViewController(
+                    areas: areaList
+                ),
+                // initialAreas: [
+                //   Area(size: 60,minimalSize: 60),
+                //   Area(weight:0.9,minimalWeight: 0.3),
+                //   Area(size: 240,minimalSize: 200),
+                // ]
+              )
+          ),
+        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: _incrementCounter,
+        //   tooltip: 'Increment',
+        //   child: const Icon(Icons.add),
+        // ),
+        // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 

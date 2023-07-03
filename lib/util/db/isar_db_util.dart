@@ -31,7 +31,9 @@ class IsarDBUtil {
     if(isar == null){
       final dir = await getApplicationDocumentsDirectory();
       String projectIsarDbPath = path.join(dir.path , ConstApp.projectNameKey, ConstApp.projectDbNameKey,ConstApp.projectIsarDbNameKey);
-
+      // if(!File(projectIsarDbPath).existsSync()){
+      //   File(projectIsarDbPath).createSync(recursive: true);
+      // }
       isar = await Isar.open(
         [PluginsBeanSchema,ChatModelConfigSchema],
         directory: projectIsarDbPath,

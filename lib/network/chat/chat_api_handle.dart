@@ -105,7 +105,8 @@ class ChatApiHandle extends ChatApi{
                 receiveTimeout: const Duration(seconds: 120),
                 baseUrl: activeChatModelConfig.baseUrl!
             ),
-            enableLog: true
+            enableLog: true,
+            activeChatModelConfig:activeChatModelConfig
         );
         if(null!=activeType){
           activeMap[activeType] = _chatApiOpenAi;

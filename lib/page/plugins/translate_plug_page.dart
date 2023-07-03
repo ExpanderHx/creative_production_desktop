@@ -153,10 +153,12 @@ class _TranslatePlugPageState extends State<TranslatePlugPage> {
   Widget build(BuildContext context) {
     //设置尺寸（填写设计中设备的屏幕尺寸）如果设计基于360dp * 690dp的屏幕
     // ScreenUtil.init(context, designSize: const Size(1920, 1080));
+    // color: ThemeUtils.getThemeColor(context),
+
     return Container(
       // margin: EdgeInsets.only(left: 20,right: 20),
       padding: EdgeInsets.only(left: 20,right: 20),
-      color: ThemeUtils.getThemeColor(context),
+
       child: Column(
         children: [
           Container(
@@ -208,7 +210,7 @@ class _TranslatePlugPageState extends State<TranslatePlugPage> {
                       margin: EdgeInsets.only(right: 15),
                       padding: EdgeInsets.only(left: 10,right: 10),
                       decoration: BoxDecoration(
-                        color: ThemeUtils.getThemeColor(context),
+                       color: ThemeUtils.getThemeColor(context),
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         border: Border.all(
                           color: const Color.fromARGB(125, 67,67,67), // 边框颜色
