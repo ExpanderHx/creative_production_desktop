@@ -7,12 +7,14 @@ import 'package:clipboard/clipboard.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../../config/const_app.dart';
 import '../../config/menu_config.dart';
 import '../../network/chat/chat_api.dart';
 import '../../network/chat/chat_api_handle.dart';
 import '../../network/chat/chat_gpt_open_ai.dart';
+import '../../provider/skin_provider.dart';
 import '../../util/theme_utils.dart';
 import '../chat/bean/chat_message.dart';
 
@@ -155,6 +157,8 @@ class _TranslatePlugPageState extends State<TranslatePlugPage> {
     // ScreenUtil.init(context, designSize: const Size(1920, 1080));
     // color: ThemeUtils.getThemeColor(context),
 
+    SkinProvider skinProvider = context.watch<SkinProvider>();
+
     return Container(
       // margin: EdgeInsets.only(left: 20,right: 20),
       padding: EdgeInsets.only(left: 20,right: 20),
@@ -167,7 +171,11 @@ class _TranslatePlugPageState extends State<TranslatePlugPage> {
             child: Container(
               padding: EdgeInsets.only(left: 10,right: 10),
               decoration: BoxDecoration(
-                color: ThemeUtils.getThemeColor(context),
+                color: ThemeUtils.getGobalSkinDataThemeColor(
+                    context,
+                    gobalSkinData: skinProvider.gobalSkinData,
+                    imageBackgroundColor: Color.fromARGB(25, 50,50,50)
+                ),
                 borderRadius: BorderRadius.all(Radius.circular(8)),
                 border: Border.all(
                   color: Color.fromARGB(125, 67,67,67), // 边框颜色
@@ -176,7 +184,10 @@ class _TranslatePlugPageState extends State<TranslatePlugPage> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: ThemeUtils.getBackgroundThemeColor(context,lightColor: Color.fromARGB(25, 0,0,0),blackColor: Color.fromARGB(25, 255,255,255)), // 阴影颜色
+                    color: ThemeUtils.getGobalSkinDataBackgroundThemeColor(
+                        context,lightColor: Color.fromARGB(25, 0,0,0),
+                        blackColor: Color.fromARGB(25, 255,255,255),
+                    )!, // 阴影颜色
                     blurRadius: 5.0, // 阴影模糊半径
                     spreadRadius: 2.0, // 阴影扩散半径
                     offset: Offset(0, 0), // 阴影偏移量
@@ -210,7 +221,11 @@ class _TranslatePlugPageState extends State<TranslatePlugPage> {
                       margin: EdgeInsets.only(right: 15),
                       padding: EdgeInsets.only(left: 10,right: 10),
                       decoration: BoxDecoration(
-                       color: ThemeUtils.getThemeColor(context),
+                       color: ThemeUtils.getGobalSkinDataThemeColor(
+                           context,
+                           gobalSkinData: skinProvider.gobalSkinData,
+                           imageBackgroundColor: Color.fromARGB(25, 50,50,50)
+                       ),
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         border: Border.all(
                           color: const Color.fromARGB(125, 67,67,67), // 边框颜色
@@ -286,7 +301,11 @@ class _TranslatePlugPageState extends State<TranslatePlugPage> {
                       margin: EdgeInsets.only(left: 15),
                       padding: EdgeInsets.only(left: 10,right: 10),
                       decoration: BoxDecoration(
-                        color: ThemeUtils.getThemeColor(context),
+                        color: ThemeUtils.getGobalSkinDataThemeColor(
+                            context,
+                            gobalSkinData: skinProvider.gobalSkinData,
+                            imageBackgroundColor: Color.fromARGB(25, 50,50,50)
+                        ),
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         border: Border.all(
                           color: Color.fromARGB(125, 67,67,67), // 边框颜色

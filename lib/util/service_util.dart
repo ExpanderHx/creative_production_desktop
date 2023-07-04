@@ -20,7 +20,10 @@ class ServiceUtil{
       print(resolvedExecutablePath);
       String? servicePath = PreferencesUtil().get(ConstApp.servicePathKey);
       servicePath ??= await getServicePath();
+
+      // BotToast.showText(text: "resolvedExecutablePath : ${resolvedExecutablePath}");
       if(null!=servicePath){
+        // BotToast.showText(text: "servicePath : ${servicePath}");
         String serviceBatPath = path.join(servicePath! , ConstApp.serveSystemNameKey,ConstApp.startBatNameKey);
         if(File(serviceBatPath).existsSync()){
           ProcessResult result = await shell

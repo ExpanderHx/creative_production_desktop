@@ -51,6 +51,15 @@ class ThemeUtils{
     return AdaptiveTheme.maybeOf(context)?.brightness == Brightness.light ? lightColor : blackColor;
   }
 
+  static Color? getGobalSkinDataBackgroundThemeColor(BuildContext context,{Color lightColor = Colors.black,Color blackColor = Colors.white,SkinData? gobalSkinData,Color? imageBackgroundColor}){
+    if(null!=gobalSkinData){
+      if(null!=gobalSkinData.type&&gobalSkinData.type!=0){
+        return imageBackgroundColor;
+      }
+    }
+    return AdaptiveTheme.maybeOf(context)?.brightness == Brightness.light ? lightColor : blackColor;
+  }
+
 
   static ThemeData skinThemeDataHandle(ThemeData theme,SkinData? gobalSkinData){
     if(null!=gobalSkinData){

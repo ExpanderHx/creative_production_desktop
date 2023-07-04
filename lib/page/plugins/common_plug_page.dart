@@ -17,6 +17,7 @@ import '../../network/chat/chat_api.dart';
 import '../../network/chat/chat_api_handle.dart';
 import '../../network/chat/chat_gpt_open_ai.dart';
 import '../../provider/router_provider.dart';
+import '../../provider/skin_provider.dart';
 import '../../shortcut_key/shortcut_key_util.dart';
 import '../../util/db/isar_db_util.dart';
 import '../../util/theme_utils.dart';
@@ -220,6 +221,9 @@ class _TranslatePlugPageState extends State<CommonPlugPage> {
     // Icon(Icons.construction)
     // Icon(CupertinoIcons.hammer)
 
+    SkinProvider skinProvider = context.watch<SkinProvider>();
+
+
     return Container(
       // margin: EdgeInsets.only(left: 20,right: 20),
       padding: EdgeInsets.only(left: 20,right: 20),
@@ -247,7 +251,11 @@ class _TranslatePlugPageState extends State<CommonPlugPage> {
                     child: Container(
                       padding: EdgeInsets.only(left: 10,right: 10),
                       decoration: BoxDecoration(
-                        color: ThemeUtils.getThemeColor(context),
+                        color: ThemeUtils.getGobalSkinDataThemeColor(
+                            context,
+                            gobalSkinData: skinProvider.gobalSkinData,
+                            imageBackgroundColor: Color.fromARGB(25, 50,50,50)
+                        ),
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         border: Border.all(
                           color: Color.fromARGB(125, 67,67,67), // 边框颜色
@@ -305,7 +313,11 @@ class _TranslatePlugPageState extends State<CommonPlugPage> {
                       margin: EdgeInsets.only(left: 15),
                       padding: EdgeInsets.only(left: 10,right: 10),
                       decoration: BoxDecoration(
-                        color: ThemeUtils.getThemeColor(context),
+                        color: ThemeUtils.getGobalSkinDataThemeColor(
+                            context,
+                            gobalSkinData: skinProvider.gobalSkinData,
+                            imageBackgroundColor: Color.fromARGB(25, 50,50,50)
+                        ),
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         border: Border.all(
                           color: Color.fromARGB(125, 67,67,67), // 边框颜色

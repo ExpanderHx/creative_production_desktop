@@ -20,12 +20,12 @@ class ChatHttp {
 
     dio = Dio(options);
 
-    dio.interceptors.add(LogInterceptor(
-      request: false,
-      requestHeader: false,
-      responseBody: true,
-      responseHeader: false
-    ));
+    // dio.interceptors.add(LogInterceptor(
+    //   request: false,
+    //   requestHeader: false,
+    //   responseBody: true,
+    //   responseHeader: false
+    // ));
 
     // // 添加request拦截器
     // dio.interceptors.add(RequestInterceptor());
