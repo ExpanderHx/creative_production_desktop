@@ -69,6 +69,21 @@ class ModelConfigUtil{
 
     chatModelConfigs.add(chatModelConfigOpenAi);
 
+
+    ChatModelConfig chatModelConfigInt4CpuLocal = getChatModelConfig(
+      "THUDM/chatglm-6b-int4",
+      modelName: "THUDM/chatglm-6b-int4",
+      tokenizerName: "THUDM/chatglm-6b-int4",
+      loadDevice:"cpu",
+      isGlobal: false,
+      isLocal: true,
+      baseUrl: ChatConfig.chatGeneralBaseUrl,
+    );
+    await IsarDBUtil().isar!.writeTxn(() async{
+      await IsarDBUtil().isar!.chatModelConfigs.put(chatModelConfigInt4CpuLocal);
+    });
+    chatModelConfigs.add(chatModelConfigInt4CpuLocal);
+
     return chatModelConfigs;
 
   }
@@ -82,6 +97,7 @@ class ModelConfigUtil{
     bool? isGlobal,
     bool? isLocal,
     String? baseUrl,
+    String? loadDevice
   }){
     ChatModelConfig chatModelConfig = ChatModelConfig();
     chatModelConfig.configName = configName;
@@ -92,6 +108,7 @@ class ModelConfigUtil{
     chatModelConfig.isGlobal = isGlobal;
     chatModelConfig.isLocal = isLocal;
     chatModelConfig.baseUrl = baseUrl;
+    chatModelConfig.loadDevice = loadDevice;
     return chatModelConfig;
   }
 

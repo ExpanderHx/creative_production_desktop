@@ -97,7 +97,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
 
   void timerServiceState(){
     if(null==serviceStateTimer){
-      serviceStateTimer = Timer.periodic(Duration(seconds: 30), (Timer timer) {
+      serviceStateTimer = Timer.periodic(Duration(seconds: 5), (Timer timer) {
         getServiceState();
       });
     }
