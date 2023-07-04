@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:markdown_widget/widget/markdown.dart';
+import 'package:provider/provider.dart';
 
+import '../../provider/skin_provider.dart';
 import '../../util/theme_utils.dart';
 
 
@@ -28,10 +30,12 @@ class _ToAiRowWidgetState extends State<ToAiRowWidget> {
   @override
   Widget build(BuildContext context) {
     double containerMinHeight = 65.h;
+
+    SkinProvider skinProvider = context.watch<SkinProvider>();
+
     // color: ThemeUtils.getThemeColor(context),
     return Container(
       decoration: BoxDecoration(
-
         border:const Border(
             bottom:BorderSide(
               color: Color.fromARGB(25, 0,0,0), // 边框颜色

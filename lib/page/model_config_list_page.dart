@@ -18,6 +18,7 @@ import '../../network/chat/chat_api.dart';
 import '../../network/chat/chat_gpt_open_ai.dart';
 import '../../util/theme_utils.dart';
 import '../provider/router_provider.dart';
+import '../provider/skin_provider.dart';
 import '../shortcut_key/shortcut_key_util.dart';
 import '../util/db/isar_db_util.dart';
 import 'model_config/bean/chat_model_config.dart';
@@ -176,6 +177,7 @@ class _ModelConfigListPagePageState extends State<ModelConfigListPagePage> {
   List<Widget> getPluginsWidgetList(){
 
     // color: ThemeUtils.getThemeColor(context),
+    SkinProvider skinProvider = context.watch<SkinProvider>();
 
     List<Widget> pluginsWidget = [];
     if(null!=chatModelConfigList&&chatModelConfigList!.length>0){
@@ -188,7 +190,19 @@ class _ModelConfigListPagePageState extends State<ModelConfigListPagePage> {
                 width: 260,
                 margin:  EdgeInsets.only(left: 20,right: 20,top: 5,bottom: 15),
                 decoration: BoxDecoration(
-                  color: ThemeUtils.getThemeColor(context),
+                  color: ThemeUtils.getThemeColor(
+                    context,
+                    lightColor: ThemeUtils.getGobalSkinDataThemeColor(
+                      context,
+                      gobalSkinData: skinProvider.gobalSkinData,
+                      imageBackgroundColor: Color.fromARGB(0, 255, 255, 255),
+                    )!,
+                    blackColor: ThemeUtils.getGobalSkinDataThemeColor(
+                        context,
+                        gobalSkinData: skinProvider.gobalSkinData,
+                        imageBackgroundColor: Color.fromARGB(0, 255, 255, 255),
+                    )!,
+                  ),
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                   border: Border.all(
                     color: ThemeUtils.getThemeColor(context,lightColor: Color(0Xfff8f9fa),blackColor:  Color(0Xff495057)), // 边框颜色
@@ -197,7 +211,11 @@ class _ModelConfigListPagePageState extends State<ModelConfigListPagePage> {
                   ),
                   boxShadow: [
                       BoxShadow(
-                        color: ThemeUtils.getBackgroundThemeColor(context,lightColor: Color.fromARGB(25, 0,0,0),blackColor: Color.fromARGB(25, 255,255,255)), // 阴影颜色
+                        color: ThemeUtils.getBackgroundThemeColor(
+                            context,
+                            lightColor: Color.fromARGB(25, 0,0,0),
+                            blackColor: Color.fromARGB(25, 255,255,255)
+                        ), // 阴影颜色
                         blurRadius: 5.0, // 阴影模糊半径
                         spreadRadius: 2.0, // 阴影扩散半径
                         offset: Offset(0, 0), // 阴影偏移量
@@ -224,7 +242,7 @@ class _ModelConfigListPagePageState extends State<ModelConfigListPagePage> {
                             child: SelectableText(
                               chatModelConfig.configName??"",
                                 style: TextStyle(
-                                  color: ThemeUtils.getFontThemeColor(context,lightColor: Color(0Xff343a40),blackColor: Color(0Xfff1f3f5)),
+                                  // color: ThemeUtils.getFontThemeColor(context,lightColor: Color(0Xff343a40),blackColor: Color(0Xfff1f3f5)),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 16
                                 ),

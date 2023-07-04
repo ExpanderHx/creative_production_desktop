@@ -322,8 +322,9 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
         decoration: InputDecoration(
           contentPadding:const EdgeInsets.only(bottom: 2,top: 10),
           labelText: title,
-          labelStyle:const TextStyle(
-              fontSize: 12
+          labelStyle: TextStyle(
+              fontSize: 12,
+              color: Theme.of(context).inputDecorationTheme.labelStyle?.color
           ),
           suffixIcon:suffixIcon
         ),

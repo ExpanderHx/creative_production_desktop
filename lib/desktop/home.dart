@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 // import 'package:acrylic_any/acrylic_any.dart';
 import 'package:creative_production_desktop/desktop/sidebar/left_sidebar.dart';
@@ -24,7 +25,9 @@ import '../config/shared_preferences_const.dart';
 
 import '../page/chat_page.dart';
 import '../page/model_config/model_config_page.dart';
+import '../page/skin/config/skin_data.dart';
 import '../provider/router_provider.dart';
+import '../provider/skin_provider.dart';
 import '../shortcut_key/shortcut_key_util.dart';
 import '../util/preferences_util.dart';
 import '../util/tray_manager_util.dart';
@@ -147,15 +150,36 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener{
     }
 
     // NetworkImage('https://www.beihaiting.com/uploads/allimg/180114/10723-1P1140Z0092b.jpg'),
+    SkinProvider skinProvider = context.watch<SkinProvider>();
+    SkinData? gobalSkinData = skinProvider.gobalSkinData;
+    BoxDecoration? decoration;
+    if(null!=gobalSkinData){
+      if(null!=gobalSkinData.type){
+        if(null!=gobalSkinData.image&&!gobalSkinData.image!.isEmpty){
+          if(gobalSkinData.type==1){
+            decoration = BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(gobalSkinData.image!),
+                fit: BoxFit.fill, // 完全填充
+              ),
+            );
+          }else if(gobalSkinData.type==2){
+            decoration = BoxDecoration(
+              image: DecorationImage(
+                image: FileImage(
+                    File(gobalSkinData.image!)
+                ),
+                fit: BoxFit.fill, // 完全填充
+              ),
+            );
+          }
+        }
 
+      }
+    }
 
     return Container(
-      // decoration: BoxDecoration(
-      //   image: DecorationImage(
-      //     image: AssetImage('assets/images/background/background_2.webp'),
-      //     fit: BoxFit.fill, // 完全填充
-      //   ),
-      // ),
+      decoration: decoration,
       child: Scaffold(
         // backgroundColor: Colors.transparent,
         appBar: PreferredSize(

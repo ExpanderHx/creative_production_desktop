@@ -2,10 +2,13 @@ import 'dart:io';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:creative_production_desktop/page/skin/config/skin_data.dart';
 import 'package:creative_production_desktop/provider/router_provider.dart';
+import 'package:creative_production_desktop/provider/skin_provider.dart';
 import 'package:creative_production_desktop/util/db/isar_db_util.dart';
 import 'package:creative_production_desktop/util/init_utils.dart';
 import 'package:creative_production_desktop/util/preferences_util.dart';
+import 'package:creative_production_desktop/util/theme_utils.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_acrylic/window.dart';
@@ -53,7 +56,8 @@ void main(List<String> args) async{
   InitUtils.init();
 
   // 初始化数据库
-  IsarDBUtil();
+  // IsarDBUtil();
+  await IsarDBUtil().init();
 
   WindowOptions windowOptions = const WindowOptions(
     size: Size(900, 600),
@@ -97,10 +101,13 @@ Widget multiMainProvider(Widget widget){
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<RouterProvider>(create: (_) => RouterProvider()),
+      ChangeNotifierProvider<SkinProvider>(create: (_) => SkinProvider()),
     ],
     builder: (BuildContext context, Widget? child){
       RouterProvider routerProvider = context.read<RouterProvider>();
       routerProvider.init();
+      SkinProvider skinProvider = context.read<SkinProvider>();
+      skinProvider.init();
       return widget;
     },
 
@@ -141,6 +148,53 @@ class MyApp extends StatelessWidget {
 
 
 
+
+
+    // light = light.copyWith(scaffoldBackgroundColor:Colors.transparent);
+    // dark = dark.copyWith(scaffoldBackgroundColor:Colors.transparent);
+
+    // light = light.copyWith(highlightColor:Colors.transparent);
+    // light = light.copyWith(hintColor:Colors.transparent);
+    // light = light.copyWith(indicatorColor:Colors.transparent);
+    // light = light.copyWith(dialogBackgroundColor:Colors.transparent);
+    // light = light.copyWith(focusColor:Colors.transparent);
+    // light = light.copyWith(hoverColor:Colors.transparent);
+    // light = light.copyWith(disabledColor:Colors.transparent);
+    // light = light.copyWith(dividerColor:Colors.transparent);
+
+    // light = light.copyWith(secondaryHeaderColor:Colors.transparent);
+    // light = light.copyWith(shadowColor:Colors.transparent);
+    // light = light.copyWith(splashColor:Colors.transparent);
+    // light = light.copyWith(unselectedWidgetColor:Colors.transparent);
+    // light = light.copyWith(cardColor:Colors.transparent);
+
+
+
+    // light = light.copyWith(primaryColorDark:Colors.transparent);
+
+
+    // light = light.copyWith(canvasColor:Colors.transparent);
+    // light = light.copyWith(primaryColorDark:Colors.transparent);
+    // light = light.copyWith(primaryColorLight:Colors.transparent);
+    // light = light.copyWith(scaffoldBackgroundColor:Colors.transparent);
+
+
+
+
+
+
+    // dark = light.copyWith(primaryColorDark:Colors.transparent);
+
+
+    // light = light.copyWith(colorScheme:light.colorScheme.copyWith(background:  Colors.transparent));
+    // dark = dark.copyWith(colorScheme:dark.colorScheme.copyWith(background:  Colors.transparent));
+
+    // light.copyWith(colorScheme:light.colorScheme.copyWith(background:  Colors.transparent));
+    // light.copyWith(colorScheme:light.colorScheme.copyWith(primary:  Colors.transparent));
+    // dark.copyWith(colorScheme:dark.colorScheme.copyWith(background:  Colors.transparent));
+    // dark.copyWith(colorScheme:dark.colorScheme.copyWith(primary:  Colors.transparent));
+    // light.copyWith(backgroundColor:Colors.transparent);
+    // dark.copyWith(backgroundColor:Colors.transparent);
     // fontFamily .copyWith(primaryColor: Colors.transparent)
 
     return AdaptiveTheme(
@@ -153,16 +207,23 @@ class MyApp extends StatelessWidget {
             designSize: const Size(1920, 1080),
             minTextAdapt: true,
             splitScreenMode: true,
-            builder: (context , child) => MaterialApp(
-              theme: theme,
-              darkTheme: darkTheme,
-              builder: BotToastInit(), //1.调用BotToastInit
-              navigatorObservers: [BotToastNavigatorObserver()], //2.注册路由观察者
-              localizationsDelegates: context.localizationDelegates,
-              supportedLocales: context.supportedLocales,
-              locale: context.locale,
-              home: homeWidget,
-            )
+            builder: (context , child){
+
+              theme = ThemeUtils.defaultThemeData(theme);
+              SkinProvider skinProvider = context.watch<SkinProvider>();
+              theme = ThemeUtils.skinThemeDataHandle(theme,skinProvider.gobalSkinData);
+
+              return MaterialApp(
+                theme: theme,
+                darkTheme: darkTheme,
+                builder: BotToastInit(), //1.调用BotToastInit
+                navigatorObservers: [BotToastNavigatorObserver()], //2.注册路由观察者
+                localizationsDelegates: context.localizationDelegates,
+                supportedLocales: context.supportedLocales,
+                locale: context.locale,
+                home: homeWidget,
+              );
+            }
         );
       },
     );

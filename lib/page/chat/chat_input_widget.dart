@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 
+import '../../provider/skin_provider.dart';
 import '../../util/theme_utils.dart';
 
 class ChatInputWidget extends StatefulWidget {
@@ -51,18 +53,24 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
   Widget build(BuildContext context){
     //设置尺寸（填写设计中设备的屏幕尺寸）如果设计基于360dp * 690dp的屏幕 Icon(Icons.send)
     // color: ThemeUtils.getThemeColor(context),
-
+    SkinProvider skinProvider = context.watch<SkinProvider>();
     return Container(
       height: 100,
       padding: EdgeInsets.only(left: 100.w,right: 100.w),
       width: double.infinity,
-
       child: Column(
         children: [
           Container(
             height: 55,
             decoration: BoxDecoration(
-              color: ThemeUtils.getThemeColor(context),
+              color: ThemeUtils.getThemeColor(
+                  context,
+                  lightColor: ThemeUtils.getGobalSkinDataThemeColor(
+                    context,
+                    gobalSkinData: skinProvider.gobalSkinData,
+                    imageBackgroundColor: Color.fromARGB(150, 162, 161, 161),
+                  )!,
+              ),
               borderRadius: BorderRadius.all(Radius.circular(8)),
               boxShadow: [
                 BoxShadow(

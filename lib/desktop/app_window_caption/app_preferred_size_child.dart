@@ -64,7 +64,7 @@ class _AppPreferredSizeChildState extends State<AppPreferredSizeChild> {
         ),
         Expanded(
           child: AppWindowCaption(
-              // backgroundColor: Colors.transparent,
+              backgroundColor: Colors.transparent,
               brightness: Theme.of(context).brightness,
               title: Text('app_name'.tr()),
               icons: Container(

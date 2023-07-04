@@ -7,6 +7,10 @@ class ConstApp{
 
   static String projectIsarDbNameKey = "isar";
 
+  static String projectImageNameKey = "image";
+
+  static String projectBackgroundImageNameKey = "background";
+
   static double LeftSidebar = 130;
 
   static String screenSelectionTextKey = "screenSelectionText";

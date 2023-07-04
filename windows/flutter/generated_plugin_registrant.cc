@@ -8,6 +8,7 @@
 
 #include <auto_updater/auto_updater_plugin.h>
 #include <clipboard_watcher/clipboard_watcher_plugin.h>
+#include <desktop_drop/desktop_drop_plugin.h>
 #include <desktop_multi_window/desktop_multi_window_plugin.h>
 #include <flutter_acrylic/flutter_acrylic_plugin.h>
 #include <hotkey_manager/hotkey_manager_plugin.h>
@@ -23,6 +24,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("AutoUpdaterPlugin"));
   ClipboardWatcherPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("ClipboardWatcherPlugin"));
+  DesktopDropPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("DesktopDropPlugin"));
   DesktopMultiWindowPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("DesktopMultiWindowPlugin"));
   FlutterAcrylicPluginRegisterWithRegistrar(

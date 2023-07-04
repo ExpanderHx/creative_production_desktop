@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   auto_updater
   clipboard_watcher
+  desktop_drop
   desktop_multi_window
   flutter_acrylic
   hotkey_manager

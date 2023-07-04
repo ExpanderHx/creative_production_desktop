@@ -5,9 +5,11 @@ import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:markdown_widget/widget/markdown.dart';
+import 'package:provider/provider.dart';
 
 // import 'package:markdown_widget/widget/markdown.dart';
 
+import '../../provider/skin_provider.dart';
 import '../../util/theme_utils.dart';
 
 
@@ -28,9 +30,17 @@ class _FromAiRowWidgetState extends State<FromAiRowWidget> {
   Widget build(BuildContext context) {
     double containerMinHeight = 65.h;
 
+    SkinProvider skinProvider = context.watch<SkinProvider>();
+
     return Container(
       decoration: BoxDecoration(
-        color: ThemeUtils.getThemeColor(context,lightColor:const Color.fromARGB(255, 247,247,248),blackColor: const Color.fromARGB(20, 247,247,248)),
+        color: ThemeUtils.getGobalSkinDataThemeColor(
+            context,
+            lightColor:const Color.fromARGB(255, 247,247,248),
+            blackColor: const Color.fromARGB(20, 247,247,248),
+            gobalSkinData: skinProvider.gobalSkinData,
+            imageBackgroundColor:Color.fromARGB(50, 162, 161, 161),
+        ),
         border:const Border(
             bottom:BorderSide(
               color: Color.fromARGB(25, 0,0,0), // 边框颜色

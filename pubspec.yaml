@@ -144,6 +144,15 @@ dependencies:
   # 适用于 Linux/Win/Mac 的进程运行帮助程序
   process_run: ^0.13.0
 
+  # 允许用户将文件拖动到颤振桌面应用程序的插件
+  desktop_drop: ^0.4.1
+
+  # 允许您使用本机文件资源管理器来选择单个或多个文件
+  file_picker: ^5.3.2
+
+  # 简单、快速地生成 RFC4122 UUID
+  uuid: ^3.0.7
+
 
   # 全面的剪切板 需要安装 Rust 对于 macOS 或 Linux，请在终端中执行以下命令 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 #  super_clipboard: ^0.4.0
