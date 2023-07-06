@@ -30,6 +30,7 @@ import '../provider/router_provider.dart';
 import '../provider/skin_provider.dart';
 import '../shortcut_key/shortcut_key_util.dart';
 import '../util/preferences_util.dart';
+import '../util/theme_utils.dart';
 import '../util/tray_manager_util.dart';
 import '../util/widget/resizable_component.dart';
 import '../util/widget/resizable_widget.dart';
@@ -181,7 +182,7 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener{
     return Container(
       decoration: decoration,
       child: Scaffold(
-        // backgroundColor: Colors.transparent,
+        backgroundColor: ThemeUtils.getBackgroundColorIsTransparentColor(gobalSkinData: gobalSkinData),
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kWindowCaptionHeight + 20),
           child: AppPreferredSizeChild(),

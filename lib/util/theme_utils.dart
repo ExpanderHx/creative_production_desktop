@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../page/skin/config/skin_data.dart';
+import '../utilities/platform_util.dart';
 
 class ThemeUtils{
 
@@ -132,6 +133,17 @@ class ThemeUtils{
         // textTheme: FlexThemeData.dark(fontFamily: "Ping Fang",useMaterial3: true,scheme:FlexScheme.flutterDash).textTheme
     );
     return theme;
+  }
+
+  static Color? getBackgroundColorIsTransparentColor({SkinData? gobalSkinData}){
+    if(kIsMacOS){
+      if(null!=gobalSkinData){
+        if(null!=gobalSkinData.type&&gobalSkinData.type!=0){
+          return Colors.transparent;
+        }
+      }
+    }
+    return null;
   }
 
 
