@@ -63,6 +63,18 @@ class ServiceUtil{
     // }
   }
 
+
+
+  static Future<String?> getServiceSuperPath() async{
+    String? serviceSuperPath = PreferencesUtil().get(ConstApp.servicePathKey);
+    serviceSuperPath ??= await getServicePath();
+    if(null!=serviceSuperPath){
+      serviceSuperPath = path.dirname(serviceSuperPath);
+    }
+    return serviceSuperPath;
+  }
+
+
   static String? getServicePath(){
     if(kIsWindows){
       return getWindowsServicePath();
@@ -77,6 +89,12 @@ class ServiceUtil{
     File serviceProjectDirectory = File(path.join(resolvedExecutablePath , ConstApp.serviceProjectNameKey));
     if(serviceProjectDirectory.existsSync()){
       return serviceProjectDirectory.path;
+    }else{
+      resolvedExecutablePath = path.dirname(resolvedExecutablePath);
+      File serviceProjectDirectory = File(path.join(resolvedExecutablePath , ConstApp.serviceProjectNameKey));
+      if(serviceProjectDirectory.existsSync()){
+        return serviceProjectDirectory.path;
+      }
     }
     return null;
   }

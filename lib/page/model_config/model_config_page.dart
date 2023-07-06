@@ -15,13 +15,17 @@ import 'package:isar/isar.dart';
 
 import 'package:markdown_widget/widget/markdown.dart';
 
+import '../../config/const_app.dart';
 import '../../network/chat/chat_api_handle.dart';
 import '../../network/chat/chat_gpt_sdk/src/utils/constants.dart';
 import '../../network/chat/config/chat_config.dart';
 import '../../util/db/isar_db_util.dart';
 import '../../util/model_config/model_config_util.dart';
+import '../../util/preferences_util.dart';
+import '../../util/service_util.dart';
 import '../plugins/config/plugins_config.dart';
 import '../chat/bean/chat_message.dart';
+import 'package:path/path.dart' as path;
 
 
 
@@ -158,8 +162,21 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
     widgetList.add(getInputRowWidget("${tr('model_name')} : ",
         key: ValueKey("modelName " + activeChatModelConfig!.id.toString()),
         value: activeChatModelConfig!.modelName,
-        onChanged: (newValue) {
+        onChanged: (newValue) async{
           activeChatModelConfig!.modelName = newValue;
+          // String? serviceSuperPath = await ServiceUtil.getServiceSuperPath();
+          // if(null!=serviceSuperPath){
+          //   if(null!=activeChatModelConfig!.modelName&&activeChatModelConfig!.modelName!.trim().length>0){
+          //     if(null!=activeChatModelConfig!.isLocal&&activeChatModelConfig!.isLocal!){
+          //       activeChatModelConfig!.modelPath = path.join(serviceSuperPath! , ConstApp.serveModelsNameKey,activeChatModelConfig!.modelName);
+          //     }
+          //   }else{
+          //     activeChatModelConfig!.modelPath = "";
+          //   }
+          //   setState(() {
+          //
+          //   });
+          // }
         }
     ));
     if(activeChatModelConfig!.isLocal!=null&&activeChatModelConfig!.isLocal!){

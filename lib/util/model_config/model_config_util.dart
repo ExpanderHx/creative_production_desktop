@@ -2,9 +2,14 @@
 
 import 'package:isar/isar.dart';
 
+import '../../config/const_app.dart';
 import '../../network/chat/config/chat_config.dart';
 import '../../page/model_config/bean/chat_model_config.dart';
 import '../db/isar_db_util.dart';
+import '../service_util.dart';
+import 'package:path/path.dart' as path;
+
+
 
 class ModelConfigUtil{
 
@@ -41,9 +46,13 @@ class ModelConfigUtil{
   static Future<List<ChatModelConfig>> initChatModelConfigList() async{
     List<ChatModelConfig> chatModelConfigs = [];
 
+    String? serviceSuperPath = await ServiceUtil.getServiceSuperPath();
+
+
     ChatModelConfig chatModelConfigLocal = getChatModelConfig(
       "THUDM/chatglm2-6b",
       modelName: "THUDM/chatglm2-6b",
+      modelPath: ((null!=serviceSuperPath&&serviceSuperPath!.trim().length>0)?path.join(serviceSuperPath! , ConstApp.serveModelsNameKey,"THUDM/chatglm2-6b"):null),
       tokenizerName: "THUDM/chatglm2-6b",
       isGlobal: true,
       isLocal: true,
@@ -73,6 +82,7 @@ class ModelConfigUtil{
     ChatModelConfig chatModelConfigInt4CpuLocal = getChatModelConfig(
       "THUDM/chatglm-6b-int4",
       modelName: "THUDM/chatglm-6b-int4",
+      modelPath: ((null!=serviceSuperPath&&serviceSuperPath!.trim().length>0)?path.join(serviceSuperPath! , ConstApp.serveModelsNameKey,"THUDM/chatglm-6b-int4"):null),
       tokenizerName: "THUDM/chatglm-6b-int4",
       loadDevice:"cpu",
       isGlobal: false,
@@ -90,6 +100,7 @@ class ModelConfigUtil{
 
   static ChatModelConfig getChatModelConfig(String configName,{
     String? modelName,
+    String? modelPath,
     String? tokenizerName,
     String? load_device,
     int? maxToken,
@@ -102,6 +113,7 @@ class ModelConfigUtil{
     ChatModelConfig chatModelConfig = ChatModelConfig();
     chatModelConfig.configName = configName;
     chatModelConfig.modelName = modelName;
+    chatModelConfig.modelPath = modelPath;
     chatModelConfig.tokenizerName = tokenizerName;
     chatModelConfig.loadDevice = load_device;
     chatModelConfig.temperature = temperature;

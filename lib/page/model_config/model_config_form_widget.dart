@@ -9,12 +9,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:isar/isar.dart';
+import 'package:provider/provider.dart';
 
 
+import '../../config/const_app.dart';
 import '../../network/chat/config/chat_config.dart';
-
+import '../../provider/skin_provider.dart';
 import '../../util/db/isar_db_util.dart';
+import '../../util/preferences_util.dart';
+import '../../util/service_util.dart';
 import 'bean/chat_model_config.dart';
+import 'package:path/path.dart' as path;
 
 
 class ModelConfigFormWidget extends StatefulWidget {
@@ -116,8 +121,16 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
 
     List<Widget> widgetList = getFormItemList();
 
+    SkinProvider skinProvider = context.watch<SkinProvider>();
+
     return Container(
-      color: Theme.of(context).dialogBackgroundColor,
+      color: ThemeUtils.getGobalSkinDataThemeColor(
+          context,
+          lightColor: Theme.of(context).dialogBackgroundColor,
+          blackColor: Theme.of(context).dialogBackgroundColor,
+          gobalSkinData: skinProvider.gobalSkinData,
+          imageBackgroundColor: Color.fromARGB(255, 162, 161, 161)
+      ),
       height: double.infinity,
       width: double.infinity,
       padding: EdgeInsets.only(top: 5,bottom: 5,left: 15,right: 15),
@@ -179,11 +192,25 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
         onChanged: (newValue) {
           chatModelConfig!.configName = newValue;
         }
-    ));widgetList.add(getInputRowWidget("${tr('model_name')} : ",
+    ));
+    widgetList.add(getInputRowWidget("${tr('model_name')} : ",
         key: ValueKey("modelName " + chatModelConfig!.id.toString()),
         value: chatModelConfig!.modelName,
-        onChanged: (newValue) {
+        onChanged: (newValue) async{
           chatModelConfig!.modelName = newValue;
+          // String? serviceSuperPath = await ServiceUtil.getServiceSuperPath();
+          // if(null!=serviceSuperPath){
+          //   if(null!=chatModelConfig!.modelName&&chatModelConfig!.modelName!.trim().length>0){
+          //     if(null!=chatModelConfig!.isLocal&&chatModelConfig!.isLocal!){
+          //       chatModelConfig!.modelPath = path.join(serviceSuperPath! , ConstApp.serveModelsNameKey,chatModelConfig!.modelName);
+          //     }
+          //   }else{
+          //     chatModelConfig!.modelPath = "";
+          //   }
+          //   setState(() {
+          //
+          //   });
+          // }
         }
     ));
     widgetList.add(getDropdownButtonWidget(title: "${tr('global')} ",

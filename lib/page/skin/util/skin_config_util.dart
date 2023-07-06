@@ -53,7 +53,7 @@ class SkinConfigUtil{
       name: "sea_of_stars".tr(),
       image: "assets/images/background/background_1.webp",
       type: 1,
-      lightFontColor: Colors.black45.value,
+      lightFontColor: Colors.white.value,
       darkFontColor: Colors.white.value,
     );
 
@@ -64,7 +64,7 @@ class SkinConfigUtil{
       name: "forest".tr(),
       image: "assets/images/background/background_2.webp",
       type: 1,
-      lightFontColor: Colors.black45.value,
+      lightFontColor: Colors.white.value,
       darkFontColor: Colors.white.value,
     );
 
@@ -75,7 +75,7 @@ class SkinConfigUtil{
       name: "blue_ocean".tr(),
       image: "assets/images/background/background_3.jpg",
       type: 1,
-      lightFontColor: Colors.black45.value,
+      lightFontColor: Colors.white.value,
       darkFontColor: Colors.white.value,
     );
 

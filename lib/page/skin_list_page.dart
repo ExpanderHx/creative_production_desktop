@@ -323,7 +323,7 @@ class _SkinListPageState extends State<SkinListPage> {
                                 updateSkinDataGlobal(skinData:skinData);
                               },
                               child: Tooltip(
-                                message: "open_the_plugin".tr(),
+                                message: "open_the_skin".tr(),
                                 child: const Icon(
                                   Icons.open_in_new,
                                   size: 12,

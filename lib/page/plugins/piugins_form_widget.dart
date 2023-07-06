@@ -10,6 +10,7 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/router_provider.dart';
+import '../../provider/skin_provider.dart';
 import '../../shortcut_key/record_hotkey_dialog.dart';
 import '../../shortcut_key/shortcut_key_util.dart';
 import '../../util/db/isar_db_util.dart';
@@ -89,9 +90,16 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
     pluginsBean.isOpenShortcutKeys ??= true;
+    SkinProvider skinProvider = context.watch<SkinProvider>();
 
     return Container(
-      color: Theme.of(context).dialogBackgroundColor,
+      color: ThemeUtils.getGobalSkinDataThemeColor(
+          context,
+          lightColor: Theme.of(context).dialogBackgroundColor,
+          blackColor: Theme.of(context).dialogBackgroundColor,
+          gobalSkinData: skinProvider.gobalSkinData,
+          imageBackgroundColor: Color.fromARGB(255, 162, 161, 161)
+      ),
       height: double.infinity,
       width: double.infinity,
       padding: EdgeInsets.only(top: 5,bottom: 5,left: 15,right: 15),
