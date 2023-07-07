@@ -14,50 +14,18 @@
 #### 聊天界面
 打开即可提问聊天
 
-<div style="display: flex">
-    <img src="assets/demonstrate/1.png " width="50%">
-    <img src="assets/demonstrate/2.png " width="50%">
-</div>
-<div style="display:none">
-![本地路径-w50](assets/demonstrate/1.png ""){:width="50%"}
-![本地路径](assets/demonstrate/2.png ""){:width="50%"}
-</div>
+![本地路径-w50](assets/demonstrate/1.png "")
+![本地路径](assets/demonstrate/2.png "")
 
 
 #### 插件功能
 自定义快捷键，自定义提示语，即可让ai帮你完成翻译,文章总结，大纲整理，内容解释。只要设置对应提示语，即可创建符合你需要的各种插件
-<div style="display: flex">
-    <img src="assets/demonstrate/3.png " width="50%">
-    <img src="assets/demonstrate/6.png " width="50%">
-</div>
-<div style="display:none">
+
 ![本地路径](assets/demonstrate/3.png "")
 ![本地路径](assets/demonstrate/6.png "")
-</div>
 
 
 
-
-
-<div style="display:none">
-# creative_production_desktop
-
-Creative production desktop
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-</div>
 
 
 
