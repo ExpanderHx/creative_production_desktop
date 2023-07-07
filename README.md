@@ -11,6 +11,9 @@
 
 下载服务端之后，进入serve_system目录，win启动start.bat,linux启动start.sh
 
+#### [百度网盘](https://pan.baidu.com/s/1C_YikuoFtinNyT7YPgyYFw?pwd=6666)
+链接: https://pan.baidu.com/s/1C_YikuoFtinNyT7YPgyYFw?pwd=6666 提取码: 6666 
+
 #### 聊天界面
 打开即可提问聊天
 
