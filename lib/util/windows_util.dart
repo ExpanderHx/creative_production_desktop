@@ -2,6 +2,7 @@
 import 'dart:ffi';
 
 import 'package:win32/win32.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../utilities/platform_util.dart';
 
@@ -10,9 +11,10 @@ class WindowsUtil{
 
 
   static void bringToFront() {
-    if(kIsWindows){
-      bringToFrontWindows();
-    }
+    windowManager.focus();
+    // if(kIsWindows){
+    //   bringToFrontWindows();
+    // }
   }
 
   static void bringToFrontWindows() {
