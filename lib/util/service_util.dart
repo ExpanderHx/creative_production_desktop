@@ -12,8 +12,10 @@ import '../utilities/platform_util.dart';
 
 class ServiceUtil{
 
+  static Shell? shell;
+
   static void startServce() async{
-    final shell = Shell();
+
     try {
       // App的可执行文件路径
       String resolvedExecutablePath = Platform.resolvedExecutable;
@@ -24,19 +26,45 @@ class ServiceUtil{
       // BotToast.showText(text: "resolvedExecutablePath : ${resolvedExecutablePath}");
       if(null!=servicePath){
         // BotToast.showText(text: "servicePath : ${servicePath}");
-        String serviceBatPath = path.join(servicePath! , ConstApp.serveSystemNameKey,ConstApp.startBatNameKey);
+        String serviceBatPath = path.join(servicePath! , ConstApp.serveSystemNameKey, ConstApp.startBatNameKey);
+        String serviceLogPath = path.join(servicePath! , ConstApp.serveSystemNameKey, ConstApp.serviceChatLogNameKey);
+        File serviceLogFile = File(serviceLogPath);
+        if(serviceLogFile.existsSync()){
+          serviceLogFile.delete();
+        }
         if(File(serviceBatPath).existsSync()){
-          ProcessResult result = await shell
-              .runExecutableArguments(serviceBatPath,[]);
-          // print(result);
-          if (result.exitCode == 0) {
-            print('bat文件执行成功');
-            BotToast.showText(text: "successfully_started_the_server".tr());
-            print(result.stdout);
-          } else {
-            print('bat文件执行失败');
-            BotToast.showText(text: "abnormal_startup".tr());
-            print(result.stderr);
+          var controller = ShellLinesController();
+          var stderrController = ShellLinesController();
+          var newShell = Shell(stdout: controller.sink,stderr: stderrController.sink);
+          controller.stream.listen((event) {
+            // print(event);
+            if(event.toString().indexOf("service_state")==-1){
+              serviceLogFile.writeAsString("$event\r\n",mode: FileMode.writeOnlyAppend,encoding: systemEncoding);
+            }
+          });
+          stderrController.stream.listen((event) {
+            // print(event);
+            if(event.toString().indexOf("service_state")==-1){
+              serviceLogFile.writeAsString("$event\r\n",mode: FileMode.writeOnlyAppend,encoding: systemEncoding);
+            }
+          });
+          if(null!=newShell){
+            ProcessResult result = await newShell!
+                .runExecutableArguments(serviceBatPath,[]);
+            // print(result);
+            if (result.exitCode == 0) {
+              if(null!=shell){
+                shell!.kill();
+              }
+              shell = newShell;
+              print('bat文件执行成功');
+              BotToast.showText(text: "successfully_started_the_server".tr());
+              print(result.stdout);
+            } else {
+              print('bat文件执行失败');
+              BotToast.showText(text: "abnormal_startup".tr());
+              print(result.stderr);
+            }
           }
         }else{
           BotToast.showText(text: "service_bat_not_found".tr());
@@ -72,6 +100,12 @@ class ServiceUtil{
       serviceSuperPath = path.dirname(serviceSuperPath);
     }
     return serviceSuperPath;
+  }
+
+  static Future<String?> getServiceOrStoragePath() async{
+    String? servicePath = PreferencesUtil().get(ConstApp.servicePathKey);
+    servicePath ??= await getServicePath();
+    return servicePath;
   }
 
 

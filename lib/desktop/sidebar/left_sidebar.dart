@@ -1,5 +1,6 @@
 import 'dart:async';
 
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
@@ -15,6 +16,7 @@ import '../../config/menu_config.dart';
 import '../../network/chat/config/chat_config.dart';
 import '../../network/chat/config/chat_http.dart';
 import '../../page/model_config/model_config_form_widget.dart';
+import '../../page/service/log/chat_service_log.dart';
 import '../../page/settings/service_settings_widget.dart';
 import '../../provider/router_provider.dart';
 import '../../util/preferences_util.dart';
@@ -383,6 +385,14 @@ class _LeftSidebarState extends State<LeftSidebar> {
       ),
       MenuItemButton(
         child: Container(
+          child: Text("日志"),
+        ),
+        onPressed: () {
+          serviceLogDialog();
+        },
+      ),
+      MenuItemButton(
+        child: Container(
           child: Row(
             children: [
               Container(
@@ -445,6 +455,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
               ElevatedButton(
                 child: Text('ok'.tr()),
                 onPressed: () async {
+                  try{
+                    ServiceUtil.shell?.kill();
+                  }catch(e){
+                    print(e);
+                  }
                   windowManager.close();
                 },
               )
@@ -462,6 +477,19 @@ class _LeftSidebarState extends State<LeftSidebar> {
           return Dialog(
             surfaceTintColor: ThemeUtils.getThemeColor(context),
             child: ServiceSettingsWidget(),
+          );
+        }
+    );
+  }
+
+  Future<void> serviceLogDialog() async {
+    return showDialog<Null>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+            surfaceTintColor: ThemeUtils.getThemeColor(context),
+            child: ChatServiceLogWidget(),
           );
         }
     );

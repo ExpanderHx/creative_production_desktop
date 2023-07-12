@@ -31,6 +31,8 @@ class ConstApp{
 
   static String startBatNameKey = "start.bat";
 
+  static String serviceChatLogNameKey = "service-chat-api.log";
+
   static String serveModelsNameKey = "models";
 
 

@@ -240,7 +240,7 @@ class _SkinListPageState extends State<SkinListPage> {
                 skinData.name = "sea_of_stars".tr();
               }else if(skinData.image == "assets/images/background/background_2.webp"){
                 skinData.name = "forest".tr();
-              }else if(skinData.image == "assets/images/background/background_3.webp"){
+              }else if(skinData.image == "assets/images/background/background_3.jpg"){
                 skinData.name = "blue_ocean".tr();
               }
               imgWidget = Image(

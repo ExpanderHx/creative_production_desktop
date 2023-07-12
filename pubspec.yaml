@@ -153,6 +153,9 @@ dependencies:
   # 简单、快速地生成 RFC4122 UUID
   uuid: ^3.0.7
 
+  # 包含用于使用异步的样式的实用程序类 计算
+  async: ^2.11.0
+
 
   # 全面的剪切板 需要安装 Rust 对于 macOS 或 Linux，请在终端中执行以下命令 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 #  super_clipboard: ^0.4.0
