@@ -35,6 +35,31 @@ class ConstApp{
 
   static String serveModelsNameKey = "models";
 
+  static String stableDiffusionUiServiceProjectNameKey = "stable-diffusion-webui";
+
+  static String stableDiffusionUiServicePathKey = "stableDiffusionUiServicePath";
+
+  static String stableDiffusionUiServiceBaseUrlKey = "stableDiffusionUiServiceBaseUrl";
+
+  static String startStableDiffusionUiBatNameKey = "webui.bat";
+
+  static String serviceStableDiffusionULogNameKey = "stable-diffusion-ui.log";
+
+  static String stableDiffusionWebUiServiceBaseUrl = "http://127.0.0.1:7860";
+
+  static String stableDiffusionUiEnvNameKey = "env";
+
+  static String stableDiffusionUiScriptsNameKey = "Scripts";
+
+  static String stableDiffusionUiPythonExeNameKey = "python.exe";
+
+
+  static String servePythonNameKey = "python";
+
+  static String servePython_3_9_WinNameKey = "python-3.9-win";
+
+  static String servePython_3_9_MacNameKey = "python-3.9-mac";
+
 
 
 

@@ -10,6 +10,7 @@ import '../page/model_config_list_page.dart';
 import '../page/plugins/common_plug_page.dart';
 import '../page/plugins/translate_plug_page.dart';
 import '../page/skin_list_page.dart';
+import '../page/stable_diffusion_page.dart';
 import '../provider/router_provider.dart';
 
 class MenuConfig{
@@ -20,9 +21,11 @@ class MenuConfig{
   static String plugins_common_menu = "plugins_common";
   static String model_config_list_menu = "model_config_list";
   static String skin_list_page_menu = "skin_list_page";
+  static String stable_diffusion_page_menu = "plugins_stableDiffusion";
 
   static Map<String,dynamic> menuMap = {
     chat_menu: MenuData( "聊天",chat_menu,CupertinoIcons.ellipses_bubble,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>ChatPage(key: menuValueKey,paramMap: map,) ),
+    stable_diffusion_page_menu: MenuData( "stable diffusion",stable_diffusion_page_menu,Icons.broken_image_outlined,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>StableDiffusionPage(key: menuValueKey,paramMap: map,) ),
     plugins_menu: MenuData( "插件",plugins_menu,Icons.now_widgets_outlined,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>PluginsListPage(key: menuValueKey,paramMap: map,) ),
     plugins_translate_menu: MenuData( "插件",plugins_menu,Icons.now_widgets_outlined,showType:0,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>TranslatePlugPage(key: menuValueKey,paramMap: map,) ),
     plugins_common_menu: MenuData( "插件",plugins_menu,Icons.now_widgets_outlined,showType:0,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>CommonPlugPage(key: menuValueKey,paramMap: map,) ),

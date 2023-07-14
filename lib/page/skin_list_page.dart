@@ -12,6 +12,7 @@ import 'package:creative_production_desktop/page/skin/config/skin_data.dart';
 import 'package:creative_production_desktop/page/skin/skin_form_widget.dart';
 import 'package:creative_production_desktop/page/skin/util/skin_config_util.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
+import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -90,6 +91,17 @@ class _SkinListPageState extends State<SkinListPage> {
   }
 
   void editSkinData({SkinData? skinData}) async{
+    // final webView = await WebviewWindow.create();
+    // webView.addScriptToExecuteOnDocumentCreated('''
+    //   window.onload = function() {
+    //     console.log("Hello Flutter");
+    //     if(null!=document.querySelector('#txt2img_prompt textarea')){
+    //       document.querySelector('#txt2img_prompt textarea').value = "test";
+    //     }
+    //
+    //   }
+    // ''');
+    // webView.launch("http://127.0.0.1:7860");
     Map<String,dynamic>? map = await showDialog(
         context: context,
         // barrierColor: Colors.red.withAlpha(30),
@@ -198,6 +210,7 @@ class _SkinListPageState extends State<SkinListPage> {
                     child: IconButton(
                       onPressed: () {
                         print("-------------");
+
                         editSkinData();
                       },
                       icon: const Icon(
@@ -217,6 +230,167 @@ class _SkinListPageState extends State<SkinListPage> {
   }
 
   List<Widget> getSkinDataWidgetList(){
+    SkinProvider skinProvider = context.watch<SkinProvider>();
+
+    List<Widget> skinDataWidgetList = [];
+    if(null!=skinDataList&&skinDataList.length>0){
+      for(var i=0;i<skinDataList.length;i++){
+        SkinData skinData = skinDataList[i];
+        if(null!=skinData){
+
+          skinData.type = skinData.type ?? 0;
+
+          Widget? imgWidget;
+          if(skinData.type == 0){
+            skinData.name = "solid_color".tr();
+            imgWidget = Container(
+
+            );
+          }else if(skinData.type == 1){
+            if(skinData.image !=null){
+              if(skinData.image == "assets/images/background/background_1.webp"){
+                skinData.name = "sea_of_stars".tr();
+              }else if(skinData.image == "assets/images/background/background_2.webp"){
+                skinData.name = "forest".tr();
+              }else if(skinData.image == "assets/images/background/background_3.jpg"){
+                skinData.name = "blue_ocean".tr();
+              }
+              imgWidget = Image(
+                image: AssetImage(
+                    skinData.image!,
+                ),
+                fit:BoxFit.fill
+              );
+            }
+
+          }else if(skinData.type == 2){
+            imgWidget = Image.file(
+                File(skinData.image!),
+                fit:BoxFit.fill
+            );
+          }
+
+          skinDataWidgetList.add(
+            Container(
+              height: 200,
+              width: 300,
+              margin: EdgeInsets.only(left: 15,right: 15,bottom: 15,top: 15),
+              child: Card(
+                  shadowColor: Colors.black,
+                elevation:5,
+                  clipBehavior:Clip.antiAlias,
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                // padding:  EdgeInsets.only(left: 5,right: 5,top: 5,bottom: 5),
+                                width: double.infinity,
+                                height: double.infinity,
+                                child: imgWidget,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          height: 35,
+                          color: Color( 0x33000000),
+                          padding: EdgeInsets.only(left: 5,right: 5,bottom: 5,top: 5),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: SelectableText(
+                                  skinData.name??"",
+                                  style: TextStyle(
+                                    // color: ThemeUtils.getFontThemeColor(context,lightColor: Color(0Xff343a40),blackColor: Color(0Xfff1f3f5)),
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Color(0xffffffff)
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                margin: const EdgeInsets.only(left: 5),
+                                child: GestureDetector(
+                                  onTap: (){
+                                    updateSkinDataGlobal(skinData:skinData);
+                                  },
+                                  child: Tooltip(
+                                    message: "open_the_skin".tr(),
+                                    child:  Icon(
+                                      Icons.open_in_new,
+                                      size: 15,
+                                      color: Color(0xffffffff),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(left: 5),
+                                child: GestureDetector(
+                                  onTap: (){
+                                    editSkinData(skinData:skinData);
+                                  },
+                                  child: Tooltip(
+                                    message: "edit".tr(),
+                                    child: const Icon(
+                                      Icons.edit,
+                                      size: 15,
+                                      color: Color(0xffffffff),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              ((skinData.type!=null&&skinData.type == 2)?
+                              Container(
+                                margin: const EdgeInsets.only(left: 5),
+                                child: InkWell(
+                                  onTap: (){
+                                    // 删除需要二次确认
+                                    skinDataDeleteDialog(skinData);
+                                  },
+                                  child: Tooltip(
+                                    message: "delete".tr(),
+                                    child: const Icon(
+                                      Icons.delete,
+                                      size: 15,
+                                      color: Color(0xffffffff),
+                                    ),
+                                  ),
+                                ),
+                              )
+                                  :
+                              Container()
+
+                              )
+                            ],
+
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+              ),
+            )
+
+
+
+          );
+        }
+      }
+    }
+    return skinDataWidgetList;
+  }
+
+  List<Widget> getSkinDataWidgetList_1(){
 
     SkinProvider skinProvider = context.watch<SkinProvider>();
 

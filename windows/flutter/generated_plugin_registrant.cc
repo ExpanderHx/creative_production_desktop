@@ -10,6 +10,7 @@
 #include <clipboard_watcher/clipboard_watcher_plugin.h>
 #include <desktop_drop/desktop_drop_plugin.h>
 #include <desktop_multi_window/desktop_multi_window_plugin.h>
+#include <desktop_webview_window/desktop_webview_window_plugin.h>
 #include <flutter_acrylic/flutter_acrylic_plugin.h>
 #include <hotkey_manager/hotkey_manager_plugin.h>
 #include <isar_flutter_libs/isar_flutter_libs_plugin.h>
@@ -28,6 +29,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("DesktopDropPlugin"));
   DesktopMultiWindowPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("DesktopMultiWindowPlugin"));
+  DesktopWebviewWindowPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("DesktopWebviewWindowPlugin"));
   FlutterAcrylicPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterAcrylicPlugin"));
   HotkeyManagerPluginRegisterWithRegistrar(

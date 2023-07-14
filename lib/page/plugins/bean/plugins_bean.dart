@@ -17,6 +17,8 @@ class PluginsBean {
 
   String? hotKeyJsonString;
 
+  bool? isStableDiffusionGlobal;
+
 
 
 }

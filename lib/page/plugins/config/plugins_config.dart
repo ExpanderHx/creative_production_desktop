@@ -11,6 +11,8 @@ class PluginsConfig{
 
   static String pluginsTypeCommon= "common";
 
+  static String pluginsTypeStableDiffusion= "stableDiffusion";
+
 
 
 }

@@ -335,6 +335,10 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
                           value: PluginsConfig.pluginsTypeCommon,
                           child: Text('universal'.tr())
                       ),
+                      DropdownMenuItem(
+                          value: PluginsConfig.pluginsTypeStableDiffusion,
+                          child: Text('stable_diffusion'.tr())
+                      ),
                     ],
                     onChanged: (String? newValue) {
                      if(null!=onChanged){

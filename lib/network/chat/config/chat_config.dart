@@ -8,4 +8,6 @@ class ChatConfig{
 
   static String chatOpenAiBaseUrl = "https://chat.magicvr.online/v1/";
 
+
+
 }

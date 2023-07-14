@@ -220,7 +220,7 @@ class _PluginsListPageState extends State<PluginsListPage> {
           pluginsWidget.add(
               Container(
                 height: 160,
-                width: 200,
+                width: 240,
                 margin:  EdgeInsets.only(left: 20,right: 20,top: 5,bottom: 15),
                 decoration: BoxDecoration(
                   color: ThemeUtils.getThemeColor(

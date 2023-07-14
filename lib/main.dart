@@ -10,6 +10,7 @@ import 'package:creative_production_desktop/util/init_utils.dart';
 import 'package:creative_production_desktop/util/preferences_util.dart';
 import 'package:creative_production_desktop/util/theme_utils.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
+import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_acrylic/window.dart';
 import 'package:flutter_acrylic/window_effect.dart';
@@ -37,7 +38,9 @@ void main(List<String> args) async{
   // 国际化初始化
   await EasyLocalization.ensureInitialized();
 
-
+  if (runWebViewTitleBarWidget(args)) {
+    return;
+  }
 
 
   // 窗口半透明效果
@@ -70,6 +73,7 @@ void main(List<String> args) async{
     await windowManager.show();
     await windowManager.focus();
   });
+
 
 
   if (args.firstOrNull == 'multi_window') {

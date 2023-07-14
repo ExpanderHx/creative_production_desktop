@@ -13,6 +13,27 @@ import 'package:path/path.dart' as path;
 
 class ModelConfigUtil{
 
+  static String combinationPromptAndInput({String? prompt,String? input}) {
+    prompt ??="";
+    input ??="";
+    String combinatStr = "";
+    if(null!=prompt&&prompt.trim().length>0){
+      if(null!=prompt&&prompt.trim().length>0){
+        if(prompt.contains(RegExp("{\s?{\s?message\s?}\s?}"))){
+          combinatStr = prompt.replaceAll(RegExp("{\s?{\s?message\s?}\s?}"), input);
+        }else{
+          combinatStr = prompt + input;
+        }
+      }else{
+        combinatStr = prompt;
+      }
+    }else{
+      combinatStr = input;
+    }
+    return combinatStr;
+  }
+
+
   static Future<List<ChatModelConfig>?> getChatModelConfigList() async{
     List<ChatModelConfig>? chatModelConfigList;
     await IsarDBUtil().init();

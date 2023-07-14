@@ -19,6 +19,7 @@ import '../../network/chat/config/chat_http.dart';
 import '../../util/db/isar_db_util.dart';
 import '../../util/preferences_util.dart';
 import '../../util/service_util.dart';
+import '../../util/stable_diffusion_ui_service_util.dart';
 
 
 
@@ -43,6 +44,10 @@ class _ServiceSettingsWidgetState extends State<ServiceSettingsWidget> {
 
   String? serviceBaseUrl;
 
+  String? stableDiffusionWebUiServicePath;
+
+  String? stableDiffusionWebUiServiceBaseUrl;
+
 
   @override
   void initState() {
@@ -58,6 +63,12 @@ class _ServiceSettingsWidgetState extends State<ServiceSettingsWidget> {
 
     serviceBaseUrl = PreferencesUtil().get(ConstApp.serviceBaseUrlKey);
     serviceBaseUrl ??= ChatConfig.chatGeneralBaseUrl;
+
+    stableDiffusionWebUiServicePath = PreferencesUtil().get(ConstApp.stableDiffusionUiServicePathKey);
+    stableDiffusionWebUiServicePath ??= StableDiffusionUiServiceUtil.getServicePath();
+
+    stableDiffusionWebUiServiceBaseUrl = PreferencesUtil().get(ConstApp.stableDiffusionUiServiceBaseUrlKey);
+    stableDiffusionWebUiServiceBaseUrl ??= ConstApp.stableDiffusionWebUiServiceBaseUrl;
 
     if(mounted){
       setState(() {
@@ -78,6 +89,10 @@ class _ServiceSettingsWidgetState extends State<ServiceSettingsWidget> {
       PreferencesUtil().setString(ConstApp.servicePathKey, servicePath);
       serviceBaseUrl ??= ChatConfig.chatGeneralBaseUrl;
       PreferencesUtil().setString(ConstApp.serviceBaseUrlKey, serviceBaseUrl);
+      stableDiffusionWebUiServicePath ??=  StableDiffusionUiServiceUtil.getServicePath();
+      PreferencesUtil().setString(ConstApp.stableDiffusionUiServicePathKey, stableDiffusionWebUiServicePath);
+      stableDiffusionWebUiServiceBaseUrl ??= ConstApp.stableDiffusionWebUiServiceBaseUrl;
+      PreferencesUtil().setString(ConstApp.stableDiffusionUiServiceBaseUrlKey, stableDiffusionWebUiServiceBaseUrl);
       ChatHttp().init(
           baseUrl: serviceBaseUrl
       );
@@ -154,6 +169,27 @@ class _ServiceSettingsWidgetState extends State<ServiceSettingsWidget> {
                   value: serviceBaseUrl,
                   onChanged: (newVale){
                     serviceBaseUrl = newVale;
+                    setState(() {
+
+                    });
+                  }
+              ),
+              getInputRowWidget(
+                  "stable_diffusion_web_service_directory_path".tr(),
+                  value: stableDiffusionWebUiServicePath,
+                  onChanged: (newVale){
+                    stableDiffusionWebUiServicePath = newVale;
+                    setState(() {
+
+                    });
+                  }
+
+              ),
+              getInputRowWidget(
+                  "stable_diffusion_web_service_directory_port".tr(),
+                  value: stableDiffusionWebUiServiceBaseUrl,
+                  onChanged: (newVale){
+                    stableDiffusionWebUiServiceBaseUrl = newVale;
                     setState(() {
 
                     });

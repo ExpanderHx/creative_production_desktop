@@ -15,6 +15,7 @@ import '../../network/chat/chat_api.dart';
 import '../../network/chat/chat_api_handle.dart';
 import '../../network/chat/chat_gpt_open_ai.dart';
 import '../../provider/skin_provider.dart';
+import '../../util/model_config/model_config_util.dart';
 import '../../util/theme_utils.dart';
 import '../chat/bean/chat_message.dart';
 
@@ -127,7 +128,7 @@ class _TranslatePlugPageState extends State<TranslatePlugPage> {
       });
       if(null != chatApi){
         print("发起请求 ------- ");
-        chatApi!.sendMessage(inputTextEditingController.text + text,activeType: activeType).then((response) {
+        chatApi!.sendMessage(ModelConfigUtil.combinationPromptAndInput(prompt: inputTextEditingController.text,input: text),activeType: activeType).then((response) {
           print("接收内容 ------- ");
           if(null!=response&&response.statusCode==200){
             if(originalController.text == text){

@@ -21,6 +21,7 @@ import '../../page/settings/service_settings_widget.dart';
 import '../../provider/router_provider.dart';
 import '../../util/preferences_util.dart';
 import '../../util/service_util.dart';
+import '../../util/stable_diffusion_ui_service_util.dart';
 import '../../util/theme_utils.dart';
 import '../../util/widget/resizable_component.dart';
 
@@ -457,6 +458,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
                 onPressed: () async {
                   try{
                     ServiceUtil.shell?.kill();
+                    StableDiffusionUiServiceUtil.shell?.kill();
                   }catch(e){
                     print(e);
                   }

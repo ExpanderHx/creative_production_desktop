@@ -7,6 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   clipboard_watcher
   desktop_drop
   desktop_multi_window
+  desktop_webview_window
   flutter_acrylic
   hotkey_manager
   isar_flutter_libs
