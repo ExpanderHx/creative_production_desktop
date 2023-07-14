@@ -17,6 +17,8 @@ class StableDiffusionUiServiceUtil{
 
   static Shell? shell;
 
+  static int isStartCount = 0;
+
   static Future<void> startServce() async{
 
     try {

@@ -48,7 +48,7 @@ class ChatApiOpenAi extends ChatApi{
   // }
 
 
-  Future<dynamic?> sendMessage(String message,{List<ChatMessage>? historyList,activeType}) async{
+  Future<dynamic?> sendMessage(String message,{List<ChatMessage>? historyList,activeType,String? defaultApiType}) async{
     List<Messages> messagesList = [];
     if(null!=historyList&&historyList.length>0){
       for(var i=0;i<historyList.length-1;i++){

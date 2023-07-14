@@ -35,10 +35,15 @@ class ChatApiHandle extends ChatApi{
 
 
 
-  Future<ChatApi?> getChatApi({activeType}) async{
+  Future<ChatApi?> getChatApi({activeType,String? defaultApiType}) async{
     if(null!=activeType){
       if(null!=activeMap[activeType]){
         return activeMap[activeType];
+      }
+    }
+    if(null!=defaultApiType){
+      if(defaultApiType==ChatConfig.chatOpenAiType){
+        return chatApiOpenAi;
       }
     }
     ChatModelConfig? globalChatModelConfig = await ModelConfigUtil.getGlobalChatModelConfig(await ModelConfigUtil.getChatModelConfigList());
@@ -51,8 +56,8 @@ class ChatApiHandle extends ChatApi{
     }
   }
 
-  Future<dynamic?> sendMessage(String message,{List<ChatMessage>? historyList,activeType}) async {
-    ChatApi? chatApi = await getChatApi(activeType:activeType);
+  Future<dynamic?> sendMessage(String message,{List<ChatMessage>? historyList,activeType,String? defaultApiType}) async {
+    ChatApi? chatApi = await getChatApi(activeType:activeType,defaultApiType:defaultApiType);
     if(null!=chatApi){
      return chatApi.sendMessage(message,historyList: historyList);
     }

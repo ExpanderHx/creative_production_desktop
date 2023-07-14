@@ -114,6 +114,8 @@
   "click_start_up_stable_diffusion": "click to start Stable Diffusion Web Ui",
   "click_stop_stable_diffusion": "click to close Stable Diffusion Web Ui",
   "click_open_stable_diffusion": "open Stable Diffusion Web Ui",
+  "attempt_to_start_once_stable_diffusion": "Stable Diffusion Web Ui not started, try starting it once",
+  "default_prompt_words_stable_diffusion": "Default prompt",
     "language": {
       "af": "Afrikaans",
       "am": "Amharic",

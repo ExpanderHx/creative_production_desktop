@@ -114,6 +114,8 @@
   "click_start_up_stable_diffusion": "点击启动 Stable Diffusion Web Ui",
   "click_stop_stable_diffusion": "点击关闭 Stable Diffusion Web Ui",
   "click_open_stable_diffusion": "打开 Stable Diffusion Web Ui",
+  "attempt_to_start_once_stable_diffusion": "Stable Diffusion Web Ui 未启动，尝试启动一次",
+  "default_prompt_words_stable_diffusion": "默认提示",
   "language": {
     "af": "布尔语(南非荷兰语)",
     "am": "阿姆哈拉语",

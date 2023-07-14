@@ -4,9 +4,11 @@ import 'dart:convert';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:creative_production_desktop/util/theme_utils.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
+import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/router_provider.dart';
@@ -66,6 +68,22 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
         }).catchError((onError){
           isSavePluginsBean = false;
         });
+        if(pluginsBean.type == PluginsConfig.pluginsTypeStableDiffusion){
+          if(pluginsBean.isStableDiffusionGlobal!=null&&pluginsBean.isStableDiffusionGlobal!){
+            List<PluginsBean> pluginsBeans = await IsarDBUtil().isar!.pluginsBeans.where().findAll();
+            if(null!=pluginsBeans&&pluginsBeans.length>0){
+              for(var i=0;i<pluginsBeans.length;i++){
+                if(null!=pluginsBeans[i]&&null!=pluginsBeans[i].id&&pluginsBeans[i].id!=pluginsBean.id&&pluginsBeans[i].isStableDiffusionGlobal!=null
+                &&pluginsBeans[i].isStableDiffusionGlobal!){
+                  pluginsBeans[i].isStableDiffusionGlobal = false;
+                  await IsarDBUtil().isar!.writeTxn(() async {
+                    await  pluginsBeanCollection.put(pluginsBeans[i]);
+                  });
+                }
+              }
+            }
+          }
+        }
         if(isSavePluginsBean){
           // if(widget.onUpdatePluginsBeanDb!=null){
           //   widget.onUpdatePluginsBeanDb!(oldPluginsBean:oldPluginsBean,newPluginsBean:pluginsBean);
@@ -90,6 +108,7 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
     pluginsBean.isOpenShortcutKeys ??= true;
+    pluginsBean.isStableDiffusionGlobal ??= false;
     SkinProvider skinProvider = context.watch<SkinProvider>();
 
     return Container(
@@ -167,6 +186,7 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
                  });
                 }
               ),
+              getIsStableDiffusionGlobalWidget(),
               getCupertinoSwitchWidget(
                   pluginsBean.isOpenShortcutKeys!,
                   "${tr('enable_shortcut_keys')} ",
@@ -230,6 +250,101 @@ class _PiuginsFormWidgetState extends State<PiuginsFormWidget> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget getIsStableDiffusionGlobalWidget({String? title,bool? value,Function? onChanged}){
+    Widget globalWidget = Container();
+    if(pluginsBean.type!=null&&pluginsBean.type==PluginsConfig.pluginsTypeStableDiffusion){
+      globalWidget = getCupertinoSwitchWidget(
+          pluginsBean.isStableDiffusionGlobal!,
+          "${tr('default_prompt_words_stable_diffusion')} ",
+          onChanged: (newValue){
+            setState(() {
+              pluginsBean.isStableDiffusionGlobal = newValue;
+            });
+          }
+      );
+    }
+    return globalWidget;
+  }
+
+  Widget getDropdownIsGlobalButtonWidget({String? title,bool? value,Function? onChanged}){
+
+
+    List<DropdownMenuItem<bool>> dropdownMenuItemList = [];
+
+    dropdownMenuItemList.add(
+        DropdownMenuItem(
+            value: true,
+            child: Text("yes".tr())
+        )
+    );
+
+    dropdownMenuItemList.add(
+        DropdownMenuItem(
+            value: false,
+            child: Text("no".tr())
+        )
+    );
+
+    return  Container(
+      margin:  EdgeInsets.only(bottom: 15,),
+      child: Row(
+        // crossAxisAlignment:CrossAxisAlignment.end,
+        children: [
+          Container(
+            width: 60,
+            margin: EdgeInsets.only(right: 15),
+            child: Text(
+              "${title}  :",
+              // style: TextStyle(fontSize: 20),
+            ),
+          ),
+          Expanded(
+              child: Container(
+                padding: EdgeInsets.only(top: 0,bottom: 0,left: 10,right: 10),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  border: Border.all(
+                    color: Color.fromARGB(125, 67,67,67), // 边框颜色
+                    style: BorderStyle.solid, // 边框样式为实线
+                    width: 1,
+                  ),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton2(
+                    buttonStyleData: const ButtonStyleData(
+                      height: 30,
+                      padding: EdgeInsets.only(top: 0,bottom: 0,left: 3,right: 3),
+
+                    ),
+                    menuItemStyleData: const MenuItemStyleData(
+                      height: 30,
+                      padding: EdgeInsets.only(top: 0,bottom: 0,left: 3,right: 3),
+                    ),
+                    value: value,
+                    style:TextStyle(
+                      fontSize: 10,
+                      color: ThemeUtils.getFontThemeColor(context),
+
+                    ),
+                    isExpanded:true,
+                    items: [
+                      ...dropdownMenuItemList
+                    ],
+                    onChanged: (bool? newValue) {
+                      if(null!=onChanged){
+                        onChanged(newValue);
+                      }
+                    },
+
+                  ),
+                ),
+              )
+          ),
+        ],
       ),
     );
   }

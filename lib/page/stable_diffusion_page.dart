@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:creative_production_desktop/page/model_config/bean/chat_model_config.dart';
 import 'package:creative_production_desktop/page/plugins/bean/plugins_bean.dart';
 import 'package:creative_production_desktop/page/plugins/config/plugins_config.dart';
 import 'package:creative_production_desktop/page/plugins/piugins_form_widget.dart';
@@ -27,6 +28,7 @@ import '../config/menu_config.dart';
 import '../network/chat/chat_api.dart';
 import '../network/chat/chat_api_handle.dart';
 import '../network/chat/chat_gpt_open_ai.dart';
+import '../network/chat/config/chat_config.dart';
 import '../provider/skin_provider.dart';
 import '../util/db/isar_db_util.dart';
 import '../util/model_config/model_config_util.dart';
@@ -68,11 +70,14 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
 
   Timer? serviceStateTimer;
 
+
+
   @override
   void initState() {
 // chatApi = ChatApiGeneral();
     chatApi = ChatApiHandle();
     paramMapHandle();
+    // handleOpenAiChat();
     timerServiceState();
 
   }
@@ -83,6 +88,25 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
       serviceStateTimer!.cancel();
     }
     super.dispose();
+  }
+
+  void handleOpenAiChat() async{
+    if(null!=chatApi){
+      ChatApiHandle chatApiHandle = chatApi as ChatApiHandle;
+      List<ChatModelConfig>? chatModelConfigList = await IsarDBUtil().isar!.chatModelConfigs.where().findAll();
+      if(null!=chatModelConfigList&&chatModelConfigList.length>0){
+        ChatModelConfig? openaiChatModelConfig = null;
+        for(var i=0;i<chatModelConfigList.length;i++){
+          if(null!=chatModelConfigList[i]&&null!=chatModelConfigList[i].modelName&&chatModelConfigList[i].modelName=="openai"){
+            openaiChatModelConfig = chatModelConfigList[i];
+          }
+        }
+        if(null!=openaiChatModelConfig){
+          chatApiHandle!.reloadActiveOpenAiChatModel(openaiChatModelConfig);
+        }
+      }
+    }
+
   }
 
   void paramMapHandle() async {
@@ -111,6 +135,10 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
       pluginsBeanStableDiffusionGlobal ??= await PluginsConfigUtil.initPluginsBeanStableDiffusion();
       if(null!=pluginsBeanStableDiffusionGlobal){
         pluginsBeanId = pluginsBeanStableDiffusionGlobal!.id.toString();
+        if(null!=pluginsBeanStableDiffusionGlobal!.prompt){
+          promptTextEditingController.text = pluginsBeanStableDiffusionGlobal!.prompt!;
+        }
+
       }
     }
 
@@ -131,29 +159,43 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
   }
 
 
-  void generateStableDiffusionPrompt(String text,{bool? isGenerateImg, bool? isCopy}){
+  void generateStableDiffusionPrompt(String text,{bool? isGenerateImg, bool? isCopy}) async{
     isGenerateImg ??= false;
     isCopy ??= false;
-    if(isGenerateImg||isCopy){
-      if(null==webView){
-        openStableDiffusionWebUi();
-      }
-    }
+
     print("message:"+text);
     if(null!=text&&text.trim().length>0){
       setState(() {
         isLoading = true;
       });
+      if(StableDiffusionUiServiceUtil.isStartCount == 0){
+        await getStableDiffusionUiServiceState();
+        if(serviceState==0){
+          BotToast.showText(text: "attempt_to_start_once_stable_diffusion".tr());
+          await startStableDiffusionWebUi(isStartToast: false);
+          StableDiffusionUiServiceUtil.isStartCount = 1;
+        }
+      }
+
+      if(isGenerateImg||isCopy){
+        if(null==webView){
+          openStableDiffusionWebUi();
+        }
+      }
+
+      // isStartCount
       if(null != chatApi){
-        print("发起请求 ------- ");
+        print("发起请求 ------- "); // ,defaultApiType:ChatConfig.chatOpenAiType
         setState(() {
           targetController.text = "";
         });
-        chatApi!.sendMessage(ModelConfigUtil.combinationPromptAndInput(prompt: promptTextEditingController.text,input: text),activeType: activeType).then((response) {
+        chatApi!.sendMessage(ModelConfigUtil.combinationPromptAndInput(prompt: promptTextEditingController.text,input: text),
+            activeType: activeType).then((response) {
           print("接收内容 ------- ");
           if(null!=response&&response.statusCode==200){
             if(originalController.text == text){
               String? responseMessage = response.responseMessage;
+              print("接收内容 ------- ${responseMessage}");
               if(null!=responseMessage){
                 // targetController.text = responseMessage;
                 targetController.text = handleAiGenerateStableSetPrompt(responseMessage);
@@ -205,7 +247,7 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
     super.didUpdateWidget(oldWidget);
   }
 
-  void startStableDiffusionWebUi() async{
+  Future<void> startStableDiffusionWebUi({bool? isStartToast}) async{
     await getStableDiffusionUiServiceState();
     if(null!=serviceState&&serviceState==1){
       if(StableDiffusionUiServiceUtil.shell==null){
@@ -215,7 +257,10 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
       }
       // BotToast.showText(text: "server_is_started".tr());
     }else{
-      BotToast.showText(text: "starting_the_server".tr());
+      isStartToast ??= true;
+      if(isStartToast){
+        BotToast.showText(text: "starting_the_server".tr());
+      }
       await StableDiffusionUiServiceUtil.startServce();
     }
   }
@@ -287,11 +332,11 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
       if(null!=aiGeneratePrompt){
         RegExp rx = RegExp(r'(".*?")');
         RegExpMatch? firstMatch = rx.firstMatch(aiGeneratePrompt);
-        if (firstMatch != null) {
+        if (firstMatch != null && null!=firstMatch.group(1)&&firstMatch.group(1)!="prompt"&&firstMatch.group(1)!="prompt:"&&firstMatch.group(1)!.length>9) {
           print(firstMatch.group(1));
           prompt = firstMatch.group(1) ?? "";
         }else if(aiGeneratePrompt.contains("Prompt:")){
-          prompt = aiGeneratePrompt.replaceFirst("Prompt:", "to");
+          prompt = aiGeneratePrompt.replaceFirst("Prompt:", "");
         }else{
           prompt = aiGeneratePrompt;
 
@@ -358,9 +403,12 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
   Future<void> getStableDiffusionUiServiceState()async {
     int? _service_state = await StableDiffusionUiServiceUtil.getServiceState();
     if(null!=_service_state){
-      setState(() {
-        serviceState = _service_state;
-      });
+      serviceState = _service_state;
+      if(mounted){
+        setState(() {
+
+        });
+      }
     }
   }
 
@@ -554,17 +602,6 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
                           ),
                         ),
                       )
-                  // Wrap(
-                  //   children: [
-                  //
-                  //     TextButton(onPressed: (){
-                  //       txt2imgPromptSet();
-                  //     }, child: Text("test")),
-                  //     TextButton(onPressed: (){
-                  //       generateImage();
-                  //     }, child: Text("generateImage"))
-                  //   ],
-                  // )
                 ],
               ),
             ),

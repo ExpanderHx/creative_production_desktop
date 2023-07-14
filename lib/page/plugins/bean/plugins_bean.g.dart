@@ -27,18 +27,23 @@ const PluginsBeanSchema = CollectionSchema(
       name: r'isOpenShortcutKeys',
       type: IsarType.bool,
     ),
-    r'prompt': PropertySchema(
+    r'isStableDiffusionGlobal': PropertySchema(
       id: 2,
+      name: r'isStableDiffusionGlobal',
+      type: IsarType.bool,
+    ),
+    r'prompt': PropertySchema(
+      id: 3,
       name: r'prompt',
       type: IsarType.string,
     ),
     r'title': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'title',
       type: IsarType.string,
     ),
     r'type': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'type',
       type: IsarType.string,
     )
@@ -98,9 +103,10 @@ void _pluginsBeanSerialize(
 ) {
   writer.writeString(offsets[0], object.hotKeyJsonString);
   writer.writeBool(offsets[1], object.isOpenShortcutKeys);
-  writer.writeString(offsets[2], object.prompt);
-  writer.writeString(offsets[3], object.title);
-  writer.writeString(offsets[4], object.type);
+  writer.writeBool(offsets[2], object.isStableDiffusionGlobal);
+  writer.writeString(offsets[3], object.prompt);
+  writer.writeString(offsets[4], object.title);
+  writer.writeString(offsets[5], object.type);
 }
 
 PluginsBean _pluginsBeanDeserialize(
@@ -113,9 +119,10 @@ PluginsBean _pluginsBeanDeserialize(
   object.hotKeyJsonString = reader.readStringOrNull(offsets[0]);
   object.id = id;
   object.isOpenShortcutKeys = reader.readBoolOrNull(offsets[1]);
-  object.prompt = reader.readStringOrNull(offsets[2]);
-  object.title = reader.readStringOrNull(offsets[3]);
-  object.type = reader.readStringOrNull(offsets[4]);
+  object.isStableDiffusionGlobal = reader.readBoolOrNull(offsets[2]);
+  object.prompt = reader.readStringOrNull(offsets[3]);
+  object.title = reader.readStringOrNull(offsets[4]);
+  object.type = reader.readStringOrNull(offsets[5]);
   return object;
 }
 
@@ -131,10 +138,12 @@ P _pluginsBeanDeserializeProp<P>(
     case 1:
       return (reader.readBoolOrNull(offset)) as P;
     case 2:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
+      return (reader.readStringOrNull(offset)) as P;
+    case 5:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -464,6 +473,34 @@ extension PluginsBeanQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isOpenShortcutKeys',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<PluginsBean, PluginsBean, QAfterFilterCondition>
+      isStableDiffusionGlobalIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'isStableDiffusionGlobal',
+      ));
+    });
+  }
+
+  QueryBuilder<PluginsBean, PluginsBean, QAfterFilterCondition>
+      isStableDiffusionGlobalIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'isStableDiffusionGlobal',
+      ));
+    });
+  }
+
+  QueryBuilder<PluginsBean, PluginsBean, QAfterFilterCondition>
+      isStableDiffusionGlobalEqualTo(bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isStableDiffusionGlobal',
         value: value,
       ));
     });
@@ -954,6 +991,20 @@ extension PluginsBeanQuerySortBy
     });
   }
 
+  QueryBuilder<PluginsBean, PluginsBean, QAfterSortBy>
+      sortByIsStableDiffusionGlobal() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isStableDiffusionGlobal', Sort.asc);
+    });
+  }
+
+  QueryBuilder<PluginsBean, PluginsBean, QAfterSortBy>
+      sortByIsStableDiffusionGlobalDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isStableDiffusionGlobal', Sort.desc);
+    });
+  }
+
   QueryBuilder<PluginsBean, PluginsBean, QAfterSortBy> sortByPrompt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'prompt', Sort.asc);
@@ -1033,6 +1084,20 @@ extension PluginsBeanQuerySortThenBy
     });
   }
 
+  QueryBuilder<PluginsBean, PluginsBean, QAfterSortBy>
+      thenByIsStableDiffusionGlobal() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isStableDiffusionGlobal', Sort.asc);
+    });
+  }
+
+  QueryBuilder<PluginsBean, PluginsBean, QAfterSortBy>
+      thenByIsStableDiffusionGlobalDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isStableDiffusionGlobal', Sort.desc);
+    });
+  }
+
   QueryBuilder<PluginsBean, PluginsBean, QAfterSortBy> thenByPrompt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'prompt', Sort.asc);
@@ -1087,6 +1152,13 @@ extension PluginsBeanQueryWhereDistinct
     });
   }
 
+  QueryBuilder<PluginsBean, PluginsBean, QDistinct>
+      distinctByIsStableDiffusionGlobal() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isStableDiffusionGlobal');
+    });
+  }
+
   QueryBuilder<PluginsBean, PluginsBean, QDistinct> distinctByPrompt(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1128,6 +1200,13 @@ extension PluginsBeanQueryProperty
       isOpenShortcutKeysProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isOpenShortcutKeys');
+    });
+  }
+
+  QueryBuilder<PluginsBean, bool?, QQueryOperations>
+      isStableDiffusionGlobalProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isStableDiffusionGlobal');
     });
   }
 
