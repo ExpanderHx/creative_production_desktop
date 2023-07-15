@@ -1,6 +1,7 @@
 
 
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/src/model/chat_complete/response/chat_choice.dart';
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/src/model/chat_complete/response/message.dart';
@@ -73,23 +74,28 @@ class ChatApiOpenAi extends ChatApi{
         maxToken: chatModelConfig?.maxToken??2000,
         model: GptTurboChatModel()
     );
-    ChatCTResponse? response = await openAI.onChatCompletion(request: request);
+    try{
+      ChatCTResponse? response = await openAI.onChatCompletion(request: request);
 
-    if(null!=response){
-      String responseMessage = "";
-      if(null!=response.choices&&response.choices.length>0){
-        for(int i=0;i<response.choices.length;i++){
-          ChatChoice chatChoice = response.choices[i];
-          if(null!=chatChoice&&null!=chatChoice.message){
-            if(null!=chatChoice.message!.content&&chatChoice.message!.content.length>0){
-              responseMessage += chatChoice.message!.content;
+      if(null!=response){
+        String responseMessage = "";
+        if(null!=response.choices&&response.choices.length>0){
+          for(int i=0;i<response.choices.length;i++){
+            ChatChoice chatChoice = response.choices[i];
+            if(null!=chatChoice&&null!=chatChoice.message){
+              if(null!=chatChoice.message!.content&&chatChoice.message!.content.length>0){
+                responseMessage += chatChoice.message!.content;
+              }
             }
           }
+          print(responseMessage);
         }
-        print(responseMessage);
+        return Future.value(ResponseMessage(statusCode:200,responseMessage:responseMessage,originalResponse: response));
       }
-      return Future.value(ResponseMessage(statusCode:200,responseMessage:responseMessage,originalResponse: response));
+    }catch(e){
+      BotToast.showText(text: "发生异常，请重试 $e");
     }
+
 
     return Future.value(null);
     openAI.onChatCompletionSSE(request: request).listen((it) {

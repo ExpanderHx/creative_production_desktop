@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:async/async.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:creative_production_desktop/utilities/platform_util.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,9 @@ import 'package:provider/provider.dart';
 
 import '../../../config/const_app.dart';
 import '../../../provider/skin_provider.dart';
+import '../../../util/preferences_util.dart';
 import '../../../util/service_util.dart';
+import '../../../util/stable_diffusion_ui_service_util.dart';
 import '../../../util/theme_utils.dart';
 
 
@@ -34,7 +37,19 @@ class _ChatServiceLogWidgetState extends State<ChatServiceLogWidget> {
 
   String? serviceLogPath;
 
+  String? logType = "chat";
+
+  String logTypeChat = "chat";
+
+  String logTypeStableDiffusion = "Stable Diffusion";
+
   String logTxt = "";
+
+  Shell? logShell;
+
+  ShellLinesController? stdoutController;
+
+  ShellLinesController? stderrController;
 
   StreamSubscription? logStreamSubscription;
 
@@ -47,12 +62,8 @@ class _ChatServiceLogWidgetState extends State<ChatServiceLogWidget> {
   }
 
   void getServiceLogPath() async{
-    String? servicePath = await ServiceUtil.getServiceOrStoragePath();
-    String _serviceLogPath = path.join(servicePath! , ConstApp.serveSystemNameKey, ConstApp.serviceChatLogNameKey);
-    if(null!=_serviceLogPath&&_serviceLogPath.trim().length>0){
-      serviceLogPath = _serviceLogPath;
-    }
-    readLogTimer();
+    await getChatServiceLogPath();
+    await readLogTimer();
     if(mounted){
       setState(() {
 
@@ -60,7 +71,44 @@ class _ChatServiceLogWidgetState extends State<ChatServiceLogWidget> {
     }
   }
 
-  void readLogTimer() async{
+  void updateLogType(String? newValue) async{
+    if(null!=newValue&&newValue!=logType){
+      stdoutController?.close();
+      stderrController?.close();
+      logStreamSubscription?.cancel();
+      logShell?.kill();
+      logTxt = "";
+      logType = newValue;
+      if(newValue==logTypeChat){
+        await getChatServiceLogPath();
+      }else if(newValue==logTypeStableDiffusion){
+        await getStableDiffusionServiceLogPath();
+      }
+      readLog();
+      setState(() {
+
+      });
+    }
+
+  }
+
+  Future<void> getChatServiceLogPath() async{
+    String? servicePath = await ServiceUtil.getServiceOrStoragePath();
+    String _serviceLogPath = path.join(servicePath! , ConstApp.serveSystemNameKey, ConstApp.serviceChatLogNameKey);
+    if(null!=_serviceLogPath&&_serviceLogPath.trim().length>0){
+      serviceLogPath = _serviceLogPath;
+    }
+  }
+
+  Future<void> getStableDiffusionServiceLogPath() async{
+    String? servicePath = await StableDiffusionUiServiceUtil.getServiceOrStoragePath();
+    String _serviceLogPath = path.join(servicePath! , ConstApp.serviceStableDiffusionULogNameKey);
+    if(null!=_serviceLogPath&&_serviceLogPath.trim().length>0){
+      serviceLogPath = _serviceLogPath;
+    }
+  }
+
+  Future<void> readLogTimer() async{
     if(null!=logStreamSubscription){
       logStreamSubscription?.cancel();
     }
@@ -70,19 +118,16 @@ class _ChatServiceLogWidgetState extends State<ChatServiceLogWidget> {
   void readLog() async{
     logTxt = "";
     if(null!=serviceLogPath&&serviceLogPath!.trim().length>0){
-      var stdoutController = ShellLinesController();
-      var stderrController = ShellLinesController();
+      stdoutController = ShellLinesController();
+      stderrController = ShellLinesController();
 
-      var newShell = Shell(
-          stdout: stdoutController.sink,
-          stderr: stderrController.sink,
-          // stdoutEncoding:  utf8,
-          // stderrEncoding:  utf8
-
+      logShell = Shell(
+          stdout: stdoutController!.sink,
+          stderr: stderrController!.sink,
       );
       final result = StreamGroup.merge([
-        stdoutController.stream,
-        stderrController.stream
+        stdoutController!.stream,
+        stderrController!.stream
       ]);
       result.listen((data) {
         logTxt += data + "\n";
@@ -106,13 +151,13 @@ class _ChatServiceLogWidgetState extends State<ChatServiceLogWidget> {
 
         });
       });
-      if(null!=newShell){
+      if(null!=logShell){
         // await newShell!.run("chcp 65001",);
         String executable = "tail -f -n 200 " + serviceLogPath!;
         // if(kIsWindows){
         //   executable = "chcp 65001  \n" + executable ;
         // }
-        await newShell!.run(executable,);
+        await logShell!.run(executable,);
       }
 
 
@@ -124,67 +169,17 @@ class _ChatServiceLogWidgetState extends State<ChatServiceLogWidget> {
 
         });
       }
-
     }
 
-
-    // if(null!=serviceLogPath&&serviceLogPath!.trim().length>=0){
-    //   var file = File(serviceLogPath!);
-    //   var fileStream = file.watch();
-    //
-    //   //
-    //   // fileStream.listen((event) {
-    //   //   if (event.type == FileSystemEvent.modify) {
-    //   //     print('File modified');
-    //   //   // 文件发生变化，可以读取文件内容并进行相应的处理
-    //   //     String fileContent = file.readAsStringSync();
-    //   //     logTxt = fileContent;
-    //   //     setState(() {
-    //   //
-    //   //     });
-    //   //     // 在这里可以发送给StreamController，更新界面等操作
-    //   //     }
-    //   // });
-    //   logTxt = "";
-    //
-    //   // LineSplitter Dart语言封装的换行符，此处将文本按行分割
-    //   Stream logLinesStream = File(serviceLogPath!).openRead().transform(utf8.decoder).transform(const LineSplitter());
-    //   logLinesStream.forEach((element) {
-    //     print(element);
-    //   });
-    //   logStreamSubscription = logLinesStream!.listen((event) {
-    //     logTxt += event + "\n";
-    //
-    //
-    //     Timer(Duration(milliseconds: 100), () {
-    //       //List滑动到底部
-    //       if(null!=scrollController){
-    //         scrollController?.jumpTo(scrollController!.position.maxScrollExtent);
-    //         setState(() {
-    //
-    //         });
-    //       }
-    //
-    //     });
-    //   });
-    //   logStreamSubscription!.onDone(() {
-    //     print("读取完成");
-    //     Timer(Duration(milliseconds: 100), () {
-    //       readLogTimer();
-    //     });
-    //   });
-    // }else{
-    //   logTxt = "";
-    //   setState(() {
-    //
-    //   });
-    // }
   }
 
   @override
   void dispose() {
     logStreamSubscription?.cancel();
     scrollController?.dispose();
+    stdoutController?.close();
+    stderrController?.close();
+    logShell?.kill();
     super.dispose();
   }
 
@@ -208,7 +203,7 @@ class _ChatServiceLogWidgetState extends State<ChatServiceLogWidget> {
         children: [
           Container(
             height: 50,
-            margin: EdgeInsets.only(bottom: 15),
+            // margin: EdgeInsets.only(bottom: 5),
             child: Row(
               children: [
                 Expanded(
@@ -228,6 +223,44 @@ class _ChatServiceLogWidgetState extends State<ChatServiceLogWidget> {
                   ),
                 )
               ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: 15),
+            padding: EdgeInsets.only(left:30,right:30),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton2(
+                buttonStyleData: const ButtonStyleData(
+                  height: 30,
+                  padding: EdgeInsets.only(top: 0,bottom: 0,left: 3,right: 3),
+
+                ),
+                menuItemStyleData: const MenuItemStyleData(
+                  height: 30,
+                  padding: EdgeInsets.only(top: 0,bottom: 0,left: 3,right: 3),
+                ),
+                value: logType,
+                style:TextStyle(
+                  fontSize: 15,
+                  color: ThemeUtils.getFontThemeColor(context),
+
+                ),
+                isExpanded:true,
+                items: [
+                  DropdownMenuItem(
+                      value: logTypeChat,
+                      child: Text(logTypeChat)
+                  ),
+                  DropdownMenuItem(
+                      value: logTypeStableDiffusion,
+                      child: Text(logTypeStableDiffusion)
+                  )
+                ],
+                onChanged: (String? newValue) {
+                  updateLogType(newValue);
+                },
+
+              ),
             ),
           ),
           Expanded(

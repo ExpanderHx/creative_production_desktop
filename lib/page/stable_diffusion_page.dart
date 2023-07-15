@@ -23,6 +23,8 @@ import 'package:isar/isar.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
 import '../config/const_app.dart';
 import '../config/menu_config.dart';
 import '../network/chat/chat_api.dart';
@@ -66,6 +68,8 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
 
   bool isLoading = false;
 
+  bool isWebviewAvailable = false;
+
   int? serviceState;
 
   Timer? serviceStateTimer;
@@ -75,11 +79,29 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
   @override
   void initState() {
 // chatApi = ChatApiGeneral();
+
     chatApi = ChatApiHandle();
+    webvieIsAvailable();
     paramMapHandle();
     // handleOpenAiChat();
     timerServiceState();
 
+  }
+
+  void webvieIsAvailable() async{
+    try{
+      isWebviewAvailable = await WebviewWindow.isWebviewAvailable();
+      if(mounted){
+        setState(() {
+
+        });
+      }
+
+
+
+    }catch(e){
+
+    }
   }
 
   @override
@@ -110,6 +132,7 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
   }
 
   void paramMapHandle() async {
+
     if(widget.paramMap!=null){
 
       Map<String,dynamic?> paramMap = widget.paramMap!;
@@ -601,7 +624,8 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
                             ),
                           ),
                         ),
-                      )
+                      ),
+                      getWebviewDownload()
                 ],
               ),
             ),
@@ -727,6 +751,54 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
           );
         }
     );
+  }
+
+  Widget getWebviewDownload(){
+    if(!isWebviewAvailable){
+      return  Container(
+          height: 80,
+          margin:  const EdgeInsets.only(top:20),
+          width: double.infinity,
+          child: Card(
+            child: Center(
+              child: Container(
+                padding: const EdgeInsets.only(top:15),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async{
+                        String webviewDownloadUrl = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
+                        if (!await launchUrl(Uri.parse(webviewDownloadUrl))) {
+                        throw Exception('Could not launch $webviewDownloadUrl');
+                        }
+                      },
+                      child: Container(
+                        child: Text("您的设备缺少webview2程序,复制或点击以下链接到浏览器下载"),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top:5),
+                      child:  SelectableText("https://go.microsoft.com/fwlink/p/?LinkId=2124703",
+                        onTap: () async {
+                          String webviewDownloadUrl = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
+                          if (!await launchUrl(Uri.parse(webviewDownloadUrl))) {
+                            throw Exception('Could not launch $webviewDownloadUrl');
+                          }
+                        },
+                        style: TextStyle(
+                            color: Color(0xff00c3ff)
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            )
+          )
+      );
+    }
+
+    return Container();
   }
 
 

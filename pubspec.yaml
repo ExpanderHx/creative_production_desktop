@@ -159,6 +159,9 @@ dependencies:
   # 在桌面应用程序上显示 Web 视图窗口。
   desktop_webview_window: ^0.2.0
 
+  # 一个用于启动 URL 的 Flutter 插件
+  url_launcher: ^6.1.11
+
   # 全面的剪切板 需要安装 Rust 对于 macOS 或 Linux，请在终端中执行以下命令 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 #  super_clipboard: ^0.4.0
 

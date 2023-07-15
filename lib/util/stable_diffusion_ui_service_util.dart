@@ -122,7 +122,7 @@ class StableDiffusionUiServiceUtil{
 
 
   static Future<String?> getServiceSuperPath() async{
-    String? serviceSuperPath = PreferencesUtil().get(ConstApp.servicePathKey);
+    String? serviceSuperPath = PreferencesUtil().get(ConstApp.stableDiffusionUiServicePathKey);
     serviceSuperPath ??= await getServicePath();
     if(null!=serviceSuperPath){
       serviceSuperPath = path.dirname(serviceSuperPath);
@@ -131,7 +131,7 @@ class StableDiffusionUiServiceUtil{
   }
 
   static Future<String?> getServiceOrStoragePath() async{
-    String? servicePath = PreferencesUtil().get(ConstApp.servicePathKey);
+    String? servicePath = PreferencesUtil().get(ConstApp.stableDiffusionUiServicePathKey);
     servicePath ??= await getServicePath();
     return servicePath;
   }
