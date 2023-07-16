@@ -1,5 +1,11 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
+import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
+import 'package:talker_flutter/talker_flutter.dart';
+
+import '../../../../util/init_utils.dart';
+import '../../../../util/talker_utils.dart';
 import '../src/audio.dart';
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/src/client/client.dart';
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/src/client/exception/missing_token_exception.dart';
@@ -70,6 +76,7 @@ class OpenAI implements IOpenAI {
       });
     }
     dio.interceptors.add(InterceptorWrapper());
+    TalkerUtils.dioAddTalkerDioLogger(dio);
 
     _client = OpenAIClient(dio: dio, isLogging: enableLog);
 

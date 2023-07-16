@@ -162,6 +162,12 @@ dependencies:
   # 一个用于启动 URL 的 Flutter 插件
   url_launcher: ^6.1.11
 
+  # 记录应用操作，捕获和处理异常和错误，显示警报并共享日志报告
+  talker_flutter: ^3.1.7
+
+  # 轻量级和可定制的dio http客户端记录器在谈话者的基础上。
+  talker_dio_logger: ^2.2.1
+
   # 全面的剪切板 需要安装 Rust 对于 macOS 或 Linux，请在终端中执行以下命令 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 #  super_clipboard: ^0.4.0
 

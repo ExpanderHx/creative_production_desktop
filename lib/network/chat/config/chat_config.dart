@@ -11,5 +11,8 @@ class ChatConfig{
   static String chatOpenAiType = "chatOpenAiType";
 
 
+  static String openaiKeyName = "openai";
+
+
 
 }

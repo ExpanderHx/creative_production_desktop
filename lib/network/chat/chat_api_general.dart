@@ -1,6 +1,9 @@
 
 
 
+import 'package:bot_toast/bot_toast.dart';
+import 'package:creative_production_desktop/utilities/language_util.dart';
+
 import '../../page/chat/bean/chat_message.dart';
 import '../config/response_wrap.dart';
 import 'chat_api.dart';
@@ -45,15 +48,21 @@ class ChatApiGeneral extends ChatApi{
       }
     }
     Map<String, dynamic>? data = {"question":message,"history":history};
-    ResponseWrap? responseWrap = await chatHttp.post("/chat",data:data);
-    if(null!=responseWrap){
-      if(responseWrap.statusCode==200){
-        Map<String,dynamic> data =  responseWrap.data;
-        if(null!=data){
-          String responseMessage = data["response"];
-          return Future.value(ResponseMessage(statusCode:responseWrap.statusCode,responseMessage:responseMessage,originalResponse: responseWrap));
+    try{
+      ResponseWrap? responseWrap = await chatHttp.post("/chat",data:data);
+      if(null!=responseWrap){
+        if(responseWrap.statusCode==200){
+          Map<String,dynamic> data =  responseWrap.data;
+          if(null!=data){
+            String responseMessage = data["response"];
+            return Future.value(ResponseMessage(statusCode:responseWrap.statusCode,responseMessage:responseMessage,originalResponse: responseWrap));
+          }
+        }else{
+          BotToast.showText(text: "${'an_exception_occurred_please_try_again'.tr()}");
         }
       }
+    }catch(e){
+      BotToast.showText(text: "${'an_exception_occurred_please_try_again'.tr()}$e");
     }
     return Future.value(null);
   }

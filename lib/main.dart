@@ -8,6 +8,7 @@ import 'package:creative_production_desktop/provider/skin_provider.dart';
 import 'package:creative_production_desktop/util/db/isar_db_util.dart';
 import 'package:creative_production_desktop/util/init_utils.dart';
 import 'package:creative_production_desktop/util/preferences_util.dart';
+import 'package:creative_production_desktop/util/talker_utils.dart';
 import 'package:creative_production_desktop/util/theme_utils.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
@@ -56,11 +57,14 @@ void main(List<String> args) async{
 
   // 初始化PreferencesUtil
   PreferencesUtil();
-  InitUtils.init();
 
   // 初始化数据库
   // IsarDBUtil();
   await IsarDBUtil().init();
+
+  await InitUtils.init();
+
+
 
   WindowOptions windowOptions = const WindowOptions(
     size: Size(900, 600),

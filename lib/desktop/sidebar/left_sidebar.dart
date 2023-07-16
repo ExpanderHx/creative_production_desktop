@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
+import 'package:dio/dio.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ import '../../provider/router_provider.dart';
 import '../../util/preferences_util.dart';
 import '../../util/service_util.dart';
 import '../../util/stable_diffusion_ui_service_util.dart';
+import '../../util/talker_utils.dart';
 import '../../util/theme_utils.dart';
 import '../../util/widget/resizable_component.dart';
 
@@ -106,6 +108,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
     }
   }
 
+
+
   Future<int?> getServiceState() async{
     int _service_state = 0;
     try{
@@ -113,13 +117,17 @@ class _LeftSidebarState extends State<LeftSidebar> {
       String? serviceBaseUrl = PreferencesUtil().get(ConstApp.serviceBaseUrlKey);
       serviceBaseUrl ??= ChatConfig.chatGeneralBaseUrl;
       if(null!=serviceBaseUrl){
-        ChatHttp chatHttp = ChatHttp().init(
-            baseUrl: serviceBaseUrl
-        );
-        var responseWrap = await chatHttp.post("/service_state",showErrorToast:false);
-        if(null!=responseWrap){
-          if(responseWrap.statusCode == 200){
-            _service_state = 1;
+        Dio? serviceDio = ServiceUtil.initDio(serviceBaseUrl);
+        if(null!=serviceDio){
+          try{
+            var responseWrap = await serviceDio.post("/service_state");
+            if(null!=responseWrap){
+              if(responseWrap.statusCode == 200){
+                _service_state = 1;
+              }
+            }
+          }catch(e){
+
           }
         }
       }
@@ -386,10 +394,18 @@ class _LeftSidebarState extends State<LeftSidebar> {
       ),
       MenuItemButton(
         child: Container(
-          child: Text("日志"),
+          child: Text("server_log".tr()),
         ),
         onPressed: () {
           serviceLogDialog();
+        },
+      ),
+      MenuItemButton(
+        child: Container(
+          child: Text("app_log".tr()),
+        ),
+        onPressed: () {
+          TalkerUtils.toTalkerScreen(context);
         },
       ),
       MenuItemButton(

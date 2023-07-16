@@ -5,6 +5,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/src/model/chat_complete/response/chat_choice.dart';
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/src/model/chat_complete/response/message.dart';
+import 'package:creative_production_desktop/utilities/language_util.dart';
 
 import '../../page/chat/bean/chat_message.dart';
 import '../../page/model_config/bean/chat_model_config.dart';
@@ -29,6 +30,10 @@ class ChatApiOpenAi extends ChatApi{
   ChatApiOpenAi._internal();
 
   ChatModelConfig? chatModelConfig;
+
+  // static OpenAI? buildOpenAi(){
+  //
+  // }
 
   ChatApiOpenAi build(String? token, {required HttpSetup baseOption, required bool enableLog,ChatModelConfig? activeChatModelConfig}) {
     openAI =  OpenAI.instance.build(
@@ -93,7 +98,7 @@ class ChatApiOpenAi extends ChatApi{
         return Future.value(ResponseMessage(statusCode:200,responseMessage:responseMessage,originalResponse: response));
       }
     }catch(e){
-      BotToast.showText(text: "发生异常，请重试 $e");
+      BotToast.showText(text: "${'an_exception_occurred_please_try_again'.tr()}$e");
     }
 
 

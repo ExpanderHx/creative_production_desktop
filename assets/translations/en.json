@@ -116,6 +116,10 @@
   "click_open_stable_diffusion": "open Stable Diffusion Web Ui",
   "attempt_to_start_once_stable_diffusion": "Stable Diffusion Web Ui not started, try starting it once",
   "default_prompt_words_stable_diffusion": "Default prompt",
+  "an_exception_occurred_please_try_again": "An exception occurred, please try again ",
+  "server_log": "Server log",
+  "app_log": "App log",
+  "logging_exception": "Logging exception",
     "language": {
       "af": "Afrikaans",
       "am": "Amharic",

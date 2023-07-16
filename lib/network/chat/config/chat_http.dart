@@ -3,7 +3,12 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:dio/dio.dart';
+import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
+import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
+import '../../../util/talker_utils.dart';
+import '../../../util/init_utils.dart';
 import '../../config/response_wrap.dart';
 
 class ChatHttp {
@@ -19,6 +24,9 @@ class ChatHttp {
     BaseOptions options = new BaseOptions();
 
     dio = Dio(options);
+
+    TalkerUtils.dioAddTalkerDioLogger(dio);
+
 
     // dio.interceptors.add(LogInterceptor(
     //   request: false,

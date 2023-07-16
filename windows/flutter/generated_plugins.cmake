@@ -13,6 +13,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   isar_flutter_libs
   screen_retriever
   screen_text_extractor
+  share_plus
   tray_manager
   url_launcher_windows
   window_manager

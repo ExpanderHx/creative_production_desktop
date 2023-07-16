@@ -66,7 +66,7 @@ class PluginsConfigUtil{
 
     PluginsBean pluginsBeanTranslate = getPluginsBeanConfig(
       title: "translate".tr(),
-      prompt: "请将以下内容翻译为中文 ",
+      prompt: "请将以下内容翻译为中文    ",
       type: PluginsConfig.pluginsTypeTranslate,
       isOpenShortcutKeys:false
     );
@@ -76,7 +76,7 @@ class PluginsConfigUtil{
 
     PluginsBean pluginsBeanCommon = getPluginsBeanConfig(
         title: "text_polishing".tr(),
-        prompt: "请对下文本润色 ",
+        prompt: "请对下文本润色   ",
         type: PluginsConfig.pluginsTypeCommon,
         isOpenShortcutKeys:false
     );

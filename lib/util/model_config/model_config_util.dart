@@ -17,8 +17,8 @@ class ModelConfigUtil{
     prompt ??="";
     input ??="";
     String combinatStr = "";
-    if(null!=prompt&&prompt.trim().length>0){
-      if(null!=prompt&&prompt.trim().length>0){
+    if(null!=prompt&&prompt.trim().isNotEmpty){
+      if(null!=prompt&&prompt.trim().isNotEmpty){
         if(prompt.contains(RegExp("{\s?{\s?message\s?}\s?}"))){
           combinatStr = prompt.replaceAll(RegExp("{\s?{\s?message\s?}\s?}"), input);
         }else{
@@ -86,7 +86,7 @@ class ModelConfigUtil{
     chatModelConfigs.add(chatModelConfigLocal);
 
     ChatModelConfig chatModelConfigOpenAi = getChatModelConfig(
-      "openai",
+      ChatConfig.openaiKeyName,
       modelName: "gpt-3.5-turbo",
       tokenizerName: "gpt-3.5-turbo",
       isGlobal: false,

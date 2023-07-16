@@ -116,6 +116,10 @@
   "click_open_stable_diffusion": "打开 Stable Diffusion Web Ui",
   "attempt_to_start_once_stable_diffusion": "Stable Diffusion Web Ui 未启动，尝试启动一次",
   "default_prompt_words_stable_diffusion": "默认提示",
+  "an_exception_occurred_please_try_again": "发生异常，请重试 ",
+  "server_log": "服务端日志",
+  "app_log": "应用日志",
+  "logging_exception": "日志记录异常",
   "language": {
     "af": "布尔语(南非荷兰语)",
     "am": "阿姆哈拉语",

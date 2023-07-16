@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:creative_production_desktop/util/preferences_util.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
+import 'package:dio/dio.dart';
 import 'package:process_run/process_run.dart';
 import 'package:path/path.dart' as path;
 
@@ -132,5 +133,22 @@ class ServiceUtil{
     }
     return null;
   }
+
+  static Dio? serviceDio;
+  static Dio? initDio(String? baseUrl){
+    if(null==serviceDio){
+      BaseOptions options = BaseOptions();
+      serviceDio = Dio(options);
+    }
+    if(null!=baseUrl){
+      if( serviceDio!.options.baseUrl!=baseUrl){
+        serviceDio!.options = serviceDio!.options.copyWith(
+          baseUrl: baseUrl,
+        );
+      }
+    }
+    return serviceDio;
+  }
+
 
 }

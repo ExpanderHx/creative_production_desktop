@@ -11,6 +11,7 @@ class ChatModelConfig{
   String? configName;
   String? modelName;
   String? modelPath;
+  String? modelType;
   String? tokenizerName;
   String? loadDevice;
   String? token;

@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../config/const_app.dart';
 import '../../network/chat/chat_api.dart';
@@ -23,6 +24,7 @@ import '../provider/router_provider.dart';
 import '../provider/skin_provider.dart';
 import '../shortcut_key/shortcut_key_util.dart';
 import '../util/db/isar_db_util.dart';
+import '../util/init_utils.dart';
 
 
 
@@ -189,7 +191,7 @@ class _PluginsListPageState extends State<PluginsListPage> {
                     message: "add".tr(),
                     child: IconButton(
                       onPressed: () {
-                        print("-------------");
+                        // print("-------------");
                         editPluginsBean();
                       },
                       icon: const Icon(
