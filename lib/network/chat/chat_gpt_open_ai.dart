@@ -5,6 +5,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/src/model/chat_complete/response/chat_choice.dart';
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/src/model/chat_complete/response/message.dart';
+import 'package:creative_production_desktop/util/talker_utils.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 
 import '../../page/chat/bean/chat_message.dart';
@@ -97,8 +98,9 @@ class ChatApiOpenAi extends ChatApi{
         }
         return Future.value(ResponseMessage(statusCode:200,responseMessage:responseMessage,originalResponse: response));
       }
-    }catch(e){
+    }catch(e,st){
       BotToast.showText(text: "${'an_exception_occurred_please_try_again'.tr()}$e");
+      TalkerUtils.handle(e, st);
     }
 
 

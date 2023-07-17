@@ -10,6 +10,8 @@ import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/src/model/
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/src/utils/json_decode_string.dart';
 import 'package:dio/dio.dart';
 
+import '../../../../../util/talker_utils.dart';
+
 class OpenAIClient extends OpenAIWrapper {
   OpenAIClient({required Dio dio, bool isLogging = false}) {
     _dio = dio;
@@ -196,10 +198,11 @@ class OpenAIClient extends OpenAIWrapper {
           data: response.data,
         );
       }
-    } on DioException catch (err) {
+    } on DioException catch (err,st) {
       log.log(
         "error code: ${err.response?.statusCode}, message :${err.message} data:${err.response?.data}",
       );
+      TalkerUtils.handle(err, st);
       throw handleError(
         code: err.response?.statusCode ?? HttpStatus.internalServerError,
         message: "${err.response?.statusCode}",
