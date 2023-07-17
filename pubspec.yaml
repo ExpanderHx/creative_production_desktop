@@ -168,6 +168,16 @@ dependencies:
   # 轻量级和可定制的dio http客户端记录器在谈话者的基础上。
   talker_dio_logger: ^2.2.1
 
+  # 该插件允许 Flutter 桌面应用程序截取屏幕截图
+  screen_capturer: ^0.1.6
+
+  # OCR引擎
+  ocr_engine_builtin: ^0.1.1
+
+  # ocr_client
+  uni_ocr_client: ^0.1.1
+
+
   # 全面的剪切板 需要安装 Rust 对于 macOS 或 Linux，请在终端中执行以下命令 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 #  super_clipboard: ^0.4.0
 

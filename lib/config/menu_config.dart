@@ -24,13 +24,13 @@ class MenuConfig{
   static String stable_diffusion_page_menu = "plugins_stableDiffusion";
 
   static Map<String,dynamic> menuMap = {
-    chat_menu: MenuData( "聊天",chat_menu,CupertinoIcons.ellipses_bubble,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>ChatPage(key: menuValueKey,paramMap: map,) ),
-    stable_diffusion_page_menu: MenuData( "stable diffusion",stable_diffusion_page_menu,Icons.broken_image_outlined,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>StableDiffusionPage(key: menuValueKey,paramMap: map,) ),
-    plugins_menu: MenuData( "插件",plugins_menu,Icons.now_widgets_outlined,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>PluginsListPage(key: menuValueKey,paramMap: map,) ),
-    plugins_translate_menu: MenuData( "插件",plugins_menu,Icons.now_widgets_outlined,showType:0,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>TranslatePlugPage(key: menuValueKey,paramMap: map,) ),
-    plugins_common_menu: MenuData( "插件",plugins_menu,Icons.now_widgets_outlined,showType:0,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>CommonPlugPage(key: menuValueKey,paramMap: map,) ),
-    model_config_list_menu: MenuData( "模型列表",model_config_list_menu,CupertinoIcons.layers,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>ModelConfigListPagePage(key: menuValueKey,paramMap: map,) ),
-    skin_list_page_menu: MenuData( "模型列表",skin_list_page_menu,CupertinoIcons.sparkles,showType:1,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>SkinListPage(key: menuValueKey,paramMap: map,) ),
+    chat_menu: MenuData( "聊天",chat_menu,CupertinoIcons.ellipses_bubble,showType:1,pageName:chat_menu,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>ChatPage(key: menuValueKey,paramMap: map,) ),
+    stable_diffusion_page_menu: MenuData( "stable diffusion",stable_diffusion_page_menu,Icons.broken_image_outlined,showType:1,pageName:stable_diffusion_page_menu,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>StableDiffusionPage(key: menuValueKey,paramMap: map,) ),
+    plugins_menu: MenuData( "插件",plugins_menu,Icons.now_widgets_outlined,showType:1,pageName:plugins_menu,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>PluginsListPage(key: menuValueKey,paramMap: map,) ),
+    plugins_translate_menu: MenuData( "插件",plugins_menu,Icons.now_widgets_outlined,showType:0,pageName:plugins_translate_menu,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>TranslatePlugPage(key: menuValueKey,paramMap: map,) ),
+    plugins_common_menu: MenuData( "插件",plugins_menu,Icons.now_widgets_outlined,showType:0,pageName:plugins_common_menu,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>CommonPlugPage(key: menuValueKey,paramMap: map,) ),
+    model_config_list_menu: MenuData( "模型列表",model_config_list_menu,CupertinoIcons.layers,showType:1,pageName:model_config_list_menu,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>ModelConfigListPagePage(key: menuValueKey,paramMap: map,) ),
+    skin_list_page_menu: MenuData( "模型列表",skin_list_page_menu,CupertinoIcons.sparkles,showType:1,pageName:skin_list_page_menu,pageFunction:(menuValueKey,{Map<String,dynamic?>? map})=>SkinListPage(key: menuValueKey,paramMap: map,) ),
   };
 
 
@@ -44,6 +44,7 @@ class MenuConfig{
 
 class MenuData{
   String menuName;
+  String? pageName;
   String menuKey;
   IconData menuIcon;
   int? showType;  // 1 显示在侧边栏上方 2 显示在侧边栏下方 0 不显示
@@ -53,7 +54,7 @@ class MenuData{
 
 
 
-  MenuData(this.menuName,this.menuKey,this.menuIcon,{this.pageFunction,this.showType,this.onPressed,this.page});
+  MenuData(this.menuName,this.menuKey,this.menuIcon,{this.pageFunction,this.showType,this.onPressed,this.page,this.pageName});
 
   clickMenuWrap(RouterProvider routerProvider){
     return routerProvider.clickMenu(this);

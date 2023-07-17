@@ -13,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_capturer/screen_capturer.dart';
+import 'package:screen_text_extractor/screen_text_extractor.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../config/const_app.dart';
@@ -25,6 +27,9 @@ import '../provider/skin_provider.dart';
 import '../shortcut_key/shortcut_key_util.dart';
 import '../util/db/isar_db_util.dart';
 import '../util/init_utils.dart';
+import '../util/plugins_config/limited_functionality_banner.dart';
+import '../util/plugins_config/plugins_config_util.dart';
+import '../utilities/platform_util.dart';
 
 
 
@@ -41,34 +46,56 @@ class _PluginsListPageState extends State<PluginsListPage> {
 
   List<PluginsBean> pluginsBeanList = [];
 
+  bool _isAllowedScreenCaptureAccess = true;
+  bool _isAllowedScreenSelectionAccess = true;
+
   @override
   void initState() {
     getPluginsDataList();
 
+    _init();
+
+
   }
 
-  void getPluginsDataList() async{
-    IsarDBUtil().init().then((value) async{
-      if(null!=IsarDBUtil().isar){
-        // var pluginsBeanCollection = IsarDBUtil().isar!.collection<PluginsBean>();
-        List<PluginsBean> pluginsBeans = await IsarDBUtil().isar!.pluginsBeans.where().findAll();
-        // var pluginsBeans = await IsarDBUtil().isar!.pluginsBeans.getAll([]);
-        // var pluginsBeans = await pluginsBeanCollection.getAll([]);
-        // var pluginsBeans = await pluginsBeanCollection.where().findAll();
-        print(pluginsBeans);
-        if(null!=pluginsBeans&&pluginsBeans.length>0){
-          if(mounted){
-            setState(() {
-              pluginsBeanList = pluginsBeans;
-            });
-          }else{
+  void _init() async {
+    if (kIsMacOS) {
+      _isAllowedScreenCaptureAccess =
+      await ScreenCapturer.instance.isAccessAllowed();
+      _isAllowedScreenSelectionAccess =
+      await screenTextExtractor.isAccessAllowed();
+    }
+  }
+
+    void getPluginsDataList() async{
+      List<PluginsBean>? pluginsBeans = await PluginsConfigUtil.getPluginsConfigList();
+      print(pluginsBeans);
+      if(null!=pluginsBeans&&pluginsBeans.length>0){
+        pluginsBeanList = pluginsBeans;
+        if(mounted){
+          setState(() {
             pluginsBeanList = pluginsBeans;
-          }
-
+          });
         }
-
       }
-    });
+      // IsarDBUtil().init().then((value) async{
+      //   if(null!=IsarDBUtil().isar){
+      //     // var pluginsBeanCollection = IsarDBUtil().isar!.collection<PluginsBean>();
+      //     List<PluginsBean> pluginsBeans = await IsarDBUtil().isar!.pluginsBeans.where().findAll();
+      //     // var pluginsBeans = await IsarDBUtil().isar!.pluginsBeans.getAll([]);
+      //     // var pluginsBeans = await pluginsBeanCollection.getAll([]);
+      //     // var pluginsBeans = await pluginsBeanCollection.where().findAll();
+      //     print(pluginsBeans);
+      //     if(null!=pluginsBeans&&pluginsBeans.length>0){
+      //       pluginsBeanList = pluginsBeans;
+      //       if(mounted){
+      //         setState(() {
+      //           pluginsBeanList = pluginsBeans;
+      //         });
+      //       }
+      //     }
+      //   }
+      // });
   }
 
   void toPlugins({PluginsBean? pluginsBean}){
@@ -161,7 +188,8 @@ class _PluginsListPageState extends State<PluginsListPage> {
     List<Widget> pluginsWidgetList = getPluginsWidgetList();
 
     //  color: ThemeUtils.getThemeColor(context),
-
+    bool isNoAllowedAllAccess =
+    !(_isAllowedScreenCaptureAccess && _isAllowedScreenSelectionAccess);
 
     return Container(
       width: double.infinity,
@@ -173,9 +201,43 @@ class _PluginsListPageState extends State<PluginsListPage> {
           SingleChildScrollView(
             child: Container(
               margin: const EdgeInsets.only(left: 10,right: 10),
-              child: Wrap(
+              child: Column(
                 children: [
-                  ...pluginsWidgetList
+                  if (isNoAllowedAllAccess)
+                    LimitedFunctionalityBanner(
+                      isAllowedScreenCaptureAccess: _isAllowedScreenCaptureAccess,
+                      isAllowedScreenSelectionAccess: _isAllowedScreenSelectionAccess,
+                      onTappedRecheckIsAllowedAllAccess: () async {
+                        _isAllowedScreenCaptureAccess =
+                        await ScreenCapturer.instance.isAccessAllowed();
+                        _isAllowedScreenSelectionAccess =
+                        await screenTextExtractor.isAccessAllowed();
+
+                        setState(() {});
+
+                        if (_isAllowedScreenCaptureAccess &&
+                            _isAllowedScreenSelectionAccess) {
+                          BotToast.showText(
+                            text:
+                            'page_desktop_popup.limited_banner_msg_all_access_allowed'
+                                .tr(),
+                            align: Alignment.center,
+                          );
+                        } else {
+                          BotToast.showText(
+                            text:
+                            'page_desktop_popup.limited_banner_msg_all_access_not_allowed'
+                                .tr(),
+                            align: Alignment.center,
+                          );
+                        }
+                      },
+                    ),
+                  Wrap(
+                    children: [
+                      ...pluginsWidgetList
+                    ],
+                  )
                 ],
               ),
             ),

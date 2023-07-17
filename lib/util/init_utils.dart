@@ -35,6 +35,8 @@ class InitUtils{
     TalkerUtils.initTalker();
   }
 
+
+
   static Future<void> initChatApiOpenAi() async{
     List<ChatModelConfig>? chatModelConfigList = await IsarDBUtil().isar!.chatModelConfigs.where().findAll();
     if(null!=chatModelConfigList&&chatModelConfigList.length>0){

@@ -20,6 +20,7 @@ import '../../page/model_config/model_config_form_widget.dart';
 import '../../page/service/log/chat_service_log.dart';
 import '../../page/settings/service_settings_widget.dart';
 import '../../provider/router_provider.dart';
+import '../../shortcut_key/shortcut_key_util.dart';
 import '../../util/preferences_util.dart';
 import '../../util/service_util.dart';
 import '../../util/stable_diffusion_ui_service_util.dart';
@@ -27,6 +28,7 @@ import '../../util/talker_utils.dart';
 import '../../util/theme_utils.dart';
 import '../../util/widget/resizable_component.dart';
 
+import '../../utilities/platform_util.dart';
 import '../widget/acrylic_warp.dart';
 
 
@@ -211,8 +213,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
                       Container(
                         width: double.infinity,
                         child: MenuAnchor(
-
-                          menuChildren: _meunList(),
+                          menuChildren: _meunList(routerProvider),
                           builder: (BuildContext context, MenuController controller, Widget? child) {
                             return Tooltip(
                               message: 'set_up'.tr(),
@@ -354,8 +355,10 @@ class _LeftSidebarState extends State<LeftSidebar> {
   }
 
 
-  List<Widget> _meunList() {
-    return <Widget>[
+  List<Widget> _meunList(RouterProvider routerProvider) {
+
+
+    List<Widget> meunWidgetList = [
       MenuItemButton(
         child: Container(
           child: Text("service_settings".tr()),
@@ -407,49 +410,66 @@ class _LeftSidebarState extends State<LeftSidebar> {
         onPressed: () {
           TalkerUtils.toTalkerScreen(context);
         },
-      ),
-      MenuItemButton(
+      )
+    ];
+    if(kIsMacOS){
+      meunWidgetList.add(MenuItemButton(
         child: Container(
-          child: Row(
-            children: [
-              Container(
-                margin: EdgeInsets.only(right: 15,),
-                child: Text("self_start_upon_startup".tr()),
-              ),
-              Container(
-                child: CupertinoSwitch(
-                  // overrides the default green color of the track
-                  // color of the round icon, which moves from right to left
-                  // when the switch is off
-                  trackColor: Colors.black12,
-                  // boolean variable value
-                  value: launchAtStartupIsEnabled,
-                  // changes the state of the switch
-                  onChanged: (newValue){
-                    updateLaunchAtStartupEnabled();
-                    // if(null!=onChanged){
-                    //   onChanged(newValue);
-                    // }
-                  },
-                ),
-              )
-            ],
+          child: Tooltip(
+            message: "shortcut_keys_alt_l".tr(),
+            child: Text("enable_ocr".tr()),
           ),
         ),
         onPressed: () {
-          // windowManager.close();
+          ShortcutKeyUtil.registerOcr(routerProvider);
         },
-      ),
-      MenuItemButton(
-        child: Text("exit".tr()),
-        onPressed: () {
+      ));
 
-          exitDialog();
-          // windowManager.close();
-        },
+    }
+    meunWidgetList.add(MenuItemButton(
+      child: Container(
+        child: Row(
+          children: [
+            Container(
+              margin: EdgeInsets.only(right: 15,),
+              child: Text("self_start_upon_startup".tr()),
+            ),
+            Container(
+              child: CupertinoSwitch(
+                // overrides the default green color of the track
+                // color of the round icon, which moves from right to left
+                // when the switch is off
+                trackColor: Colors.black12,
+                // boolean variable value
+                value: launchAtStartupIsEnabled,
+                // changes the state of the switch
+                onChanged: (newValue){
+                  updateLaunchAtStartupEnabled();
+                  // if(null!=onChanged){
+                  //   onChanged(newValue);
+                  // }
+                },
+              ),
+            )
+          ],
+        ),
       ),
+      onPressed: () {
+        // windowManager.close();
+      },
+    ));
 
-    ];
+    meunWidgetList.add(MenuItemButton(
+      child: Text("exit".tr()),
+      onPressed: () {
+
+        exitDialog();
+        // windowManager.close();
+      },
+    ));
+
+
+    return meunWidgetList;
   }
 
 
@@ -478,7 +498,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
                   }catch(e){
                     print(e);
                   }
-                  windowManager.close();
+                  if(kIsMacOS){
+                    windowManager.destroy();
+                  }else{
+                    windowManager.close();
+                  }
                 },
               )
             ],

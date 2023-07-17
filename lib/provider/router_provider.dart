@@ -15,6 +15,7 @@ import '../util/preferences_util.dart';
 class RouterProvider with ChangeNotifier, DiagnosticableTreeMixin{
 
   String selectedMenuKey = MenuConfig.chat_menu;
+  String? pageName = MenuConfig.chat_menu;
   Function _selectedPage = MenuConfig.pageFunctionWarp(MenuConfig.chat_menu, (menuValueKey,{Map<String,dynamic?>? map})=>ChatPage(key: menuValueKey,paramMap: map,));
 
   int isShowLeftSidebar = 1;
@@ -46,6 +47,7 @@ class RouterProvider with ChangeNotifier, DiagnosticableTreeMixin{
   clickMenu(MenuData menuData,{Map<String,dynamic>? map}){
     if(null!=menuData){
       selectedMenuKey = menuData.menuKey;
+      pageName = menuData.pageName;
       if(selectedMenuKey==MenuConfig.plugins_menu){
         isShowRightSidebar = 0;
       }

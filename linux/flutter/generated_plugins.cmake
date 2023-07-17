@@ -10,6 +10,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_acrylic
   hotkey_manager
   isar_flutter_libs
+  screen_capturer
   screen_retriever
   screen_text_extractor
   tray_manager

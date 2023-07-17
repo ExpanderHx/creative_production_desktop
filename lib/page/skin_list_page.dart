@@ -270,119 +270,124 @@ class _SkinListPageState extends State<SkinListPage> {
             );
           }
 
+
+
           skinDataWidgetList.add(
-            Container(
-              height: 200,
-              width: 300,
-              margin: EdgeInsets.only(left: 15,right: 15,bottom: 15,top: 15),
-              child: Card(
-                  shadowColor: Colors.black,
-                elevation:5,
-                  clipBehavior:Clip.antiAlias,
-                  child: Stack(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                // padding:  EdgeInsets.only(left: 5,right: 5,top: 5,bottom: 5),
-                                width: double.infinity,
-                                height: double.infinity,
-                                child: imgWidget,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          height: 35,
-                          color: Color( 0x33000000),
-                          padding: EdgeInsets.only(left: 5,right: 5,bottom: 5,top: 5),
-                          child: Row(
+
+              GestureDetector(
+                onTap: (){
+                  updateSkinDataGlobal(skinData:skinData);
+                },
+                child: Container(
+                  height: 200,
+                  width: 300,
+                  margin: EdgeInsets.only(left: 15,right: 15,bottom: 15,top: 15),
+                  child: Card(
+                    shadowColor: Colors.black,
+                    elevation:5,
+                    clipBehavior:Clip.antiAlias,
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          height: double.infinity,
+                          child: Column(
                             children: [
                               Expanded(
-                                child: SelectableText(
-                                  skinData.name??"",
-                                  style: TextStyle(
-                                    // color: ThemeUtils.getFontThemeColor(context,lightColor: Color(0Xff343a40),blackColor: Color(0Xfff1f3f5)),
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: Color(0xffffffff)
-                                  ),
+                                child: Container(
+                                  // padding:  EdgeInsets.only(left: 5,right: 5,top: 5,bottom: 5),
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  child: imgWidget,
                                 ),
-                              ),
-
-                              Container(
-                                margin: const EdgeInsets.only(left: 5),
-                                child: GestureDetector(
-                                  onTap: (){
-                                    updateSkinDataGlobal(skinData:skinData);
-                                  },
-                                  child: Tooltip(
-                                    message: "open_the_skin".tr(),
-                                    child:  Icon(
-                                      Icons.open_in_new,
-                                      size: 15,
-                                      color: Color(0xffffffff),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(left: 5),
-                                child: GestureDetector(
-                                  onTap: (){
-                                    editSkinData(skinData:skinData);
-                                  },
-                                  child: Tooltip(
-                                    message: "edit".tr(),
-                                    child: const Icon(
-                                      Icons.edit,
-                                      size: 15,
-                                      color: Color(0xffffffff),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              ((skinData.type!=null&&skinData.type == 2)?
-                              Container(
-                                margin: const EdgeInsets.only(left: 5),
-                                child: InkWell(
-                                  onTap: (){
-                                    // 删除需要二次确认
-                                    skinDataDeleteDialog(skinData);
-                                  },
-                                  child: Tooltip(
-                                    message: "delete".tr(),
-                                    child: const Icon(
-                                      Icons.delete,
-                                      size: 15,
-                                      color: Color(0xffffffff),
-                                    ),
-                                  ),
-                                ),
-                              )
-                                  :
-                              Container()
-
                               )
                             ],
-
                           ),
                         ),
-                      )
-                    ],
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            height: 35,
+                            color: Color( 0x33000000),
+                            padding: EdgeInsets.only(left: 5,right: 5,bottom: 5,top: 5),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: SelectableText(
+                                    skinData.name??"",
+                                    style: TextStyle(
+                                      // color: ThemeUtils.getFontThemeColor(context,lightColor: Color(0Xff343a40),blackColor: Color(0Xfff1f3f5)),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16,
+                                        color: Color(0xffffffff)
+                                    ),
+                                  ),
+                                ),
+
+                                Container(
+                                  margin: const EdgeInsets.only(left: 5),
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      updateSkinDataGlobal(skinData:skinData);
+                                    },
+                                    child: Tooltip(
+                                      message: "open_the_skin".tr(),
+                                      child:  Icon(
+                                        Icons.open_in_new,
+                                        size: 15,
+                                        color: Color(0xffffffff),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(left: 5),
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      editSkinData(skinData:skinData);
+                                    },
+                                    child: Tooltip(
+                                      message: "edit".tr(),
+                                      child: const Icon(
+                                        Icons.edit,
+                                        size: 15,
+                                        color: Color(0xffffffff),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                ((skinData.type!=null&&skinData.type == 2)?
+                                Container(
+                                  margin: const EdgeInsets.only(left: 5),
+                                  child: InkWell(
+                                    onTap: (){
+                                      // 删除需要二次确认
+                                      skinDataDeleteDialog(skinData);
+                                    },
+                                    child: Tooltip(
+                                      message: "delete".tr(),
+                                      child: const Icon(
+                                        Icons.delete,
+                                        size: 15,
+                                        color: Color(0xffffffff),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                    :
+                                Container()
+
+                                )
+                              ],
+
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-              ),
-            )
-
-
-
+                ),
+              )
           );
         }
       }

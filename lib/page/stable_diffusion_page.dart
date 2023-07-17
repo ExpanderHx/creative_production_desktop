@@ -31,7 +31,9 @@ import '../network/chat/chat_api.dart';
 import '../network/chat/chat_api_handle.dart';
 import '../network/chat/chat_gpt_open_ai.dart';
 import '../network/chat/config/chat_config.dart';
+import '../provider/router_provider.dart';
 import '../provider/skin_provider.dart';
+import '../shortcut_key/shortcut_key_util.dart';
 import '../util/db/isar_db_util.dart';
 import '../util/model_config/model_config_util.dart';
 import '../util/plugins_config/plugins_config_util.dart';
@@ -473,7 +475,7 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
                                       message: promptTextEditingController.text,
                                       child: TextButton(
                                         onPressed: () {
-
+                                          editPluginsBean();
                                         },
                                         child: Text("prompt_word".tr()),
                                       ),
@@ -801,7 +803,54 @@ class _StableDiffusionPageState extends State<StableDiffusionPage> {
     return Container();
   }
 
+  void editPluginsBean() async{
+    if(null!=pluginsBeanId){
+      await IsarDBUtil().init();
+      List<PluginsBean> pluginsBeans =  await IsarDBUtil().isar!.pluginsBeans.where().idEqualTo(int.parse(pluginsBeanId!)).findAll();
+      if(null!=pluginsBeans&&pluginsBeans.length>0){
+        PluginsBean? oldPluginsBean = pluginsBeans[0];
+        if(null!=oldPluginsBean){
+          Map<String,dynamic>? map = await showDialog(
+              context: context,
+              // barrierColor: Colors.red.withAlpha(30),
+              barrierDismissible: true,
+              builder: (BuildContext context) {
+                return Dialog(
+                  backgroundColor: Colors.yellow.shade100, // 背景色
+                  elevation: 4.0, // 阴影高度
+                  insetAnimationDuration: Duration(milliseconds: 300), // 动画时间
+                  insetAnimationCurve: Curves.decelerate, // 动画效果
+                  insetPadding: const EdgeInsets.all(100), // 弹框距离屏幕边缘距离
+                  clipBehavior: Clip.none, // 剪切方式
+                  child: PiuginsFormWidget(pluginsBean: oldPluginsBean,),
+                );
+              }
+          );
+          print(map);
+          map = map ?? {};
+          onUpdatePluginsBeanDb(oldPluginsBean: map["oldPluginsBean"],newPluginsBean: map["newPluginsBean"]);
+          PluginsBean? newPluginsBean = map["newPluginsBean"];
+          if(null!=newPluginsBean){
+            setState(() {
+              promptTextEditingController.text = newPluginsBean.prompt!;
+              onGenerateStableDiffusionPrompt();
+            });
+          }
+        }
+      }
+    }
+  }
 
+  void onUpdatePluginsBeanDb({PluginsBean? oldPluginsBean,PluginsBean? newPluginsBean}) async{
+    if(null!=oldPluginsBean){
+      await ShortcutKeyUtil.unregisterByPluginsBean(oldPluginsBean);
+    }
+    if(null!=newPluginsBean){
+      ShortcutKeyUtil.registerByPluginsBean(newPluginsBean, context.read<RouterProvider>());
+    }
+
+
+  }
 
 }
 

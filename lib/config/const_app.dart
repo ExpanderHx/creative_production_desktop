@@ -27,6 +27,8 @@ class ConstApp{
 
   static String isInitKey = "isInit";
 
+  static String isInitPluginsBeansKey = "isInitPluginsBeans";
+
   static String serveSystemNameKey = "serve_system";
 
   static String startBatNameKey = "start.bat";

@@ -11,6 +11,7 @@ import 'package:creative_production_desktop/util/preferences_util.dart';
 import 'package:creative_production_desktop/util/talker_utils.dart';
 import 'package:creative_production_desktop/util/theme_utils.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
+import 'package:creative_production_desktop/utilities/platform_util.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_acrylic/window.dart';
@@ -94,7 +95,9 @@ void main(List<String> args) async{
 
 
     // 窗口管理初始化
-    await windowManager.ensureInitialized();
+    if (kIsLinux || kIsMacOS || kIsWindows) {
+      await windowManager.ensureInitialized();
+    }
 
 
 

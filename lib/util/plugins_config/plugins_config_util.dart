@@ -1,6 +1,7 @@
 
 
 import 'package:creative_production_desktop/page/plugins/bean/plugins_bean.dart';
+import 'package:creative_production_desktop/util/plugins_config/plugins_config_built_list.dart';
 import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:isar/isar.dart';
 
@@ -9,6 +10,7 @@ import '../../network/chat/config/chat_config.dart';
 import '../../page/model_config/bean/chat_model_config.dart';
 import '../../page/plugins/config/plugins_config.dart';
 import '../db/isar_db_util.dart';
+import '../preferences_util.dart';
 import '../service_util.dart';
 import 'package:path/path.dart' as path;
 
@@ -32,9 +34,13 @@ class PluginsConfigUtil{
     List<PluginsBean>? chatModelConfigList;
     await IsarDBUtil().init();
     if(null!=IsarDBUtil().isar){
-      List<PluginsBean> pluginsBeans = await IsarDBUtil().isar!.pluginsBeans.where().findAll();
+      List<PluginsBean>? pluginsBeans = await IsarDBUtil().isar!.pluginsBeans.where().findAll();
       if(pluginsBeans==null||pluginsBeans.length<=0){
-        pluginsBeans = await PluginsConfigUtil.initPluginsBeanConfigList();
+        int? isInitPluginsBeans = PreferencesUtil().get(ConstApp.isInitPluginsBeansKey);
+        if(isInitPluginsBeans==null||isInitPluginsBeans==0){
+          pluginsBeans = await PluginsConfigUtil.initPluginsBeanConfigList();
+        }
+        PreferencesUtil().setInt(ConstApp.isInitPluginsBeansKey, 1);
       }
       print(pluginsBeans);
       if(null!=pluginsBeans&&pluginsBeans.length>0){
@@ -57,11 +63,14 @@ class PluginsConfigUtil{
   //   return globalChatModelConfig;
   // }
 
+  static int isInit = 0;
 
-  static Future<List<PluginsBean>> initPluginsBeanConfigList() async{
+  static Future<List<PluginsBean>?> initPluginsBeanConfigList() async{
+    if(isInit>0){
+      return null;
+    }
+    isInit = 1;
     List<PluginsBean> pluginsBeanConfigs = [];
-
-    String? serviceSuperPath = await ServiceUtil.getServiceSuperPath();
 
 
     PluginsBean pluginsBeanTranslate = getPluginsBeanConfig(
@@ -88,6 +97,20 @@ class PluginsConfigUtil{
     PluginsBean pluginsBeanStableDiffusion = getStableDiffusionDefaultPluginsBean();
 
     pluginsBeanConfigs.add(pluginsBeanStableDiffusion);
+
+    if(null!=PluginsConfigBuiltList.pluginsConfigBuiltList&&PluginsConfigBuiltList.pluginsConfigBuiltList.length>0){
+      for(var i=0;i<PluginsConfigBuiltList.pluginsConfigBuiltList.length;i++){
+        Map<String,String> pluginsConfigBuiltMap = PluginsConfigBuiltList.pluginsConfigBuiltList[i];
+        PluginsBean pluginsBeanBuilt = getPluginsBeanConfig(
+            title: pluginsConfigBuiltMap["act"],
+            prompt: pluginsConfigBuiltMap["prompt"],
+            type: PluginsConfig.pluginsTypeCommon,
+            isOpenShortcutKeys:false
+        );
+        pluginsBeanConfigs.add(pluginsBeanBuilt);
+      }
+    }
+
 
     await IsarDBUtil().isar!.writeTxn(() async{
       if(null!=pluginsBeanConfigs&&pluginsBeanConfigs.length>0){
