@@ -177,6 +177,12 @@ dependencies:
   # ocr_client
   uni_ocr_client: ^0.1.1
 
+#  # sqlite3
+#  sqlite3: ^1.11.2
+#
+#  # sqlite3_flutter_libs
+#  sqlite3_flutter_libs: ^0.5.15
+
 
   # 全面的剪切板 需要安装 Rust 对于 macOS 或 Linux，请在终端中执行以下命令 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 #  super_clipboard: ^0.4.0
@@ -224,7 +230,9 @@ flutter:
     - assets/images/system/
     - assets/images/background/
     - assets/images/chat/
+    - assets/ca/
 
+  # ca中的证书从此网站下载 https://letsencrypt.org/certs/lets-encrypt-r3.pem
 
   fonts:
     - family: Ping Fang

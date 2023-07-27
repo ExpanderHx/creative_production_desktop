@@ -37,11 +37,13 @@ class ChatApiOpenAi extends ChatApi{
   // }
 
   ChatApiOpenAi build(String? token, {required HttpSetup baseOption, required bool enableLog,ChatModelConfig? activeChatModelConfig}) {
-    openAI =  OpenAI.instance.build(
-        token: token,
-        baseOption: baseOption,
-        enableLog: enableLog
-    );
+    if(null!=token){
+      openAI =  OpenAI.instance.build(
+          token: token,
+          baseOption: baseOption,
+          enableLog: enableLog
+      );
+    }
     chatModelConfig = activeChatModelConfig;
     return this;
   }

@@ -9,12 +9,27 @@ import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/src/model/
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/src/model/error/openai_error.dart';
 import 'package:creative_production_desktop/network/chat/chat_gpt_sdk/src/utils/json_decode_string.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 
 import '../../../../../util/talker_utils.dart';
 
 class OpenAIClient extends OpenAIWrapper {
   OpenAIClient({required Dio dio, bool isLogging = false}) {
     _dio = dio;
+    // TODO 部分设备无法验证https，暂时不验证https
+    // 可以查看此页面说明 https://stackoverflow.com/questions/54285172/how-to-solve-flutter-certificate-verify-failed-error-while-performing-a-post-req/68604631#68604631
+    // (_dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
+    //     (HttpClient client) {
+    //   client.badCertificateCallback =
+    //       (X509Certificate cert, String host, int port) => true;
+    //   return client;
+    // };
+
+    // (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client){
+    //   client.badCertificateCallback = (cert, host, port){
+    //     return true;
+    //   };
+    // };
     log = Logger.instance.builder(isLogging: isLogging);
   }
 

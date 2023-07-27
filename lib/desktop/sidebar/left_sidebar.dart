@@ -498,10 +498,17 @@ class _LeftSidebarState extends State<LeftSidebar> {
                   }catch(e){
                     print(e);
                   }
+                  await Future.delayed(const Duration(milliseconds: 100));
                   if(kIsMacOS){
                     windowManager.destroy();
                   }else{
-                    windowManager.close();
+                    try{
+                      windowManager.close();
+                    }catch(e){
+                      print(e.toString());
+                      windowManager.destroy();
+                    }
+
                   }
                 },
               )

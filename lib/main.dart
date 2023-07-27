@@ -14,6 +14,7 @@ import 'package:creative_production_desktop/utilities/language_util.dart';
 import 'package:creative_production_desktop/utilities/platform_util.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_acrylic/window.dart';
 import 'package:flutter_acrylic/window_effect.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,6 +34,12 @@ void main(List<String> args) async{
 
   // 必须加上这一行。 快捷键监听
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 部分设备https请求异常  unable to get local issuer
+  // 可以查看此页面说明 https://stackoverflow.com/questions/54285172/how-to-solve-flutter-certificate-verify-failed-error-while-performing-a-post-req
+  ByteData data = await PlatformAssetBundle().load('assets/ca/lets-encrypt-r3.pem');
+  SecurityContext.defaultContext.setTrustedCertificatesBytes(data.buffer.asUint8List());
+
 
   // 保存的主题类型初始化
   final savedThemeMode = await AdaptiveTheme.getThemeMode();

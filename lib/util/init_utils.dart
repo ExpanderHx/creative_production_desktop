@@ -23,44 +23,59 @@ class InitUtils{
   // static final talker = TalkerFlutter.init();
 
   static Future<void> init() async{
-    await PreferencesUtil.perInit();
-    int? isInit = PreferencesUtil().get(ConstApp.isInitKey);
-    if(isInit==null){
-      // 初次启动设置开机自启动
-      await setSelfStartUponStartup();
+    try{
+
+      TalkerUtils.initTalker();
+
+      await PreferencesUtil.perInit();
+      int? isInit = PreferencesUtil().get(ConstApp.isInitKey);
+      if(isInit==null || isInit == 0){
+        // 初次启动设置开机自启动
+        await setSelfStartUponStartup();
+        PreferencesUtil().setInt(ConstApp.isInitKey, 1);
+      }
+
+
+      await initChatApiOpenAi();
+
+    }catch(e){
+      print(e.toString());
     }
 
-    await initChatApiOpenAi();
-
-    TalkerUtils.initTalker();
   }
 
 
 
   static Future<void> initChatApiOpenAi() async{
-    List<ChatModelConfig>? chatModelConfigList = await IsarDBUtil().isar!.chatModelConfigs.where().findAll();
-    if(null!=chatModelConfigList&&chatModelConfigList.length>0){
-      ChatModelConfig? chatModelDefaultConfig = null;
-      for(var i=0;i<chatModelConfigList.length;i++){
-        if(null!=chatModelConfigList[i].configName&&chatModelConfigList[i].configName == ChatConfig.openaiKeyName){
-          chatModelDefaultConfig = chatModelConfigList[i];
-        }else if(null!=chatModelConfigList[i].token&&chatModelConfigList[i].token!.trim().length>0){
-          chatModelDefaultConfig ??= chatModelConfigList[i];
+    try{
+      List<ChatModelConfig>? chatModelConfigList = await IsarDBUtil().isar!.chatModelConfigs.where().findAll();
+      if(null!=chatModelConfigList&&chatModelConfigList.length>0){
+        ChatModelConfig? chatModelDefaultConfig = null;
+        for(var i=0;i<chatModelConfigList.length;i++){
+          if(null!=chatModelConfigList[i].configName&&chatModelConfigList[i].configName == ChatConfig.openaiKeyName){
+            chatModelDefaultConfig = chatModelConfigList[i];
+          }else if(null!=chatModelConfigList[i].token&&chatModelConfigList[i].token!.trim().length>0){
+            chatModelDefaultConfig ??= chatModelConfigList[i];
+          }
         }
-      }
-      if(null!=chatModelDefaultConfig){
-        ChatApiOpenAi().build(
-            chatModelDefaultConfig?.token,
-            baseOption: HttpSetup(
-                receiveTimeout: const Duration(seconds: 120),
-                baseUrl: chatModelDefaultConfig!.baseUrl??ChatConfig.chatGeneralBaseUrl
-            ),
-            enableLog: true,
-            activeChatModelConfig: chatModelDefaultConfig
-        );
-      }
+        if(null!=chatModelDefaultConfig){
+          ChatApiOpenAi().build(
+              chatModelDefaultConfig?.token,
+              baseOption: HttpSetup(
+                  receiveTimeout: const Duration(seconds: 120),
+                  baseUrl: chatModelDefaultConfig!.baseUrl??ChatConfig.chatGeneralBaseUrl
+              ),
+              enableLog: true,
+              activeChatModelConfig: chatModelDefaultConfig
+          );
+        }
 
+      }
+    }catch(e,st){
+      print(e.toString());
+      TalkerUtils.handle(e, st);
     }
+
   }
 
   static Future<void> setSelfStartUponStartup() async{
