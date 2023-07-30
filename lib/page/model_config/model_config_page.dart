@@ -12,6 +12,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 // import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:isar/isar.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'package:markdown_widget/widget/markdown.dart';
 
@@ -23,6 +24,7 @@ import '../../util/db/isar_db_util.dart';
 import '../../util/model_config/model_config_util.dart';
 import '../../util/preferences_util.dart';
 import '../../util/service_util.dart';
+import '../../util/talker_utils.dart';
 import '../plugins/config/plugins_config.dart';
 import '../chat/bean/chat_message.dart';
 import 'package:path/path.dart' as path;
@@ -44,6 +46,8 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
   ChatModelConfig? activeChatModelConfig;
 
   List<ChatModelConfig>? chatModelConfigList = [];
+  
+  int isReloadModel = 0;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -61,35 +65,45 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
   }
 
   void reloadModel() async{
-    if(null!=activeChatModelConfig&&null!=widget.activeType){
-      if(null!=activeChatModelConfig!.isLocal&&activeChatModelConfig!.isLocal!){
-        activeChatModelConfig!.baseUrl = activeChatModelConfig!.baseUrl ?? ChatConfig.chatGeneralBaseUrl;
-      }else{
-        if(null==activeChatModelConfig!.token||activeChatModelConfig!.token!.length<=0){
-          var cancel = BotToast.showText(text:"please_enter_openai_token".tr());
-          return;
+    setState(() {
+      isReloadModel = 1;
+    });
+    try{
+      if(null!=activeChatModelConfig&&null!=widget.activeType){
+        if(null!=activeChatModelConfig!.isLocal&&activeChatModelConfig!.isLocal!){
+          activeChatModelConfig!.baseUrl = activeChatModelConfig!.baseUrl ?? ChatConfig.chatGeneralBaseUrl;
+        }else{
+          if(null==activeChatModelConfig!.token||activeChatModelConfig!.token!.length<=0){
+            var cancel = BotToast.showText(text:"please_enter_openai_token".tr());
+            return;
+          }
+          activeChatModelConfig!.baseUrl = activeChatModelConfig!.baseUrl ?? ChatConfig.chatOpenAiBaseUrl;
         }
-        activeChatModelConfig!.baseUrl = activeChatModelConfig!.baseUrl ?? ChatConfig.chatOpenAiBaseUrl;
-      }
-      if(null==activeChatModelConfig!.maxToken||activeChatModelConfig!.maxToken!<=0){
-        activeChatModelConfig!.maxToken = 1000;
-      }
+        if(null==activeChatModelConfig!.maxToken||activeChatModelConfig!.maxToken!<=0){
+          activeChatModelConfig!.maxToken = 1000;
+        }
 
 
-      if(null!=activeChatModelConfig!.temperature){
-        if(activeChatModelConfig!.temperature!<=1&&activeChatModelConfig!.temperature!>0){
+        if(null!=activeChatModelConfig!.temperature){
+          if(activeChatModelConfig!.temperature!<=1&&activeChatModelConfig!.temperature!>0){
 
+          }else{
+            activeChatModelConfig!.temperature = 0.7;
+          }
         }else{
           activeChatModelConfig!.temperature = 0.7;
         }
-      }else{
-        activeChatModelConfig!.temperature = 0.7;
+
+        await ChatApiHandle().reloadActiveChatModel(activeChatModelConfig,activeType: widget.activeType);
+        BotToast.showText(text:"model_reloaded_successfully".tr());
+
       }
-
-      await ChatApiHandle().reloadActiveChatModel(activeChatModelConfig,activeType: widget.activeType);
-      BotToast.showText(text:"model_reloaded_successfully".tr());
-
+    }catch(e,st){
+      TalkerUtils.handle(e, st);
     }
+    setState(() {
+      isReloadModel = 0;
+    });
   }
 
   void updateActiveChatModelConfig(String newValue) async{
@@ -132,14 +146,63 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
           child: Column(
             children: [
               ...widgetList,
+
               Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: FilledButton(
-                    onPressed: (){
+                    onPressed: isReloadModel == 0 ?(){
                       reloadModel();
-                    },
-                    child: Text('submit'.tr()),
+                    } : null,
+                    child: Container(
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: Container(
+                              child: Center(child: Text('submit'.tr()),),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                              width: double.infinity,
+                              child: (
+                                  isReloadModel == 0?
+                                  Container():
+                                  Container(
+                                    margin: EdgeInsets.only(left: 90,),
+                                    child: LoadingAnimationWidget.hexagonDots(
+                                      color: ThemeUtils.getThemeColor(context,lightColor: Color.fromARGB(255, 50, 50, 50),blackColor: Color.fromARGB(255, 22, 222, 229)),
+                                      size: 20,
+                                    ),
+                                  )
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+
+                      // Row(
+                      //   children: [
+                      //     Expanded(
+                      //       child: Container(
+                      //         child: Center(child: Text('submit'.tr()),),
+                      //       ),
+                      //     ),
+                      //     (
+                      //         isReloadModel == 0?
+                      //         Container():
+                      //         Container(
+                      //           child: LoadingAnimationWidget.hexagonDots(
+                      //             color: ThemeUtils.getThemeColor(context,lightColor: Color.fromARGB(255, 50, 50, 50),blackColor: Color.fromARGB(255, 22, 222, 229)),
+                      //             size: 20,
+                      //           ),
+                      //         )
+                      //     )
+                      //   ],
+                      // ),
+                    ),
                   ),
                 ),
               ),
@@ -164,19 +227,6 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
         value: activeChatModelConfig!.modelName,
         onChanged: (newValue) async{
           activeChatModelConfig!.modelName = newValue;
-          // String? serviceSuperPath = await ServiceUtil.getServiceSuperPath();
-          // if(null!=serviceSuperPath){
-          //   if(null!=activeChatModelConfig!.modelName&&activeChatModelConfig!.modelName!.trim().length>0){
-          //     if(null!=activeChatModelConfig!.isLocal&&activeChatModelConfig!.isLocal!){
-          //       activeChatModelConfig!.modelPath = path.join(serviceSuperPath! , ConstApp.serveModelsNameKey,activeChatModelConfig!.modelName);
-          //     }
-          //   }else{
-          //     activeChatModelConfig!.modelPath = "";
-          //   }
-          //   setState(() {
-          //
-          //   });
-          // }
         }
     ));
     if(activeChatModelConfig!.isLocal!=null&&activeChatModelConfig!.isLocal!){
@@ -226,6 +276,59 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
             activeChatModelConfig!.loadDevice = newValue;
           }
       ));
+
+      // List<DropdownMenuItem<String>> dropdownDeviceMenuItemList = [];
+      // dropdownDeviceMenuItemList.add(
+      //     const DropdownMenuItem(
+      //         value: "cpu",
+      //         child: Text("cpu")
+      //     )
+      // );
+      // dropdownDeviceMenuItemList.add(
+      //     const DropdownMenuItem(
+      //         value: "cuda",
+      //         child: Text("cuda")
+      //     )
+      // );
+      // widgetList.add(getDropdownStringValueButtonWidget(
+      //     "device",
+      //     key: ValueKey("device " + activeChatModelConfig!.id.toString()),
+      //     value: activeChatModelConfig!.loadDevice,
+      //     dropdownMenuItemList:dropdownDeviceMenuItemList,
+      //     onChanged: (newValue) {
+      //       activeChatModelConfig!.loadDevice = newValue;
+      //     }
+      // ));
+
+
+
+      // List<DropdownMenuItem<bool>> dropdownMenuItemList = [];
+      // dropdownMenuItemList.add(
+      //     DropdownMenuItem(
+      //         value: true,
+      //         child: Text("semispermia".tr())
+      //     )
+      // );
+      // dropdownMenuItemList.add(
+      //     DropdownMenuItem(
+      //         value: false,
+      //         child: Text("not_semispermatic".tr())
+      //     )
+      // );
+      // widgetList.add(getDropdownBoolValueButtonWidget(
+      //     "accuracy",
+      //     key: ValueKey("accuracy " + activeChatModelConfig!.id.toString()),
+      //     value: activeChatModelConfig!.isHalf,
+      //     dropdownMenuItemList:dropdownMenuItemList,
+      //     onChanged: (newValue) {
+      //       activeChatModelConfig!.isHalf = newValue;
+      //       setState(() {
+      //
+      //       });
+      //     }
+      // ));
+
+
       widgetList.add(getInputRowWidget("${tr('base_url')}:",
           key: ValueKey("baseUrl " + activeChatModelConfig!.id.toString()),
           value: activeChatModelConfig!.baseUrl??ChatConfig.chatGeneralBaseUrl,
@@ -275,6 +378,9 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
           }
         }
     ));
+
+
+
     // widgetList.add( getInputRowWidget("${tr('temperature')}:",
     //     key: ValueKey("temperature " + activeChatModelConfig!.id.toString()),
     //     value: (null != activeChatModelConfig!.temperature
@@ -310,6 +416,27 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
           // }
         }
     ));
+
+
+    // widgetList.add(getInputRowWidget("${tr('top_p')}:",
+    //     key: ValueKey("top_p " + activeChatModelConfig!.id.toString()),
+    //     value: (null != activeChatModelConfig!.topP
+    //         ? activeChatModelConfig!.topP.toString()
+    //         : ""),
+    //     keyboardType:TextInputType.number,
+    //     inputFormatters: [
+    //       FilteringTextInputFormatter.digitsOnly
+    //     ],
+    //     onChanged: (newValue) {
+    //       if(null!=newValue&&newValue.length>0){
+    //         try{
+    //           activeChatModelConfig!.topP =  int.parse(newValue);
+    //         }catch(e){
+    //           print(e.toString());
+    //         }
+    //       }
+    //     }
+    // ));
 
 
 
@@ -362,114 +489,6 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
       ),
     );
 
-
-
-
-    // return Container(
-    //   height: 30,
-    //   margin: EdgeInsets.only(bottom: 100,),
-    //   child: TextFormField(
-    //     key: key,
-    //     initialValue:value,
-    //     minLines: 1,
-    //     maxLines: 1,
-    //     keyboardType:keyboardType,
-    //     inputFormatters:inputFormatters,
-    //     style: const TextStyle(
-    //         fontSize: 10
-    //     ),
-    //     decoration: InputDecoration(
-    //         // isCollapsed:true,
-    //         // contentPadding:const EdgeInsets.only(bottom: 2,top: 10),
-    //         labelText: title,
-    //
-    //
-    //       // labelStyle:const TextStyle(
-    //         //     fontSize: 12
-    //         // ),
-    //     ),
-    //     // The validator receives the text that the user has entered.
-    //     validator: (value) {
-    //       if(null!=validator){
-    //         return validator(value);
-    //       }
-    //       return null;
-    //     },
-    //     onSaved: (newValue){
-    //       if(null!=onSaved){
-    //         onSaved(newValue);
-    //       }
-    //     },
-    //     onChanged: (newValue){
-    //       if(null!=onChanged){
-    //         onChanged(newValue);
-    //       }
-    //     },
-    //   ),
-    // );
-
-    return Container(
-      margin:  EdgeInsets.only(bottom: 15,),
-      child: Row(
-        // crossAxisAlignment:CrossAxisAlignment.end,
-        children: [
-          Container(
-            width: 90,
-            margin: EdgeInsets.only(right: 15),
-            child: Text(
-              title,
-              // style: TextStyle(fontSize: 20),
-            ),
-          ),
-          Expanded(
-              child: Container(
-                padding: EdgeInsets.only(top: 8,bottom: 8,left: 10,right: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                  border: Border.all(
-                    color: Color.fromARGB(125, 67,67,67), // 边框颜色
-                    style: BorderStyle.solid, // 边框样式为实线
-                    width: 1,
-                  ),
-                ),
-                child: TextFormField(
-                  key: key,
-                  // controller: textEditingController,
-                  initialValue:value,
-                  maxLines: maxLines,
-                  keyboardType:keyboardType,
-                  inputFormatters:inputFormatters,
-                  style: const TextStyle(
-                    fontSize: 10
-                  ),
-                  decoration: const InputDecoration(
-                      isCollapsed:true,
-                      contentPadding: EdgeInsets.all(0),
-                      border: InputBorder.none
-                  ),
-                  // The validator receives the text that the user has entered.
-                  validator: (value) {
-                    if(null!=validator){
-                      return validator(value);
-                    }
-                    return null;
-                  },
-                  onSaved: (newValue){
-                    if(null!=onSaved){
-                      onSaved(newValue);
-                    }
-                  },
-                  onChanged: (newValue){
-                    if(null!=onChanged){
-                      onChanged(newValue);
-                    }
-                  },
-                ),
-              )
-          ),
-        ],
-      ),
-    );
   }
 
   Widget getSliderWidget(String title,{int? maxLines,ValueKey? key,
@@ -534,66 +553,59 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
       valueTransformer: (val) => val?.toString(),
     );
 
-    return  Container(
-      margin:  EdgeInsets.only(bottom: 15,),
-      child: Row(
-        // crossAxisAlignment:CrossAxisAlignment.end,
-        children: [
-          Container(
-            width: 60,
-            margin: EdgeInsets.only(right: 15),
-            child: Text(
-              "${tr('configuration')}  :",
-              // style: TextStyle(fontSize: 20),
-            ),
-          ),
-          Expanded(
-              child: Container(
-                padding: EdgeInsets.only(top: 0,bottom: 0,left: 10,right: 10),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(8)),
-                  border: Border.all(
-                    color: Color.fromARGB(125, 67,67,67), // 边框颜色
-                    style: BorderStyle.solid, // 边框样式为实线
-                    width: 1,
-                  ),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton2(
+  }
 
-                    // menuMaxHeight:40,
-                    buttonStyleData: const ButtonStyleData(
-                      height: 30,
-                      padding: EdgeInsets.only(top: 0,bottom: 0,left: 3,right: 3),
 
-                    ),
-                    menuItemStyleData: const MenuItemStyleData(
-                      height: 30,
-                      padding: EdgeInsets.only(top: 0,bottom: 0,left: 3,right: 3),
-                    ),
-                    value: value,
-                    style:TextStyle(
-                      fontSize: 10,
-                      color: ThemeUtils.getFontThemeColor(context),
 
-                    ),
-                    isExpanded:true,
-                    items: [
-                      ...dropdownMenuItemList
-                    ],
-                    onChanged: (String? newValue) {
-                      if(null!=onChanged){
-                        onChanged(newValue);
-                      }
-                    },
+  Widget getDropdownStringValueButtonWidget(String name,{String? value,Function? onChanged,ValueKey? key, List<DropdownMenuItem<String>>? dropdownMenuItemList}){
+    if(null==dropdownMenuItemList||dropdownMenuItemList!.length<=0){
+      return Container();
+    }
 
-                  ),
-                ),
-              )
-          ),
-        ],
+
+    return FormBuilderDropdown<String>(
+      name:name,
+      key: key,
+      initialValue: value,
+      decoration: InputDecoration(
+        labelText: '${tr(name)}',
+        hintText: 'Select ${tr(name)}',
       ),
+      items: dropdownMenuItemList,
+      onChanged: (newValue) {
+        if(null!=onChanged){
+          onChanged(newValue);
+        }
+      },
+      valueTransformer: (val) => val?.toString(),
     );
+
+  }
+
+
+  Widget getDropdownBoolValueButtonWidget(String name,{bool? value,Function? onChanged,ValueKey? key, List<DropdownMenuItem<bool>>? dropdownMenuItemList}){
+    if(null==dropdownMenuItemList||dropdownMenuItemList!.length<=0){
+      return Container();
+    }
+
+
+    return FormBuilderDropdown<bool>(
+      name:name,
+      key: key,
+      initialValue: value,
+      decoration: InputDecoration(
+        labelText: '${tr(name)}',
+        hintText: 'Select ${tr(name)}',
+      ),
+      items: dropdownMenuItemList,
+      onChanged: (newValue) {
+        if(null!=onChanged){
+          onChanged(newValue);
+        }
+      },
+      valueTransformer: (val) => val?.toString(),
+    );
+
   }
 
 }

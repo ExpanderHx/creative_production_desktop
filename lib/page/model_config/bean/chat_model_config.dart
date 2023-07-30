@@ -20,6 +20,8 @@ class ChatModelConfig{
   int? historyLen;
   bool? isGlobal;
   bool? isLocal;
+  bool? isHalf; //是否半精度
   String? baseUrl;
+  int? topP;
 
 }

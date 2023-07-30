@@ -53,6 +53,7 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
     }else{
       setState((){
         chatModelConfig = ChatModelConfig();
+        chatModelConfig!.isHalf = true;
         // chatModelConfig!.configName = "";
       });
 
@@ -214,6 +215,7 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
         }
     ));
     widgetList.add(getDropdownButtonWidget(title: "${tr('global')} ",
+        key: ValueKey("global " + chatModelConfig!.id.toString()),
         value: chatModelConfig!.isGlobal,
         onChanged: (newValue) {
           chatModelConfig!.isGlobal = newValue;
@@ -267,15 +269,68 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
             }
           }
       ));
-      widgetList.add(getInputRowWidget("${tr('device')}:",
+      // widgetList.add(getInputRowWidget("${tr('device')}:",
+      //     key: ValueKey("device " + chatModelConfig!.id.toString()),
+      //     value: chatModelConfig!.loadDevice,
+      //     suffixIcon: Tooltip(
+      //       message: "device_description".tr(),
+      //       child: Icon(CupertinoIcons.info_circle),
+      //     ),
+      //     onChanged: (newValue) {
+      //       chatModelConfig!.loadDevice = newValue;
+      //     }
+      // ));
+
+      //
+      List<DropdownMenuItem<String>> dropdownDeviceMenuItemList = [];
+      dropdownDeviceMenuItemList.add(
+          const DropdownMenuItem(
+              value: "cpu",
+              child: Text("cpu")
+          )
+      );
+      dropdownDeviceMenuItemList.add(
+          const DropdownMenuItem(
+              value: "cuda",
+              child: Text("cuda")
+          )
+      );
+      widgetList.add(getDropdownStringValueButtonWidget(title: "${tr('device')} ",
           key: ValueKey("device " + chatModelConfig!.id.toString()),
           value: chatModelConfig!.loadDevice,
-          suffixIcon: Tooltip(
-            message: "device_description".tr(),
-            child: Icon(CupertinoIcons.info_circle),
-          ),
+          dropdownMenuItemList:dropdownDeviceMenuItemList,
           onChanged: (newValue) {
             chatModelConfig!.loadDevice = newValue;
+            setState(() {
+
+            });
+          }
+      ));
+
+
+
+      List<DropdownMenuItem<bool>> dropdownMenuItemList = [];
+      dropdownMenuItemList.add(
+          DropdownMenuItem(
+              value: true,
+              child: Text("semispermia".tr())
+          )
+      );
+      dropdownMenuItemList.add(
+          DropdownMenuItem(
+              value: false,
+              child: Text("not_semispermatic".tr())
+          )
+      );
+      widgetList.add(getDropdownButtonWidget(title: "${tr('accuracy')} ",
+          key: ValueKey("semispermia " + chatModelConfig!.id.toString()),
+          value: chatModelConfig!.isHalf,
+          dropdownMenuItemList:dropdownMenuItemList,
+          onChanged: (newValue) {
+            chatModelConfig!.isHalf = newValue;
+            setState(() {
+
+            });
           }
       ));
       widgetList.add(getInputRowWidget("${tr('base_url')}:",
@@ -349,6 +404,47 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
           // }
         }
     ));
+
+    widgetList.add( getInputRowWidget("${tr('top_p')}:",
+        key: ValueKey("top_p " + chatModelConfig!.id.toString()),
+        value: (null != chatModelConfig!.topP
+            ? chatModelConfig!.topP.toString()
+            : ""),
+        keyboardType:TextInputType.number,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly
+        ],
+        onChanged: (newValue) {
+          if(null!=newValue&&newValue.length>0){
+            try{
+              chatModelConfig!.topP =  int.parse(newValue);
+            }catch(e){
+              print(e.toString());
+            }
+          }
+        }
+    ));
+
+    // widgetList.add( getInputRowWidget("${tr('top_p')}:",
+    //     key: ValueKey("top_p " + chatModelConfig!.id.toString()),
+    //     value: (null != chatModelConfig!.topP
+    //         ? chatModelConfig!.topP.toString()
+    //         : ""),
+    //     keyboardType:const TextInputType.numberWithOptions(decimal: true),
+    //     inputFormatters: [
+    //       FilteringTextInputFormatter.allow(RegExp(r'^\d*'))
+    //     ],
+    //     onChanged: (newValue) {
+    //       if(null!=newValue&&newValue.length>0){
+    //         try{
+    //           chatModelConfig!.topP =  int.parse(newValue);
+    //         }catch(e){
+    //           print(e.toString());
+    //         }
+    //       }
+    //
+    //     }
+    // ));
 
     return widgetList;
   }
@@ -427,26 +523,29 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
     );
   }
 
-  Widget getDropdownButtonWidget({String? title,bool? value,Function? onChanged}){
+  Widget getDropdownButtonWidget({String? title,bool? value,Function? onChanged,ValueKey<String>? key, List<DropdownMenuItem<bool>>? dropdownMenuItemList}){
 
 
-    List<DropdownMenuItem<bool>> dropdownMenuItemList = [];
+    if(dropdownMenuItemList == null){
+      dropdownMenuItemList = [];
+      dropdownMenuItemList.add(
+          DropdownMenuItem(
+              value: true,
+              child: Text("yes".tr())
+          )
+      );
 
-    dropdownMenuItemList.add(
-        DropdownMenuItem(
-            value: true,
-            child: Text("yes".tr())
-        )
-    );
+      dropdownMenuItemList.add(
+          DropdownMenuItem(
+              value: false,
+              child: Text("no".tr())
+          )
+      );
+    }
 
-    dropdownMenuItemList.add(
-        DropdownMenuItem(
-            value: false,
-            child: Text("no".tr())
-        )
-    );
 
     return  Container(
+      key: key,
       margin:  EdgeInsets.only(bottom: 15,),
       child: Row(
         // crossAxisAlignment:CrossAxisAlignment.end,
@@ -507,6 +606,74 @@ class _ModelConfigFormWidgetState extends State<ModelConfigFormWidget> {
   }
 
 
+  Widget getDropdownStringValueButtonWidget({String? title,String? value,Function? onChanged,ValueKey<String>? key, List<DropdownMenuItem<String>>? dropdownMenuItemList}){
+
+
+    if(dropdownMenuItemList == null){
+      return Container();
+    }
+
+
+    return  Container(
+      key: key,
+      margin:  EdgeInsets.only(bottom: 15,),
+      child: Row(
+        // crossAxisAlignment:CrossAxisAlignment.end,
+        children: [
+          Container(
+            width: 70,
+            margin: EdgeInsets.only(right: 15),
+            child: Text(
+              "${title}  :",
+              // style: TextStyle(fontSize: 20),
+            ),
+          ),
+          Expanded(
+              child: Container(
+                padding: EdgeInsets.only(top: 0,bottom: 0,left: 10,right: 10),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  border: Border.all(
+                    color: Color.fromARGB(125, 67,67,67), // 边框颜色
+                    style: BorderStyle.solid, // 边框样式为实线
+                    width: 1,
+                  ),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton2(
+                    buttonStyleData: const ButtonStyleData(
+                      height: 30,
+                      padding: EdgeInsets.only(top: 0,bottom: 0,left: 3,right: 3),
+
+                    ),
+                    menuItemStyleData: const MenuItemStyleData(
+                      height: 30,
+                      padding: EdgeInsets.only(top: 0,bottom: 0,left: 3,right: 3),
+                    ),
+                    value: value,
+                    style:TextStyle(
+                      fontSize: 10,
+                      color: ThemeUtils.getFontThemeColor(context),
+
+                    ),
+                    isExpanded:true,
+                    items: [
+                      ...dropdownMenuItemList
+                    ],
+                    onChanged: (String? newValue) {
+                      if(null!=onChanged){
+                        onChanged(newValue);
+                      }
+                    },
+
+                  ),
+                ),
+              )
+          ),
+        ],
+      ),
+    );
+  }
  
 
 

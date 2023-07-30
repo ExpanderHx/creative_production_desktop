@@ -89,8 +89,9 @@ class ChatApiHandle extends ChatApi{
           "load_device":activeChatModelConfig.loadDevice,
           "history_len":activeChatModelConfig.historyLen??10,
           "max_token":activeChatModelConfig.maxToken??1000,
-          "temperature":activeChatModelConfig.temperature,
-          "top_p":activeChatModelConfig.temperature,
+          "temperature":activeChatModelConfig.temperature??0.7,
+          "top_p":activeChatModelConfig.topP??0.3,
+          "is_half":activeChatModelConfig.isHalf??true,
         };
         await activeChatHttp.post("/reload_model",data: dataMap);
         if(null!=activeType){

@@ -37,45 +37,60 @@ const ChatModelConfigSchema = CollectionSchema(
       name: r'isGlobal',
       type: IsarType.bool,
     ),
-    r'isLocal': PropertySchema(
+    r'isHalf': PropertySchema(
       id: 4,
+      name: r'isHalf',
+      type: IsarType.bool,
+    ),
+    r'isLocal': PropertySchema(
+      id: 5,
       name: r'isLocal',
       type: IsarType.bool,
     ),
     r'loadDevice': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'loadDevice',
       type: IsarType.string,
     ),
     r'maxToken': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'maxToken',
       type: IsarType.long,
     ),
     r'modelName': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'modelName',
       type: IsarType.string,
     ),
     r'modelPath': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'modelPath',
       type: IsarType.string,
     ),
+    r'modelType': PropertySchema(
+      id: 10,
+      name: r'modelType',
+      type: IsarType.string,
+    ),
     r'temperature': PropertySchema(
-      id: 9,
+      id: 11,
       name: r'temperature',
       type: IsarType.double,
     ),
     r'token': PropertySchema(
-      id: 10,
+      id: 12,
       name: r'token',
       type: IsarType.string,
     ),
     r'tokenizerName': PropertySchema(
-      id: 11,
+      id: 13,
       name: r'tokenizerName',
       type: IsarType.string,
+    ),
+    r'topP': PropertySchema(
+      id: 14,
+      name: r'topP',
+      type: IsarType.long,
     )
   },
   estimateSize: _chatModelConfigEstimateSize,
@@ -129,6 +144,12 @@ int _chatModelConfigEstimateSize(
     }
   }
   {
+    final value = object.modelType;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.token;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -153,14 +174,17 @@ void _chatModelConfigSerialize(
   writer.writeString(offsets[1], object.configName);
   writer.writeLong(offsets[2], object.historyLen);
   writer.writeBool(offsets[3], object.isGlobal);
-  writer.writeBool(offsets[4], object.isLocal);
-  writer.writeString(offsets[5], object.loadDevice);
-  writer.writeLong(offsets[6], object.maxToken);
-  writer.writeString(offsets[7], object.modelName);
-  writer.writeString(offsets[8], object.modelPath);
-  writer.writeDouble(offsets[9], object.temperature);
-  writer.writeString(offsets[10], object.token);
-  writer.writeString(offsets[11], object.tokenizerName);
+  writer.writeBool(offsets[4], object.isHalf);
+  writer.writeBool(offsets[5], object.isLocal);
+  writer.writeString(offsets[6], object.loadDevice);
+  writer.writeLong(offsets[7], object.maxToken);
+  writer.writeString(offsets[8], object.modelName);
+  writer.writeString(offsets[9], object.modelPath);
+  writer.writeString(offsets[10], object.modelType);
+  writer.writeDouble(offsets[11], object.temperature);
+  writer.writeString(offsets[12], object.token);
+  writer.writeString(offsets[13], object.tokenizerName);
+  writer.writeLong(offsets[14], object.topP);
 }
 
 ChatModelConfig _chatModelConfigDeserialize(
@@ -175,14 +199,17 @@ ChatModelConfig _chatModelConfigDeserialize(
   object.historyLen = reader.readLongOrNull(offsets[2]);
   object.id = id;
   object.isGlobal = reader.readBoolOrNull(offsets[3]);
-  object.isLocal = reader.readBoolOrNull(offsets[4]);
-  object.loadDevice = reader.readStringOrNull(offsets[5]);
-  object.maxToken = reader.readLongOrNull(offsets[6]);
-  object.modelName = reader.readStringOrNull(offsets[7]);
-  object.modelPath = reader.readStringOrNull(offsets[8]);
-  object.temperature = reader.readDoubleOrNull(offsets[9]);
-  object.token = reader.readStringOrNull(offsets[10]);
-  object.tokenizerName = reader.readStringOrNull(offsets[11]);
+  object.isHalf = reader.readBoolOrNull(offsets[4]);
+  object.isLocal = reader.readBoolOrNull(offsets[5]);
+  object.loadDevice = reader.readStringOrNull(offsets[6]);
+  object.maxToken = reader.readLongOrNull(offsets[7]);
+  object.modelName = reader.readStringOrNull(offsets[8]);
+  object.modelPath = reader.readStringOrNull(offsets[9]);
+  object.modelType = reader.readStringOrNull(offsets[10]);
+  object.temperature = reader.readDoubleOrNull(offsets[11]);
+  object.token = reader.readStringOrNull(offsets[12]);
+  object.tokenizerName = reader.readStringOrNull(offsets[13]);
+  object.topP = reader.readLongOrNull(offsets[14]);
   return object;
 }
 
@@ -204,19 +231,25 @@ P _chatModelConfigDeserializeProp<P>(
     case 4:
       return (reader.readBoolOrNull(offset)) as P;
     case 5:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 6:
-      return (reader.readLongOrNull(offset)) as P;
-    case 7:
       return (reader.readStringOrNull(offset)) as P;
+    case 7:
+      return (reader.readLongOrNull(offset)) as P;
     case 8:
       return (reader.readStringOrNull(offset)) as P;
     case 9:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 10:
       return (reader.readStringOrNull(offset)) as P;
     case 11:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 12:
       return (reader.readStringOrNull(offset)) as P;
+    case 13:
+      return (reader.readStringOrNull(offset)) as P;
+    case 14:
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -778,6 +811,34 @@ extension ChatModelConfigQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isGlobal',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      isHalfIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'isHalf',
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      isHalfIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'isHalf',
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      isHalfEqualTo(bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isHalf',
         value: value,
       ));
     });
@@ -1348,6 +1409,160 @@ extension ChatModelConfigQueryFilter
   }
 
   QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelTypeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'modelType',
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelTypeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'modelType',
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelTypeEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'modelType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelTypeGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'modelType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelTypeLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'modelType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelTypeBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'modelType',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelTypeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'modelType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelTypeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'modelType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelTypeContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'modelType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelTypeMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'modelType',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelTypeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'modelType',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      modelTypeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'modelType',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
       temperatureIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1738,6 +1953,80 @@ extension ChatModelConfigQueryFilter
       ));
     });
   }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      topPIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'topP',
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      topPIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'topP',
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      topPEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'topP',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      topPGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'topP',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      topPLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'topP',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterFilterCondition>
+      topPBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'topP',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension ChatModelConfigQueryObject
@@ -1800,6 +2089,19 @@ extension ChatModelConfigQuerySortBy
       sortByIsGlobalDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isGlobal', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy> sortByIsHalf() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isHalf', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      sortByIsHalfDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isHalf', Sort.desc);
     });
   }
 
@@ -1873,6 +2175,20 @@ extension ChatModelConfigQuerySortBy
   }
 
   QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      sortByModelType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'modelType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      sortByModelTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'modelType', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
       sortByTemperature() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'temperature', Sort.asc);
@@ -1910,6 +2226,19 @@ extension ChatModelConfigQuerySortBy
       sortByTokenizerNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'tokenizerName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy> sortByTopP() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'topP', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      sortByTopPDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'topP', Sort.desc);
     });
   }
 }
@@ -1983,6 +2312,19 @@ extension ChatModelConfigQuerySortThenBy
     });
   }
 
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy> thenByIsHalf() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isHalf', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      thenByIsHalfDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isHalf', Sort.desc);
+    });
+  }
+
   QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy> thenByIsLocal() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isLocal', Sort.asc);
@@ -2053,6 +2395,20 @@ extension ChatModelConfigQuerySortThenBy
   }
 
   QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      thenByModelType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'modelType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      thenByModelTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'modelType', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
       thenByTemperature() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'temperature', Sort.asc);
@@ -2092,6 +2448,19 @@ extension ChatModelConfigQuerySortThenBy
       return query.addSortBy(r'tokenizerName', Sort.desc);
     });
   }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy> thenByTopP() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'topP', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QAfterSortBy>
+      thenByTopPDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'topP', Sort.desc);
+    });
+  }
 }
 
 extension ChatModelConfigQueryWhereDistinct
@@ -2121,6 +2490,12 @@ extension ChatModelConfigQueryWhereDistinct
       distinctByIsGlobal() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'isGlobal');
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QDistinct> distinctByIsHalf() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isHalf');
     });
   }
 
@@ -2159,6 +2534,13 @@ extension ChatModelConfigQueryWhereDistinct
     });
   }
 
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QDistinct> distinctByModelType(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'modelType', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<ChatModelConfig, ChatModelConfig, QDistinct>
       distinctByTemperature() {
     return QueryBuilder.apply(this, (query) {
@@ -2178,6 +2560,12 @@ extension ChatModelConfigQueryWhereDistinct
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'tokenizerName',
           caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, ChatModelConfig, QDistinct> distinctByTopP() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'topP');
     });
   }
 }
@@ -2215,6 +2603,12 @@ extension ChatModelConfigQueryProperty
     });
   }
 
+  QueryBuilder<ChatModelConfig, bool?, QQueryOperations> isHalfProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isHalf');
+    });
+  }
+
   QueryBuilder<ChatModelConfig, bool?, QQueryOperations> isLocalProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isLocal');
@@ -2246,6 +2640,12 @@ extension ChatModelConfigQueryProperty
     });
   }
 
+  QueryBuilder<ChatModelConfig, String?, QQueryOperations> modelTypeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'modelType');
+    });
+  }
+
   QueryBuilder<ChatModelConfig, double?, QQueryOperations>
       temperatureProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -2263,6 +2663,12 @@ extension ChatModelConfigQueryProperty
       tokenizerNameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'tokenizerName');
+    });
+  }
+
+  QueryBuilder<ChatModelConfig, int?, QQueryOperations> topPProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'topP');
     });
   }
 }
