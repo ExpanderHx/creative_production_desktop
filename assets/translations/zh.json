@@ -40,6 +40,7 @@
   "please_enter_a_question": "请输入问题",
   "please_enter_openai_token": "请输入openai token",
   "model_reloaded_successfully": "模型重新加载成功",
+  "model_reload_exception": "模型重新加载异常",
   "model_name": "模型名称",
   "tokenizer": "tokenizer",
   "device": "device",

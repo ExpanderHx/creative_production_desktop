@@ -20,6 +20,7 @@ import '../../config/const_app.dart';
 import '../../network/chat/chat_api_handle.dart';
 import '../../network/chat/chat_gpt_sdk/src/utils/constants.dart';
 import '../../network/chat/config/chat_config.dart';
+import '../../network/chat/config/response_message.dart';
 import '../../util/db/isar_db_util.dart';
 import '../../util/model_config/model_config_util.dart';
 import '../../util/preferences_util.dart';
@@ -94,9 +95,16 @@ class _ModelConfigPageState extends State<ModelConfigPage> {
           activeChatModelConfig!.temperature = 0.7;
         }
 
-        await ChatApiHandle().reloadActiveChatModel(activeChatModelConfig,activeType: widget.activeType);
-        BotToast.showText(text:"model_reloaded_successfully".tr());
-
+        ResponseMessage? responseMessage = await ChatApiHandle().reloadActiveChatModel(activeChatModelConfig,activeType: widget.activeType);
+        if(null!=responseMessage){
+          if(!(null!=responseMessage.errMsg&&responseMessage.errMsg!.trim().isNotEmpty)){
+            BotToast.showText(text:"model_reloaded_successfully".tr());
+          }else{
+            BotToast.showText(text:responseMessage.errMsg!);
+          }
+        }else{
+          BotToast.showText(text:"model_reload_exception".tr());
+        }
       }
     }catch(e,st){
       TalkerUtils.handle(e, st);

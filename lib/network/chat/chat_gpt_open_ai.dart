@@ -98,7 +98,16 @@ class ChatApiOpenAi extends ChatApi{
           }
           print(responseMessage);
         }
-        return Future.value(ResponseMessage(statusCode:200,responseMessage:responseMessage,originalResponse: response));
+        return Future.value(
+            ResponseMessage(
+                statusCode:200,
+                responseMessage:responseMessage,
+                originalResponse: response,
+                code: 1,
+                version: 1,
+                errMsg: null
+            )
+        );
       }
     }catch(e,st){
       BotToast.showText(text: "${'an_exception_occurred_please_try_again'.tr()}$e");

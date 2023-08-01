@@ -191,7 +191,11 @@ class _SkinListPageState extends State<SkinListPage> {
           SingleChildScrollView(
             child: Container(
               margin: const EdgeInsets.only(left: 10,right: 10),
+              width: double.infinity,
               child: Wrap(
+                // crossAxisAlignment: WrapCrossAlignment.center,
+                // runAlignment: WrapAlignment.center,
+                alignment: WrapAlignment.center,
                 children: [
                   ...skinDataWidgetList
                 ],

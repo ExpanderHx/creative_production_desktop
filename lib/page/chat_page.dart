@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -80,6 +81,7 @@ class _ChatPageState extends State<ChatPage> {
         chatApi!.sendMessage(message,activeType: activeType,historyList: messageList).then((response) {
           if(null!=response&&response.statusCode==200){
             String? responseMessage = response.responseMessage;
+            String? errMsg = response.errMsg;
             if(null!=responseMessage){
               ChatMessage messageData = ChatMessage(responseMessage,false);
               messageList.add(messageData);
@@ -93,10 +95,16 @@ class _ChatPageState extends State<ChatPage> {
                 setState(() {
                 });
               }
+            }else{
+              if(null!=errMsg){
+                BotToast.showText(text: errMsg);
+              }
             }
             print(response);
           }
-          isLoading = false;
+          setState(() {
+            isLoading = false;
+          });
         });
       }
     }

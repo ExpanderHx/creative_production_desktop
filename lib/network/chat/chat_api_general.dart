@@ -54,8 +54,20 @@ class ChatApiGeneral extends ChatApi{
         if(responseWrap.statusCode==200){
           Map<String,dynamic> data =  responseWrap.data;
           if(null!=data){
-            String responseMessage = data["response"];
-            return Future.value(ResponseMessage(statusCode:responseWrap.statusCode,responseMessage:responseMessage,originalResponse: responseWrap));
+            String? responseMessage = data["response"];
+            int? code = data["code"];
+            int? version = data["version"];
+            String? errMsg = data["errMsg"];
+            return Future.value(
+                ResponseMessage(
+                    statusCode:responseWrap.statusCode,
+                    responseMessage:responseMessage,
+                    originalResponse: responseWrap,
+                    code: code,
+                    version: version,
+                    errMsg:errMsg
+                )
+            );
           }
         }else{
           BotToast.showText(text: "${'an_exception_occurred_please_try_again'.tr()}");
